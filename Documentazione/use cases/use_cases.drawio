@@ -17,7 +17,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="Ktu8NRgD3q1ChV7ail3e" name="Assign tag to issue">
-    <mxGraphModel dx="1554" dy="962" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="768" dy="954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -29,6 +29,9 @@
         </mxCell>
         <mxCell id="Xs-yq398YA5nLhhanbmL-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=none;container=0;" value="&lt;b&gt;Assign tag to issue&lt;/b&gt;" vertex="1">
           <mxGeometry height="60" width="160" x="240" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="iWvzk9nX3qzJwDz0YtTi-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Integra in Report Issue è inutile da solo" vertex="1">
+          <mxGeometry height="170" width="180" x="370" y="470" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
@@ -59,7 +62,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="Ky9KQtic4Pj6Ukk6t6AE" name="Export issue list">
-    <mxGraphModel dx="1554" dy="962" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="768" dy="954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -128,7 +131,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="yErjKyLkqBf7sU_H8xBY" name="Report Issue">
-    <mxGraphModel dx="534" dy="379" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="768" dy="954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -176,6 +179,9 @@
         <mxCell id="4CIGUV73_URObjqs2_Li-20" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;rotation=-60;fontStyle=1" value="«extend»" vertex="1">
           <mxGeometry height="30" width="60" x="310" y="110" as="geometry" />
         </mxCell>
+        <mxCell id="jh-SUCYP3ufMu0Zy6m6s-2" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="Aggiungi Allegato e Tag come estensioni a Report Issue" vertex="1">
+          <mxGeometry height="30" width="216" x="384" y="510" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
@@ -197,7 +203,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="I8Unu9rlDaSdBIj6rhUb" name="View issue list">
-    <mxGraphModel dx="534" dy="379" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1295" dy="802" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -210,17 +216,23 @@
         <mxCell id="99WuCNckyad8UT4kwf5R-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;container=0;fontStyle=1;fillColor=none;" value="View issue list" vertex="1">
           <mxGeometry height="60" width="160" x="240" y="180" as="geometry" />
         </mxCell>
-        <mxCell id="99WuCNckyad8UT4kwf5R-4" edge="1" parent="1" source="99WuCNckyad8UT4kwf5R-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=0;endSize=12;" target="99WuCNckyad8UT4kwf5R-3">
+        <mxCell id="99WuCNckyad8UT4kwf5R-4" edge="1" parent="1" source="99WuCNckyad8UT4kwf5R-5" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;endArrow=classic;endFill=1;endSize=6;dashed=1;" target="99WuCNckyad8UT4kwf5R-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="99WuCNckyad8UT4kwf5R-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;container=0;fontStyle=1;fillColor=none;" value="Order issue list" vertex="1">
           <mxGeometry height="60" width="160" x="460" y="80" as="geometry" />
         </mxCell>
-        <mxCell id="99WuCNckyad8UT4kwf5R-6" edge="1" parent="1" source="99WuCNckyad8UT4kwf5R-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;endArrow=block;endFill=0;endSize=12;" target="99WuCNckyad8UT4kwf5R-3">
+        <mxCell id="99WuCNckyad8UT4kwf5R-6" edge="1" parent="1" source="99WuCNckyad8UT4kwf5R-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;endArrow=classic;endFill=1;endSize=6;dashed=1;" target="99WuCNckyad8UT4kwf5R-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="99WuCNckyad8UT4kwf5R-7" parent="1" style="ellipse;whiteSpace=wrap;html=1;container=0;fontStyle=1;fillColor=none;" value="Filter issue list" vertex="1">
           <mxGeometry height="60" width="160" x="460" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="oR2f4UqeRSNYLHLx6z8I-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;rotation=331.5;fontStyle=1" value="«extend»" vertex="1">
+          <mxGeometry height="30" width="60" x="410" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="oR2f4UqeRSNYLHLx6z8I-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;rotation=28.5;fontStyle=1" value="«extend»" vertex="1">
+          <mxGeometry height="30" width="60" x="410" y="240" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
