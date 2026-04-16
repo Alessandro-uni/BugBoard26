@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -44,6 +46,10 @@ public class Issue {
     private Set<Tag> tags;
 
     private String image; //todo: come mettere l'immagine? link? percorso?
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime creationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporting_user_id",
