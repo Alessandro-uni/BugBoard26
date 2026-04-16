@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "History")
@@ -40,5 +40,5 @@ public class History {
     @Column(nullable = false,
             updatable = false
     )
-    private Calendar date;
+    private LocalDateTime date;
 }
