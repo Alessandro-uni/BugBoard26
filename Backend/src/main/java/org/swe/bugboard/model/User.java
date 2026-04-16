@@ -31,8 +31,9 @@ public class User {
     )
     private String username; //todo: considerare se usare lo username o se usare la prima parte della mail (e.g. nome.cognome@mail.net -> nome.cognome)
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false) //todo: capisci come mettere una check per vedere che sia effettivamente "Admin" o "User" (se usiamo questo metodo)
-    private String role; //todo: considerare il tipo di questa variabile o se usare la gerarchia e il .class/getClass()
+    private UserRole role;
 
     @OneToMany(mappedBy = "reportingUser",
             fetch = FetchType.LAZY
