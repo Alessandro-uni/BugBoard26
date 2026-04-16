@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -50,6 +51,9 @@ public class Issue {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime creationDate;
+
+    @UpdateTimestamp
+    private LocalDateTime lastModifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporting_user_id",
