@@ -3,7 +3,6 @@ package org.swe.bugboard.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.servlet.view.AbstractCachingViewResolver;
 import org.swe.bugboard.dto.UserDto;
 import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.User;
@@ -17,12 +16,26 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
-    private final AbstractCachingViewResolver abstractCachingViewResolver;
+
+    public UserDto createUser(User user) {
+        // todo: verifica che l'utente connesso sia un admin
+        // todo: hashing della password inserita
+
+        User savedUser = userRepository.save(user);
+        return convertToDto(savedUser);
+    }
 
     public List<UserDto> getAllUser() {
         List<User> users = userRepository.findAll();
 
         return users.stream().map(this::convertToDto).toList();
+    }
+
+    public UserDto getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        return user.map(this::convertToDto).
+                orElseThrow(() -> new RuntimeException("Nessun utente trovato con id: " + id));
     }
 
     public UserDto getUserByMail(String mail) {
@@ -34,7 +47,7 @@ public class UserService {
 
     public List<UserDto> getUserByAvailabilityAsc() {
         List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);
-        List<User> users = userRepository.findByAvailabilityAsc(activatedStatus);
+        List<User> users = userRepository.findByActivedStatusAsc(activatedStatus);
 
         return users.stream().map(this::convertToDto).toList();
     }
