@@ -35,6 +35,8 @@ public class TagService {
 
         Tag tag = Tag.builder().name(newTag.getName()).build();
 
+        tagRepository.save(tag);
+
         return new TagResponse(tag.getId(), tag.getName());
     }
 }
