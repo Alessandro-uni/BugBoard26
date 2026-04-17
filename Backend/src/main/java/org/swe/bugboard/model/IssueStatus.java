@@ -5,4 +5,5 @@ public enum IssueStatus {
     TODO,
     INPROGRESS,
     RESOLVED,
+    CLOSED
 }

@@ -16,6 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByMail(String mail);
 
+    //todo: considera se passare la lista di status interessati o semplicemente mettere i.status <> 'RESOLVED' AND i.status <> 'CLOSED'
     @Query("SELECT u FROM User u LEFT JOIN u.assignedIssues i " +
             "ON i.status IN :activedStatus GROUP BY u ORDER BY COUNT(i) ASC")
     List<User> findByAvailabilityAsc(@Param("activedStatus") List<IssueStatus> activedStatus);
