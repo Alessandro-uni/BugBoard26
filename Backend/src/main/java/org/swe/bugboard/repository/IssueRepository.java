@@ -34,4 +34,6 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
             "(:startDate IS NULL OR i.lastModifiedDate >= :startDate) AND " +
             "(:endDate IS NULL OR i.lastModifiedDate <= :endDate)")
     List<Issue> findByLastModifiedDateRange (@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+
+    List<Issue> findByAssignedUserNull();
 }
