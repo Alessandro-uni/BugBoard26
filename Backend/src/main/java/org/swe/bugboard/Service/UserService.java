@@ -18,7 +18,6 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserDto createUser(User user) {
-        // todo: verifica che l'utente connesso sia un admin
         // todo: hashing della password inserita
 
         User savedUser = userRepository.save(user);
