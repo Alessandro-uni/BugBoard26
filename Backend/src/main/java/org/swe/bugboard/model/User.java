@@ -26,6 +26,9 @@ public class User {
     )
     private String mail;
 
+    @Column(nullable = false)
+    private String hashedPassword;
+
     @Column(unique = true,
             nullable = false
     )

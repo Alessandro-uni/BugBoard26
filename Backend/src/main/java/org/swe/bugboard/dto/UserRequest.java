@@ -1,18 +1,19 @@
 package org.swe.bugboard.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationRequest {
+@Builder
+public class UserRequest {
 
-    @NotEmpty(message = "Mail è un campo obbligatorio")
+    private long id;
     private String mail;
-
-    @NotEmpty(message = "Password è un campo obbligatorio")
     private CharSequence rawPassword;
+    private String username;
+    private String role;
 }

@@ -20,17 +20,10 @@ public class TagService {
     public List<TagResponse> getAllTag() {
         List<Tag> tags = tagRepository.findAll();
 
-        return tags.stream().map(this::convertToDto).toList();
+        return tags.stream().map(this::convertModelToResponse).toList();
     }
 
-    private TagResponse convertToDto(Tag tag) {
-        TagResponse dto = new TagResponse();
-        dto.setId(tag.getId());
-        dto.setName(tag.getName());
-
-        return dto;
-    }
-
+    @Transactional
     public TagResponse createTag(TagRequest newTag){
 
         Tag tag = Tag.builder().name(newTag.getName()).build();
@@ -38,5 +31,13 @@ public class TagService {
         tagRepository.save(tag);
 
         return new TagResponse(tag.getId(), tag.getName());
+    }
+
+    private TagResponse convertModelToResponse(Tag tag) {
+        return new TagResponse(tag.getId(), tag.getName());
+    }
+
+    private TagRequest convertModelToRequest(Tag tag) {
+        return new TagRequest(tag.getName());
     }
 }

@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.IssueDto;
-import org.swe.bugboard.dto.UserDto;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
