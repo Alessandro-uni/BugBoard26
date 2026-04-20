@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.IssueDto;
+import org.swe.bugboard.dto.UserRequest;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
@@ -155,22 +156,19 @@ public class IssueService {
     }
 
     private IssueDto convertToDto(Issue issue) {
-        IssueDto dto = new IssueDto();
-        dto.setId(issue.getId());
-        dto.setTitle(issue.getTitle());
-        dto.setDescription(issue.getDescription());
-        dto.setType(issue.getType().name());
-        dto.setStatus(issue.getStatus().name());
-        dto.setPriority(issue.getPriority());
-        dto.setTags(issue.getTags().stream().map(Tag::getName).collect(Collectors.toSet()));
-        dto.setImage(issue.getImage());
-        dto.setCreationDate(issue.getCreationDate());
-        dto.setLastModifiedDate(issue.getLastModifiedDate());
-        dto.setReportingUserId(issue.getReportingUser().getId());
-        dto.setReportingUserUsername(issue.getReportingUser().getUsername());
-        dto.setAssignedUserId(issue.getAssignedUser().getId());
-        dto.setAssignedUserUsername(issue.getAssignedUser().getUsername());
-
-        return dto;
+        return IssueDto.builder().id(issue.getId())
+                .title(issue.getTitle())
+                .description(issue.getDescription())
+                .type(issue.getType().name())
+                .status(issue.getStatus().name())
+                .priority(issue.getPriority())
+                .tags(issue.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
+                .image(issue.getImage())
+                .creationDate(issue.getCreationDate())
+                .lastModifiedDate(issue.getLastModifiedDate())
+                .reportingUserId(issue.getReportingUser().getId())
+                .reportingUserUsername(issue.getReportingUser().getUsername())
+                .assignedUserId(issue.getAssignedUser().getId())
+                .assignedUserUsername(issue.getAssignedUser().getUsername()).build();
     }
 }
