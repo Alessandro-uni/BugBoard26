@@ -62,8 +62,7 @@ public class IssueService {
     @Transactional
     public IssueDto addTagToIssue(Long issueId, Long tagId) {
         Issue issue = findIssueOrThrow(issueId);
-        Tag tag = tagRepository.findById(tagId)
-                .orElseThrow(() -> new EntityNotFoundException("Tag no trovato"));
+        Tag tag = findTagOrThrow(tagId);
 
         issue.getTags().add(tag);
 
@@ -148,6 +147,11 @@ public class IssueService {
     private User findUserOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
+    }
+
+    private Tag findTagOrThrow(Long tagId) {
+        return tagRepository.findById(tagId)
+                .orElseThrow(() -> new EntityNotFoundException("Tag non trovato"));
     }
 
     private IssueDto convertToDto(Issue issue) {

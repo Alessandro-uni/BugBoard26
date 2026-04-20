@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.swe.bugboard.dto.SignUpUserRequest;
 import org.swe.bugboard.dto.UserRequest;
 import org.swe.bugboard.dto.UserResponse;
 import org.swe.bugboard.model.IssueStatus;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserResponse createUser(UserRequest user) {
+    public UserResponse createUser(SignUpUserRequest user) {
         // todo: hashing della password inserita
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User newUser = User.builder().id(user.getId())
