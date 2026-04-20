@@ -24,10 +24,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     public UserResponse createUser(SignUpUserRequest user) {
-        // todo: hashing della password inserita
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        User newUser = User.builder().id(user.getId())
-                .mail(user.getMail())
+        User newUser = User.builder().mail(user.getMail())
                 .username(user.getUsername())
                 .hashedPassword(passwordEncoder.encode(user.getRawPassword()))
                 .role(UserRole.valueOf(user.getRole())).build();
