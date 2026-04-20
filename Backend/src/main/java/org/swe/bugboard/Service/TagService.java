@@ -1,6 +1,5 @@
 package org.swe.bugboard.Service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +12,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TagService {
     private final TagRepository tagRepository;
 
+    @Transactional(readOnly = true)
     public List<TagResponse> getAllTag() {
         List<Tag> tags = tagRepository.findAll();
 

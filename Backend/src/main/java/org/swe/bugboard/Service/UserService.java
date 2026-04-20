@@ -1,7 +1,6 @@
 package org.swe.bugboard.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,12 +18,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
-
     private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Transactional
     public UserResponse createUser(SignUpUserRequest user) {
         User newUser = User.builder().mail(user.getMail())
                 .username(user.getUsername())
@@ -36,12 +34,14 @@ public class UserService {
         return convertModelToResponse(savedUser);
     }
 
+    @Transactional(readOnly = true)
     public List<UserRequest> getAllUser() {
         List<User> users = userRepository.findAll();
 
         return users.stream().map(this::convertModelToRequest).toList();
     }
 
+    @Transactional(readOnly = true)
     public UserRequest getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
@@ -49,6 +49,7 @@ public class UserService {
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con id: " + id));
     }
 
+    @Transactional(readOnly = true)
     public UserRequest getUserByMail(String mail) {
         Optional<User> user = userRepository.findByMail(mail);
 
@@ -56,6 +57,7 @@ public class UserService {
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con mail: " + mail));
     }
 
+    @Transactional(readOnly = true)
     public List<UserRequest> getUserByAvailabilityAsc() {
         List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);
         List<User> users = userRepository.findByActivedStatusAsc(activatedStatus);
