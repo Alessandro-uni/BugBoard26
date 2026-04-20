@@ -23,8 +23,9 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
+    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public UserResponse createUser(SignUpUserRequest user) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User newUser = User.builder().mail(user.getMail())
                 .username(user.getUsername())
                 .hashedPassword(passwordEncoder.encode(user.getRawPassword()))
