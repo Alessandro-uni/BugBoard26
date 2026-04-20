@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
-
     @NotEmpty(message = "Mail è un campo obbligatorio")
     private String mail;
 
