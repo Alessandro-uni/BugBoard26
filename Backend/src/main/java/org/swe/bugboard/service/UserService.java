@@ -23,7 +23,8 @@ public class UserService {
 
     @Transactional
     public UserResponse createUser(SignUpUserRequest user) {
-        User newUser = User.builder().mail(user.getMail())
+        User newUser = User.builder()
+                .mail(user.getMail())
                 .username(user.getUsername())
                 .hashedPassword(passwordEncoder.encode(user.getRawPassword()))
                 .role(UserRole.valueOf(user.getRole())).build();
@@ -34,45 +35,66 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserRequest> getAllUser() {
+    public List<UserResponse> getAllUser() {
         List<User> users = userRepository.findAll();
 
-        return users.stream().map(this::convertModelToRequest).toList();
+        return users.stream().map(this::convertModelToResponse).toList();
     }
 
     @Transactional(readOnly = true)
-    public UserRequest getUserById(Long id) {
+    public List<UserResponse> getUser(UserRequest user) {
+        Optional<List<User>> users;
+
+        // todo: decidere se si vuole fare la ricerca con AND (dando una priorità) oppure con OR
+
+        return users;
+    }
+
+    private UserResponse getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
-        return user.map(this::convertModelToRequest).
+        return user.map(this::convertModelToResponse).
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con id: " + id));
     }
 
     @Transactional(readOnly = true)
-    public UserRequest getUserByMail(String mail) {
+    public UserResponse getUserByMail(String mail) { // todo: rendere private
         Optional<User> user = userRepository.findByMail(mail);
 
-        return user.map(this::convertModelToRequest).
+        return user.map(this::convertModelToResponse).
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con mail: " + mail));
     }
 
+    private UserResponse getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+
+        return user.map(this::convertModelToResponse).
+                orElseThrow(() -> new RuntimeException("Nessun utente trovato con username: " + username));
+    }
+
+    private List<UserResponse> getUsersByRole(UserRole role) {
+        Optional<List<User>> users = userRepository.findByRole(role);
+
+        return users.filter(list -> !list.isEmpty())
+                .orElseThrow(() -> new RuntimeException("Nessun utente trovato con ruolo: " + role.name()))
+                .stream()
+                .map(this::convertModelToResponse)
+                .toList();
+    }
+
     @Transactional(readOnly = true)
-    public List<UserRequest> getUserByAvailabilityAsc() {
+    public List<UserResponse> getUserByAvailabilityAsc() {
         List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);
         List<User> users = userRepository.findByActivedStatusAsc(activatedStatus);
 
-        return users.stream().map(this::convertModelToRequest).toList();
+        return users.stream().map(this::convertModelToResponse).toList();
     }
 
     private UserResponse convertModelToResponse(User user) {
-
         return new UserResponse(user.getId(), user.getMail(), user.getUsername(), user.getRole().name());
     }
 
     private UserRequest convertModelToRequest(User user) {
-        return UserRequest.builder().id(user.getId())
-                .mail(user.getMail())
-                .username(user.getUsername())
-                .role(user.getRole().toString()).build();
+        return new UserRequest(user.getId(), user.getMail(), user.getUsername(), user.getRole().toString());
     }
 }
