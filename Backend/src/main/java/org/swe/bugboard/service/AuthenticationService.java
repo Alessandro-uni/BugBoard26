@@ -19,7 +19,6 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
-
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtEncoder jwtEncoder;
