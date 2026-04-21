@@ -1,7 +1,6 @@
 package org.swe.bugboard.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public UserResponse createUser(SignUpUserRequest user) {
@@ -76,5 +75,4 @@ public class UserService {
                 .username(user.getUsername())
                 .role(user.getRole().toString()).build();
     }
-
 }
