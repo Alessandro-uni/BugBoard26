@@ -14,8 +14,6 @@ import javax.management.relation.Role;
 @AllArgsConstructor
 @Builder
 public class SignUpUserRequest {
-    private Long id;
-
     @NotEmpty(message = "Mail assente")
     private String mail;
 
