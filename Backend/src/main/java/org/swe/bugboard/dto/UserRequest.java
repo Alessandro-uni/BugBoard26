@@ -16,8 +16,8 @@ public class UserRequest {
     private String username;
     private String role;
 
-    @AssertTrue(message = "Inserire almeno un campo tra id, mail e username")
+    @AssertTrue(message = "Inserire almeno un campo tra id, mail, username e ruolo")
     private boolean isValidRequest() {
-        return id != null || mail != null || username != null;
+        return id != null || mail != null || username != null || role != null;
     }
 }
