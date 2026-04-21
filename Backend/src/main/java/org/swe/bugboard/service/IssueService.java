@@ -25,11 +25,18 @@ public class IssueService {
     public IssueDto createIssue(IssueDto issueDto, Long reportingUserId) {
         User reportingUser = findUserOrThrow(reportingUserId);
 
-        Issue issue = new Issue();
-        issue.setTitle(issueDto.getTitle());
-        issue.setDescription(issueDto.getDescription());
-        issue.setReportingUser(reportingUser);
-        issue.setCreationDate(LocalDateTime.now());
+        Issue issue = Issue.builder()
+                .title(issueDto.getTitle())
+                .description(issueDto.getDescription())
+                .type(IssueType.valueOf(issueDto.getType()))
+                .status(IssueStatus.valueOf(issueDto.getStatus()))
+                .priority(issueDto.getPriority())
+                //.tags(issueDto.getTags()) // todo: risolvere questo problema
+                .image(issueDto.getImage())
+                .creationDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+                .reportingUser(reportingUser)
+                .assignedUser(null).build();
 
         return convertToDto(issueRepository.save(issue));
     }
