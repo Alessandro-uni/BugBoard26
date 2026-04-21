@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.User;
+import org.swe.bugboard.model.UserRole;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMail(String mail);
+    Optional<User> findByUsername(String username);
+    Optional<List<User>> findByRole(UserRole role);
 
     boolean existsByMail(String mail);
 
