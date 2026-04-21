@@ -15,21 +15,20 @@ import java.util.List;
 public class TagService {
     private final TagRepository tagRepository;
 
+    @Transactional
+    public TagResponse createTag(TagRequest tag){
+        Tag newTag = Tag.builder().name(tag.getName()).build();
+
+        Tag savedTag = tagRepository.save(newTag);
+
+        return convertModelToResponse(savedTag);
+    }
+
     @Transactional(readOnly = true)
     public List<TagResponse> getAllTag() {
         List<Tag> tags = tagRepository.findAll();
 
         return tags.stream().map(this::convertModelToResponse).toList();
-    }
-
-    @Transactional
-    public TagResponse createTag(TagRequest newTag){
-
-        Tag tag = Tag.builder().name(newTag.getName()).build();
-
-        tagRepository.save(tag);
-
-        return new TagResponse(tag.getId(), tag.getName());
     }
 
     private TagResponse convertModelToResponse(Tag tag) {
