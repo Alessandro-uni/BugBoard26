@@ -1,11 +1,10 @@
-package org.swe.bugboard.Service;
+package org.swe.bugboard.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.IssueDto;
-import org.swe.bugboard.dto.UserRequest;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;

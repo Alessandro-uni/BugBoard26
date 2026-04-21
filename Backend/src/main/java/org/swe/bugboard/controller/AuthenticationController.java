@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.swe.bugboard.Service.AuthenticationService;
+import org.swe.bugboard.service.AuthenticationService;
 import org.swe.bugboard.dto.AuthenticationRequest;
 import org.swe.bugboard.dto.AuthenticationResponse;
 
