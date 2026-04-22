@@ -19,6 +19,8 @@ public class CustomUserDetails implements UserDetails {
         return user;
     }
 
+    public Long getId() { return user.getId(); }
+
     public UserRole getRole() {
         return user.getRole();
     }
@@ -31,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     @NullMarked
-    public String getUsername() {
+    public String getUsername() { // Viene chiamato quando anche con getName()
         return user.getMail(); // Restituisce l'identificativo dello User, ovvero la mail
     }
 
