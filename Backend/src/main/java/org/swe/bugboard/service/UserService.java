@@ -12,6 +12,7 @@ import org.swe.bugboard.model.User;
 import org.swe.bugboard.model.UserRole;
 import org.swe.bugboard.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,11 +44,35 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUser(UserRequest user) {
-        Optional<List<User>> users;
+        if (user.getId() != null) {
+            UserResponse userResponse = getUserById(user.getId());
+            if (userResponse != null) {
+                return Collections.singletonList(userResponse);
+            }
+        }
 
-        // todo: decidere se si vuole fare la ricerca con AND (dando una priorità) oppure con OR
+        if (user.getMail() != null) {
+            UserResponse userResponse = getUserByMail(user.getMail());
+            if (userResponse != null) {
+                return Collections.singletonList(userResponse);
+            }
+        }
 
-        return users;
+        if (user.getUsername() != null) {
+            UserResponse userResponse = getUserByUsername(user.getUsername());
+            if (userResponse != null) {
+                return Collections.singletonList(userResponse);
+            }
+        }
+
+        if (user.getRole() != null) {
+            List<UserResponse> usersResponse = getUsersByRole(UserRole.valueOf(user.getRole()));
+            if (usersResponse != null && !usersResponse.isEmpty()) {
+                return usersResponse;
+            }
+        }
+
+        throw new IllegalArgumentException("Nessun utente trovato con almeno uno dei parametri di ricerca forniti");
     }
 
     private UserResponse getUserById(Long id) {
@@ -57,8 +82,7 @@ public class UserService {
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con id: " + id));
     }
 
-    @Transactional(readOnly = true)
-    public UserResponse getUserByMail(String mail) { // todo: rendere private
+    private UserResponse getUserByMail(String mail) {
         Optional<User> user = userRepository.findByMail(mail);
 
         return user.map(this::convertModelToResponse).
