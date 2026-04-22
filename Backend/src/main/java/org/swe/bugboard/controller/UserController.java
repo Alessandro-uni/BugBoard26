@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.swe.bugboard.dto.UserRequest;
 import org.swe.bugboard.dto.UserResponse;
+import org.swe.bugboard.security.CustomUserDetails;
 import org.swe.bugboard.service.UserService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
@@ -15,8 +19,11 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
-        String userEmail = authentication.getName();
-        return ResponseEntity.ok(userService.getUserByMail(userEmail));
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+        UserRequest request = UserRequest.builder().id(userId).build();
+        List<UserResponse> response = userService.getUser(request);
+        return ResponseEntity.ok(response.getFirst());
     }
 
 //    @GetMapping("/issues/{id}")
