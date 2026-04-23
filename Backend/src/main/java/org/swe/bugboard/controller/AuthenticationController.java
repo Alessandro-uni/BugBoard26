@@ -2,10 +2,7 @@ package org.swe.bugboard.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.swe.bugboard.service.AuthenticationService;
 import org.swe.bugboard.dto.AuthenticationRequest;
 import org.swe.bugboard.dto.AuthenticationResponse;
@@ -13,6 +10,7 @@ import org.swe.bugboard.dto.AuthenticationResponse;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
