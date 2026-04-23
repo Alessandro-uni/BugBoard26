@@ -1,9 +1,11 @@
 package org.swe.bugboard.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.swe.bugboard.dto.ChangePasswordUserRequest;
 import org.swe.bugboard.dto.SignUpUserRequest;
 import org.swe.bugboard.dto.UserRequest;
 import org.swe.bugboard.dto.UserResponse;
@@ -31,6 +33,22 @@ public class UserService {
                 .role(UserRole.valueOf(user.getRole())).build();
 
         User savedUser = userRepository.save(newUser);
+
+        return convertModelToResponse(savedUser);
+    }
+
+    @Transactional
+    public UserResponse changeUserPassword(UserRequest user, ChangePasswordUserRequest userPasswords) {
+        User oldUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
+
+        if (!passwordEncoder.matches(userPasswords.getOldRawPassword(), oldUser.getHashedPassword())) {
+            throw new IllegalArgumentException("La vecchia password non è corretta");
+        }
+
+        oldUser.setHashedPassword(passwordEncoder.encode(userPasswords.getOldRawPassword()));
+
+        User savedUser = userRepository.save(oldUser);
 
         return convertModelToResponse(savedUser);
     }
