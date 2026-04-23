@@ -7,6 +7,8 @@ import org.swe.bugboard.service.AuthenticationService;
 import org.swe.bugboard.dto.AuthenticationRequest;
 import org.swe.bugboard.dto.AuthenticationResponse;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -16,6 +18,11 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+        AuthenticationResponse response =  authenticationService.authenticate(authenticationRequest);
+
+        if(response.getToken() == null){
+            return ResponseEntity.badRequest().body(response);
+        }
+        return ResponseEntity.ok(response);
     }
 }
