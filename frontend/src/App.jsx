@@ -28,10 +28,10 @@ function App() {
    */
 
   //funzione per l'accesso del login: accetta due parametri username e pw
-  const handleLogin = (username, password) => {
+  const handleLogin = userData => {
 
     //verifica che non siano entrambi  vuoti
-    if(username && password){
+    if(userData){
       setIsLoggedIn(true); //segna l'utente come autenticato tramite useState che aggiorna lo stato
     }
     setUserInfo(username);

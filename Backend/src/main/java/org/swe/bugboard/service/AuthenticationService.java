@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -27,34 +28,39 @@ public class AuthenticationService {
     private Long jwtExpiration;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getMail(),
-                        request.getRawPassword()
-                )
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getMail(),
+                            request.getRawPassword()
+                    )
+            );
 
-        Instant now = Instant.now();
-        Instant expirationTime = now.plusMillis(jwtExpiration);
+            Instant now = Instant.now();
+            Instant expirationTime = now.plusMillis(jwtExpiration);
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String mail = userDetails.getUsername();
-        String role = userDetails.getRole().name();
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            String mail = userDetails.getUsername();
+            String role = userDetails.getRole().name();
 
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("bugboard")
-                .issuedAt(now)
-                .expiresAt(expirationTime)
-                .subject(mail)
-                .claim("role", role).build();
+            JwtClaimsSet claims = JwtClaimsSet.builder()
+                    .issuer("bugboard")
+                    .issuedAt(now)
+                    .expiresAt(expirationTime)
+                    .subject(mail)
+                    .claim("role", role).build();
 
-        JwtEncoderParameters parameters = JwtEncoderParameters.from(
-                JwsHeader.with(MacAlgorithm.HS256).build(),
-                claims
-        );
+            JwtEncoderParameters parameters = JwtEncoderParameters.from(
+                    JwsHeader.with(MacAlgorithm.HS256).build(),
+                    claims
+            );
 
-        String jwtToken = jwtEncoder.encode(parameters).getTokenValue();
+            String jwtToken = jwtEncoder.encode(parameters).getTokenValue();
 
-        return new AuthenticationResponse(jwtToken);
+            return new AuthenticationResponse(jwtToken, "Login avvenuto con successo");
+        } catch (AuthenticationException e) {
+            return new AuthenticationResponse(null, "Mail o Password errati");
+        }
+
     }
 }

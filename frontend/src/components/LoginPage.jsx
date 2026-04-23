@@ -17,7 +17,7 @@ function LoginPage({onLogin}) {
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({username: username, password: password }),
+                body: JSON.stringify({mail: username, rawPassword: password }),
             });
 
             if(response.ok){
@@ -26,8 +26,8 @@ function LoginPage({onLogin}) {
 
                 onLogin(userData);
             }else{
-                const errorText = await response.text();
-                alert("Errore: " + errorText);
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
             }
         } catch (error){
             console.error("Errore di connessione:", error);
