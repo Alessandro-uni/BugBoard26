@@ -64,28 +64,22 @@ public class UserService {
     public List<UserResponse> getUser(UserRequest user) {
         if (user.getId() != null) {
             UserResponse userResponse = getUserById(user.getId());
-            if (userResponse != null) {
-                return Collections.singletonList(userResponse);
-            }
+            return Collections.singletonList(userResponse);
         }
 
         if (user.getMail() != null) {
             UserResponse userResponse = getUserByMail(user.getMail());
-            if (userResponse != null) {
-                return Collections.singletonList(userResponse);
-            }
+            return Collections.singletonList(userResponse);
         }
 
         if (user.getUsername() != null) {
             UserResponse userResponse = getUserByUsername(user.getUsername());
-            if (userResponse != null) {
-                return Collections.singletonList(userResponse);
-            }
+            return Collections.singletonList(userResponse);
         }
 
         if (user.getRole() != null) {
             List<UserResponse> usersResponse = getUsersByRole(UserRole.valueOf(user.getRole()));
-            if (usersResponse != null && !usersResponse.isEmpty()) {
+            if (!usersResponse.isEmpty()) {
                 return usersResponse;
             }
         }
