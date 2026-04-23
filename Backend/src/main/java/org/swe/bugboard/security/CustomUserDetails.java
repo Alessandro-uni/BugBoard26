@@ -33,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     @NullMarked
-    public String getUsername() { // Viene chiamato quando anche con getName()
+    public String getUsername() { // Viene chiamato anche con getName()
         return user.getMail(); // Restituisce l'identificativo dello User, ovvero la mail
     }
 
