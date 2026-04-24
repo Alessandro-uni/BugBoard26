@@ -1,5 +1,9 @@
 import { useState } from 'react'
 import LoginPage from './components/LoginPage.jsx';
+import Header from "./components/Header.jsx";
+import Menu from "./components/Menu.jsx"
+import HomePage from "./components/HomePage.jsx";
+
 //import './App.css'
 
 function App() {
@@ -22,6 +26,8 @@ function App() {
   // modalità cambia pw
   const [isChangePwModalOpen, setIsChangePwModalOpen] = useState(false);
 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   /*
     FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
     si occupano di cambiare stato
@@ -29,18 +35,18 @@ function App() {
 
   //funzione per l'accesso del login: accetta due parametri username e pw
   const handleLogin = userData => {
-
     //verifica che non siano entrambi  vuoti
     if(userData){
       setIsLoggedIn(true); //segna l'utente come autenticato tramite useState che aggiorna lo stato
     }
-    setUserInfo(username);
+    //setUserInfo(username);
 
   };
 
   //funzione che aggiorna le pagine
   const handleNavigation = (page) => {
 
+    setIsMenuOpen(false);
     //controlli
     if(page == 'Logout') {
       setIsLoggedIn(false);
@@ -68,7 +74,13 @@ function App() {
     setCurrentPage('Visualizza tutte le Issues');
   };
 
+  const handleHomeClick = () => {
+    setCurrentPage('HomePage');
+    setSelectIssueId(null);
+  };
+
   //CONTROLLO = se l'utente non accede, mostra solo la pagina di login
+
   if(!isLoggedIn) {
     return <LoginPage onLogin={handleLogin}/>;
   }
@@ -78,7 +90,7 @@ function App() {
    */
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
+      case 'Home':
         return <HomePage onViewIssue={handleViewIssue} />;
 
       case 'Visualizza tutte le Issues':
@@ -92,7 +104,7 @@ function App() {
 
       case 'Visulizza singola Issue':
         return selectIssueId ? (
-            <ViewSingleIssuePage issueId={selectIssueId} onBack={handleBackToList()}/>
+            <ViewSingleIssuePage issueId={selectIssueId} onBack={handleBackToList}/>
         ):(
             <HomePage onViewIssue={handleViewIssue} />
         );
@@ -106,10 +118,11 @@ function App() {
   //struttura visiva principale dell'app
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row bg-gray-50">
-        <Menu currentPage={currentPage} onNavigate={handleNavigation}/>
+      {/*<Menu currentPage={currentPage} onNavigate={handleNavigation}/>*/}
+        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation}/>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <Header />
+          <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(!isMenuOpen)} onHomeClick={() => setCurrentPage('HomePage')}/>
           <main className="p-4 md:p-8 lg:p-12 overflow-y-auto">
             <div className="max-w-7xl mx-auto w-full">
               {renderPage()}
@@ -117,7 +130,7 @@ function App() {
           </main>
         </div>
 
-
+      {/*
           <AddUserModal
             isOpen={isAddUserModalOpen}
             onClose={() => setIsAddUserModalOpen(false)}
@@ -127,7 +140,7 @@ function App() {
             isOpen={isChangePwModalOpen}
             onClone={() => setIsChangePwModalOpen(false)}
           />
-        
+        */}
     </div>
   )
 }
