@@ -99,31 +99,23 @@ public class IssueService {
         getIssuesByStatus(IssueStatus.valueOf(request.getStatus()));
         getIssuesByType(IssueType.valueOf(request.getType()));
         getIssuesWithPriority(request.getPriority());
-        return new ArrayList<IssueResponse>();
+
+        return issueList.stream().map(this::convertToDto).toList();
     }
 
-
-
-
-
-
-
     @Transactional(readOnly = true)
-    protected IssueService getIssuesToBeAssigned() {
-
+    protected void getIssuesToBeAssigned() {
         if (issueList == null) {
             issueList = issueRepository.findIssueWithNoAssignedUser();
         } else {
             issueList = issueList.stream().filter(issue -> issue.getAssignedUser() == null).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesWithPriority(Boolean priority) {
+    protected void getIssuesWithPriority(Boolean priority) {
         if (priority == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -131,14 +123,12 @@ public class IssueService {
         } else {
             issueList = issueList.stream().filter(issue -> issue.getPriority() == priority).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByReportingUser(Long reportingUserId) {
+    protected void getIssuesByReportingUser(Long reportingUserId) {
         if (reportingUserId == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -146,14 +136,12 @@ public class IssueService {
         } else {
             issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), reportingUserId)).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByAssignedUser(Long assignedUserId) {
+    protected void getIssuesByAssignedUser(Long assignedUserId) {
         if (assignedUserId == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -161,14 +149,12 @@ public class IssueService {
         } else {
             issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), assignedUserId)).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByType(IssueType type) {
+    protected void getIssuesByType(IssueType type) {
         if (type == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -176,14 +162,12 @@ public class IssueService {
         } else {
             issueList = issueList.stream().filter(issue -> issue.getType().equals(type)).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByTags(Set<String> tagNames) {
+    protected void getIssuesByTags(Set<String> tagNames) {
         if (tagNames == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -199,14 +183,12 @@ public class IssueService {
             Set<Tag> tags = tagRepository.findByNameIn(tagNames);
             issueList = issueList.stream().filter(issue -> issue.getTags().equals(tags)).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByStatus(IssueStatus status) {
+    protected void getIssuesByStatus(IssueStatus status) {
         if (status == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -214,14 +196,12 @@ public class IssueService {
         } else {
             issueList = issueList.stream().filter(issue -> issue.getStatus() == status).toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByCreationDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    protected void getIssuesByCreationDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         if (startDate == null && endDate == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -231,14 +211,12 @@ public class IssueService {
                     .filter(issue -> (issue.getCreationDate().isAfter(startDate) && issue.getCreationDate().isBefore(endDate)))
                     .toList();
         }
-
-        return this;
     }
 
     @Transactional(readOnly = true)
-    protected IssueService getIssuesByLastModifiedDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    protected void getIssuesByLastModifiedDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         if (startDate == null && endDate == null) {
-            return this;
+            return;
         }
 
         if (issueList == null) {
@@ -248,8 +226,6 @@ public class IssueService {
                     .filter(issue -> (issue.getLastModifiedDate().isAfter(startDate) && issue.getLastModifiedDate().isBefore(endDate)))
                     .toList();
         }
-
-        return this;
     }
 
 
