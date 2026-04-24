@@ -9,6 +9,7 @@ import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.IssueType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -22,6 +23,14 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     List<Issue> getIssueByType(IssueType type);
 
     List<Issue> getIssueByTagsId(Long id);
+
+    @Query("select i from Issue i WHERE i.tags IS EMPTY")
+    List<Issue> findIssuesWithNoTags();
+
+    @Query("select i from Issue i WHERE i.assignedUser is NULL")
+    List<Issue> findIssueWithNoAssignedUser();
+
+    ArrayList<Issue> getIssueByTagsName(String name);
 
     List<Issue> getIssueByStatus(IssueStatus status);
 

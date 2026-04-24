@@ -4,17 +4,16 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.swe.bugboard.dto.UpdateIssueRequest;
-import org.swe.bugboard.dto.IssueResponse;
-import org.swe.bugboard.dto.ReportIssueRequest;
-import org.swe.bugboard.dto.UserRequest;
+import org.swe.bugboard.dto.*;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
 import org.swe.bugboard.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,6 +23,8 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
+
+    private List<Issue> issueList;
 
     @Transactional
     public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest) {
@@ -83,67 +84,188 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueToAssigned() {
-        List<Issue> issues = issueRepository.getIssueByAssignedUserNull();
+    public List<IssueResponse> getFilteredIssues(IssueRequest request){
+        issueList = null;
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (request.getAssignedUserId() == -1) { //todo: ricorda di metterlo così nel frontend
+            getIssuesToBeAssigned();
+        } else {
+            getIssuesByAssignedUser(request.getAssignedUserId());
+        }
+        getIssuesByReportingUser(request.getReportingUserId());
+        getIssuesByTags(request.getTags());
+        getIssuesByCreationDateRange(request.getStartCreationDate(), request.getEndCreationDate());
+        getIssuesByLastModifiedDateRange(request.getStartLastModifiedDate(), request.getEndLastModifiedDate());
+        getIssuesByStatus(IssueStatus.valueOf(request.getStatus()));
+        getIssuesByType(IssueType.valueOf(request.getType()));
+        getIssuesWithPriority(request.getPriority());
+        return new ArrayList<IssueResponse>();
+    }
+
+
+
+
+
+
+
+    @Transactional(readOnly = true)
+    protected IssueService getIssuesToBeAssigned() {
+
+        if (issueList == null) {
+            issueList = issueRepository.findIssueWithNoAssignedUser();
+        } else {
+            issueList = issueList.stream().filter(issue -> issue.getAssignedUser() == null).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueWithPriority() {
-        List<Issue> issues = issueRepository.getIssueByPriority(true);
+    protected IssueService getIssuesWithPriority(Boolean priority) {
+        if (priority == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.getIssueByPriority(true);
+        } else {
+            issueList = issueList.stream().filter(issue -> issue.getPriority() == priority).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByReportingUser(UserRequest userRequest) {
-        List<Issue> issues = issueRepository.getIssueByReportingUserId(userRequest.getId());
+    protected IssueService getIssuesByReportingUser(Long reportingUserId) {
+        if (reportingUserId == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.getIssueByReportingUserId(reportingUserId);
+        } else {
+            issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), reportingUserId)).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByAssignedUser(UserRequest userRequest) {
-        List<Issue> issues = issueRepository.getIssueByAssignedUserId(userRequest.getId());
+    protected IssueService getIssuesByAssignedUser(Long assignedUserId) {
+        if (assignedUserId == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.getIssueByAssignedUserId(assignedUserId);
+        } else {
+            issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), assignedUserId)).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByType(IssueType type) {
-        List<Issue> issues = issueRepository.getIssueByType(type);
+    protected IssueService getIssuesByType(IssueType type) {
+        if (type == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.getIssueByType(type);
+        } else {
+            issueList = issueList.stream().filter(issue -> issue.getType().equals(type)).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByTags(Long id) {
-        List<Issue> issues = issueRepository.getIssueByTagsId(id);
+    protected IssueService getIssuesByTags(Set<String> tagNames) {
+        if (tagNames == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            if(tagNames.isEmpty()){
+                issueList = issueRepository.findIssuesWithNoTags();
+            } else {
+                for (String s : tagNames) {
+                    issueList = new ArrayList<>();
+                    issueList.addAll(issueRepository.getIssueByTagsName(s)); //todo: testa se funziona...
+                }
+            }
+        } else {
+            Set<Tag> tags = tagRepository.findByNameIn(tagNames);
+            issueList = issueList.stream().filter(issue -> issue.getTags().equals(tags)).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByStatus(IssueStatus status) {
-        List<Issue> issues = issueRepository.getIssueByStatus(status);
+    protected IssueService getIssuesByStatus(IssueStatus status) {
+        if (status == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.getIssueByStatus(status);
+        } else {
+            issueList = issueList.stream().filter(issue -> issue.getStatus() == status).toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByCreationDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        List<Issue> issues = issueRepository.findByCreationDateRange(startDate, endDate);
+    protected IssueService getIssuesByCreationDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate == null && endDate == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.findByCreationDateRange(startDate, endDate);
+        } else {
+            issueList = issueList.stream()
+                    .filter(issue -> (issue.getCreationDate().isAfter(startDate) && issue.getCreationDate().isBefore(endDate)))
+                    .toList();
+        }
+
+        return this;
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getIssueByLastModifiedDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        List<Issue> issues = issueRepository.findByLastModifiedDateRange(startDate, endDate);
+    protected IssueService getIssuesByLastModifiedDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate == null && endDate == null) {
+            return this;
+        }
 
-        return issues.stream().map(this::convertToDto).toList();
+        if (issueList == null) {
+            issueList = issueRepository.findByLastModifiedDateRange(startDate, endDate);
+        } else {
+            issueList = issueList.stream()
+                    .filter(issue -> (issue.getLastModifiedDate().isAfter(startDate) && issue.getLastModifiedDate().isBefore(endDate)))
+                    .toList();
+        }
+
+        return this;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private Issue findIssueOrThrow(Long issueId) {
         return issueRepository.findById(issueId)
