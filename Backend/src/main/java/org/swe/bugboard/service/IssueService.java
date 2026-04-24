@@ -4,7 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.swe.bugboard.dto.IssueDto;
+import org.swe.bugboard.dto.UpdateIssueRequest;
+import org.swe.bugboard.dto.IssueResponse;
+import org.swe.bugboard.dto.ReportIssueRequest;
+import org.swe.bugboard.dto.UserRequest;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
@@ -12,6 +15,7 @@ import org.swe.bugboard.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,17 +26,19 @@ public class IssueService {
     private final TagRepository tagRepository;
 
     @Transactional
-    public IssueDto createIssue(IssueDto issueDto, Long reportingUserId) {
-        User reportingUser = findUserOrThrow(reportingUserId);
+    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest) {
+        User reportingUser = findUserOrThrow(userRequest.getId());
+
+        Set<Tag> tags = tagRepository.findByNameIn(reportIssueRequest.getTags());
 
         Issue issue = Issue.builder()
-                .title(issueDto.getTitle())
-                .description(issueDto.getDescription())
-                .type(IssueType.valueOf(issueDto.getType()))
-                .status(IssueStatus.valueOf(issueDto.getStatus()))
-                .priority(issueDto.getPriority())
-                //.tags(issueDto.getTags()) // todo: risolvere questo problema
-                .image(issueDto.getImage())
+                .title(reportIssueRequest.getTitle())
+                .description(reportIssueRequest.getDescription())
+                .type(IssueType.valueOf(reportIssueRequest.getType()))
+                .status(IssueStatus.TODO)
+                .priority(reportIssueRequest.getPriority())
+                .tags(tags)
+                .image(reportIssueRequest.getImage())
                 .creationDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .reportingUser(reportingUser)
@@ -42,105 +48,98 @@ public class IssueService {
     }
 
     @Transactional
-    public IssueDto updateIssueStatus(Long issueId, IssueStatus newStatus) {
-        Issue issue = findIssueOrThrow(issueId);
+    public IssueResponse updateIssueStatus(UpdateIssueRequest request) {
+        IssueStatus oldStatus = findStatusOrThrow(request.getStatus());
+        IssueStatus newStatus = findStatusOrThrow(request.getNewStatus());
+
+        if (oldStatus == IssueStatus.RESOLVED || oldStatus == IssueStatus.CLOSED) {
+            throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue che si trova nello stato '" + oldStatus.name() + "'");
+        }
+
+        if (newStatus == IssueStatus.TODO) {
+            throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue in '" + request.getStatus() + "'");
+        }
+
+        Issue issue = findIssueOrThrow(request.getId());
         issue.setStatus(newStatus);
 
         return convertToDto(issueRepository.save(issue));
     }
 
     @Transactional
-    public IssueDto setIssueImage(Long issueId, String image) {
-        Issue issue = findIssueOrThrow(issueId);
-        issue.setImage(image);
-
-        return convertToDto(issueRepository.save(issue));
-    }
-
-    @Transactional
-    public IssueDto assignUserToIssue(Long issueId, Long assignedUserId) {
-        Issue issue = findIssueOrThrow(issueId);
-        User assignedUser = findUserOrThrow(assignedUserId);
+    public IssueResponse assignUserToIssue(UpdateIssueRequest issueRequest, UserRequest userRequest) {
+        Issue issue = findIssueOrThrow(issueRequest.getId());
+        User assignedUser = findUserOrThrow(userRequest.getId());
         issue.setAssignedUser(assignedUser);
 
         return convertToDto(issueRepository.save(issue));
     }
 
-    @Transactional
-    public IssueDto addTagToIssue(Long issueId, Long tagId) {
-        Issue issue = findIssueOrThrow(issueId);
-        Tag tag = findTagOrThrow(tagId);
-
-        issue.getTags().add(tag);
-
-        return convertToDto(issueRepository.save(issue));
-    }
-
     @Transactional(readOnly = true)
-    public List<IssueDto> getAllIssue() {
+    public List<IssueResponse> getAllIssue() {
         List<Issue> issues = issueRepository.findAll();
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueToAssigned() {
+    public List<IssueResponse> getIssueToAssigned() {
         List<Issue> issues = issueRepository.getIssueByAssignedUserNull();
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueWithPriority() {
+    public List<IssueResponse> getIssueWithPriority() {
         List<Issue> issues = issueRepository.getIssueByPriority(true);
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByReportingUserId(Long id) {
-        List<Issue> issues = issueRepository.getIssueByReportingUserId(id);
+    public List<IssueResponse> getIssueByReportingUser(UserRequest userRequest) {
+        List<Issue> issues = issueRepository.getIssueByReportingUserId(userRequest.getId());
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByAssignedUserId(Long id) {
-        List<Issue> issues = issueRepository.getIssueByAssignedUserId(id);
+    public List<IssueResponse> getIssueByAssignedUser(UserRequest userRequest) {
+        List<Issue> issues = issueRepository.getIssueByAssignedUserId(userRequest.getId());
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByType(IssueType type) {
+    public List<IssueResponse> getIssueByType(IssueType type) {
         List<Issue> issues = issueRepository.getIssueByType(type);
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByTagsId (Long id) {
+    public List<IssueResponse> getIssueByTags(Long id) {
         List<Issue> issues = issueRepository.getIssueByTagsId(id);
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByStatus(IssueStatus status) {
+    public List<IssueResponse> getIssueByStatus(IssueStatus status) {
         List<Issue> issues = issueRepository.getIssueByStatus(status);
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByCreationDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    public List<IssueResponse> getIssueByCreationDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         List<Issue> issues = issueRepository.findByCreationDateRange(startDate, endDate);
 
         return issues.stream().map(this::convertToDto).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<IssueDto> getIssueByLastModifiedDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+    public List<IssueResponse> getIssueByLastModifiedDateRange(LocalDateTime startDate, LocalDateTime endDate) {
         List<Issue> issues = issueRepository.findByLastModifiedDateRange(startDate, endDate);
 
         return issues.stream().map(this::convertToDto).toList();
@@ -156,13 +155,16 @@ public class IssueService {
                 .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
     }
 
-    private Tag findTagOrThrow(Long tagId) {
-        return tagRepository.findById(tagId)
-                .orElseThrow(() -> new EntityNotFoundException("Tag non trovato"));
+    private IssueStatus findStatusOrThrow(String status) {
+        try {
+            return IssueStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Stato '" + status + "' non valido");
+        }
     }
 
-    private IssueDto convertToDto(Issue issue) {
-        return IssueDto.builder().id(issue.getId())
+    private IssueResponse convertToDto(Issue issue) {
+        return IssueResponse.builder().id(issue.getId())
                 .title(issue.getTitle())
                 .description(issue.getDescription())
                 .type(issue.getType().name())

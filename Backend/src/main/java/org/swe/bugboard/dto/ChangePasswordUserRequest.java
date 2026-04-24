@@ -21,7 +21,7 @@ public class ChangePasswordUserRequest {
     @NotEmpty(message = "Password nuova ripetuta assente")
     private CharSequence repeatNewRawPassword;
 
-    @AssertTrue(message = "La nuova password e la conferma non coincido")
+    @AssertTrue(message = "La nuova password e la conferma non coincidono")
     public boolean isRepeatPasswordMatch() {
         if (newRawPassword != null && repeatNewRawPassword != null) {
             return newRawPassword.toString().equals(repeatNewRawPassword.toString());
