@@ -42,42 +42,70 @@ public class IssueService {
                 .reportingUser(reportingUser)
                 .assignedUser(null).build();
 
-        return convertToDto(issueRepository.save(issue));
+        return convertModelToResponse(issueRepository.save(issue));
     }
 
     @Transactional
-    public IssueResponse updateIssueStatus(UpdateIssueRequest request) {
-        IssueStatus oldStatus = findStatusOrThrow(request.getStatus());
-        IssueStatus newStatus = findStatusOrThrow(request.getNewStatus());
+    public IssueResponse updateIssueStatus(UpdateIssueRequest updateIssueRequest, UserRequest userRequest) {
+        User assignedUser = findUserOrThrow(userRequest.getId());
+        Issue issue = findIssueOrThrow(updateIssueRequest.getId());
+
+        if (!Objects.equals(assignedUser.getId(), issue.getAssignedUser().getId())) {
+            throw new UnsupportedOperationException("Utente non abilitato a modificare lo stato di questa issue");
+        }
+
+        IssueStatus oldStatus = issue.getStatus();
+        IssueStatus newStatus = findStatusOrThrow(updateIssueRequest.getNewStatus());
+
+        if (oldStatus == newStatus) {
+            throw new UnsupportedOperationException("La issue si trova già nello stato: " + oldStatus.name());
+        }
 
         if (oldStatus == IssueStatus.RESOLVED || oldStatus == IssueStatus.CLOSED) {
             throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue che si trova nello stato '" + oldStatus.name() + "'");
         }
 
         if (newStatus == IssueStatus.TODO) {
-            throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue in '" + request.getStatus() + "'");
+            throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue in '" + updateIssueRequest.getNewStatus() + "'");
         }
 
-        Issue issue = findIssueOrThrow(request.getId());
         issue.setStatus(newStatus);
 
-        return convertToDto(issueRepository.save(issue));
+        return convertModelToResponse(issueRepository.save(issue));
+    }
+
+    @Transactional
+    public IssueResponse closeIssue(UpdateIssueRequest closeIssueRequest) {
+        Issue issue = findIssueOrThrow(closeIssueRequest.getId());
+
+        if (issue.getStatus().equals(IssueStatus.CLOSED)) {
+            throw new UnsupportedOperationException("La issue si trova già nello stato: " + issue.getStatus().name());
+        }
+
+        issue.setStatus(IssueStatus.CLOSED);
+
+        return convertModelToResponse(issueRepository.save(issue));
     }
 
     @Transactional
     public IssueResponse assignUserToIssue(UpdateIssueRequest issueRequest, UserRequest userRequest) {
         Issue issue = findIssueOrThrow(issueRequest.getId());
+
+        if (issue.getAssignedUser() != null) {
+            throw new UnsupportedOperationException("Issue già assegnata all'utente: " + issue.getAssignedUser().getUsername());
+        }
+
         User assignedUser = findUserOrThrow(userRequest.getId());
         issue.setAssignedUser(assignedUser);
 
-        return convertToDto(issueRepository.save(issue));
+        return convertModelToResponse(issueRepository.save(issue));
     }
 
     @Transactional(readOnly = true)
     public List<IssueResponse> getAllIssue() {
         List<Issue> issues = issueRepository.findAll();
 
-        return issues.stream().map(this::convertToDto).toList();
+        return issues.stream().map(this::convertModelToResponse).toList();
     }
 
     @Transactional(readOnly = true)
@@ -97,7 +125,7 @@ public class IssueService {
         getIssuesByType(IssueType.valueOf(request.getType()));
         getIssuesWithPriority(request.getPriority());
 
-        return issueList.stream().map(this::convertToDto).toList();
+        return issueList.stream().map(this::convertModelToResponse).toList();
     }
 
     @Transactional(readOnly = true)
@@ -118,7 +146,7 @@ public class IssueService {
         if (issueList == null) {
             issueList = issueRepository.getIssueByPriority(true);
         } else {
-            issueList = issueList.stream().filter(issue -> issue.getPriority() == priority).toList();
+            issueList = issueList.stream().filter(issue -> Objects.equals(issue.getPriority(), priority)).toList();
         }
     }
 
@@ -243,7 +271,7 @@ public class IssueService {
         }
     }
 
-    private IssueResponse convertToDto(Issue issue) {
+    private IssueResponse convertModelToResponse(Issue issue) {
         return IssueResponse.builder().id(issue.getId())
                 .title(issue.getTitle())
                 .description(issue.getDescription())
