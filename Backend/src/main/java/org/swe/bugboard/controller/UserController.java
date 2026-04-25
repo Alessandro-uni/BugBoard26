@@ -7,11 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.swe.bugboard.dto.ChangePasswordUserRequest;
-import org.swe.bugboard.dto.SignUpUserRequest;
-import org.swe.bugboard.dto.UserRequest;
-import org.swe.bugboard.dto.UserResponse;
-import org.swe.bugboard.security.CustomUserDetails;
+import org.swe.bugboard.dto.*;
 import org.swe.bugboard.service.UserService;
 
 import java.util.List;
@@ -25,7 +21,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         Long userId = jwt.getClaim("userId");
-        UserRequest request = UserRequest.builder().id(userId).build();
+        SearchUserRequest request = SearchUserRequest.builder().id(userId).build();
         List<UserResponse> response = userService.getUser(request);
         return ResponseEntity.ok(response.getFirst());
     }
@@ -35,8 +31,8 @@ public class UserController {
             @Valid @RequestBody ChangePasswordUserRequest changePasswordUserRequest) {
 
         Long userId = jwt.getClaim("userId");
-        UserRequest request = UserRequest.builder().id(userId).build();
-        UserResponse response = userService.changeUserPassword(request, changePasswordUserRequest);
+        UserRequest userRequest = UserRequest.builder().id(userId).build();
+        UserResponse response = userService.changeUserPassword(userRequest, changePasswordUserRequest);
         return ResponseEntity.ok(response);
     }
 
@@ -46,4 +42,12 @@ public class UserController {
         UserResponse response = userService.createUser(signUpUserRequest);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping
+    public ResponseEntity<List<UserResponse>> viewAllUsers() {
+        List<UserResponse> response = userService.getAllUser();
+
+        return ResponseEntity.ok(response);
+    }
+
 }
