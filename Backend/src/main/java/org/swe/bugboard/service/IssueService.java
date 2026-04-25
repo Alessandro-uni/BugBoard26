@@ -11,10 +11,7 @@ import org.swe.bugboard.repository.TagRepository;
 import org.swe.bugboard.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -228,21 +225,6 @@ public class IssueService {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private Issue findIssueOrThrow(Long issueId) {
         return issueRepository.findById(issueId)
                 .orElseThrow(() -> new EntityNotFoundException("Issue non trovata"));
@@ -268,13 +250,26 @@ public class IssueService {
                 .type(issue.getType().name())
                 .status(issue.getStatus().name())
                 .priority(issue.getPriority())
-                .tags(issue.getTags().stream().map(Tag::getName).collect(Collectors.toSet()))
+                .tags(
+                        Optional.ofNullable(issue.getTags())
+                                .orElse(Collections.emptySet())
+                                .stream()
+                                .map(Tag::getName)
+                                .collect(Collectors.toSet())
+                )
                 .image(issue.getImage())
                 .creationDate(issue.getCreationDate())
                 .lastModifiedDate(issue.getLastModifiedDate())
                 .reportingUserId(issue.getReportingUser().getId())
                 .reportingUserUsername(issue.getReportingUser().getUsername())
-                .assignedUserId(issue.getAssignedUser().getId())
-                .assignedUserUsername(issue.getAssignedUser().getUsername()).build();
+                .assignedUserId(
+                        Optional.ofNullable(issue.getAssignedUser())
+                                .map(User::getId)
+                                .orElse(null))
+                .assignedUserUsername(
+                        Optional.ofNullable(issue.getAssignedUser())
+                                .map(User::getUsername)
+                                .orElse(null))
+                .build();
     }
 }

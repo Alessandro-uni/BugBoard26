@@ -4,15 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 import org.swe.bugboard.dto.IssueResponse;
 import org.swe.bugboard.dto.ReportIssueRequest;
 import org.swe.bugboard.dto.UserRequest;
-import org.swe.bugboard.security.CustomUserDetails;
 import org.swe.bugboard.service.IssueService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/issues")
@@ -22,9 +21,9 @@ public class IssueController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    public ResponseEntity<IssueResponse> reportIssue(@AuthenticationPrincipal CustomUserDetails currentUser,
+    public ResponseEntity<IssueResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
                                                      @RequestBody ReportIssueRequest reportIssueRequest) {
-        Long userId = currentUser.getId();
+        Long userId = jwt.getClaim("userId");
         UserRequest requestUser = UserRequest.builder().id(userId).build();
 
         IssueResponse response = issueService.createIssue(reportIssueRequest, requestUser);
@@ -32,5 +31,11 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping
+    public ResponseEntity<List<IssueResponse>> viewAllIssues(@AuthenticationPrincipal Jwt jwt) {
+        List<IssueResponse> response = issueService.getAllIssue();
+
+        return ResponseEntity.ok(response);
+    }
 
 }

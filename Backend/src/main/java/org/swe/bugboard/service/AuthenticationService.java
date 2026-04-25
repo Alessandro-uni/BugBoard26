@@ -41,6 +41,7 @@ public class AuthenticationService {
 
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String mail = userDetails.getUsername();
+            Long id = userDetails.getId();
             String role = userDetails.getRole().name();
 
             JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -48,6 +49,7 @@ public class AuthenticationService {
                     .issuedAt(now)
                     .expiresAt(expirationTime)
                     .subject(mail)
+                    .claim("userId", id)
                     .claim("role", role).build();
 
             JwtEncoderParameters parameters = JwtEncoderParameters.from(

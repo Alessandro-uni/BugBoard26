@@ -19,35 +19,39 @@ Content-Type: application/json
   "rawPassword": "password"
 }
 
+> {% client.global.set("auth_token", response.body.token) %}
+
 ### 3. Controllo se ho il login
-POST http://localhost:8080/api/users/me
-Content-Type: application/json
+GET http://localhost:8080/api/users/me
+Authorization: Bearer {{auth_token}}
 
-{
-  
-}
-
-### 4. Crea issue 2
+### 4. Crea issue 1
 POST http://localhost:8080/api/issues
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "title": "MiaIssue2",
+  "title": "MiaIssue1",
   "description": "Midsdfhdfghdfgsfasda",
   "priority": false,
   "tags": ["CIaonE"],
   "type": "BUG"
 }
 
-### 5. Crea issue 3
+### 5. Crea issue 2
 POST http://localhost:8080/api/issues
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "title": "MiaIssue3",
+  "title": "MiaIssue2",
   "description": "Miasdfsdgsgdsgsda",
   "image": "No",
   "priority": false,
   "tags": ["Ciaone"],
   "type": "BUG"
 }
+
+### 6. Visualizza issues
+GET http://localhost:8080/api/issues
+Authorization: Bearer {{auth_token}}
