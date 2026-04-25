@@ -63,6 +63,5 @@ public class AuthenticationService {
         } catch (AuthenticationException e) {
             return new AuthenticationResponse(null, "Mail o Password errati");
         }
-
     }
 }

@@ -25,4 +25,3 @@ public class IssueRequest {
     private Long reportingUserId;
     private Long assignedUserId;
 }
-

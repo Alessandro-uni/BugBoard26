@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagRequest {
-    @NotEmpty(message = "Inserisci un nome per l'etichetta")
+    @NotEmpty(message = "Nome assente")
     private String name;
 }
