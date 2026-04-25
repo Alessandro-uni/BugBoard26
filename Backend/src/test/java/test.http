@@ -33,6 +33,7 @@ Content-Type: application/json
 {
   "title": "MiaIssue1",
   "description": "Midsdfhdfghdfgsfasda",
+  "image": "No",
   "priority": false,
   "tags": ["CIaonE"],
   "type": "BUG"
@@ -46,7 +47,6 @@ Content-Type: application/json
 {
   "title": "MiaIssue2",
   "description": "Miasdfsdgsgdsgsda",
-  "image": "No",
   "priority": false,
   "tags": ["Ciaone"],
   "type": "BUG"
@@ -55,3 +55,13 @@ Content-Type: application/json
 ### 6. Visualizza issues
 GET http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
+
+### 7. Chiude issue duplicata
+PUT http://localhost:8080/api/issues/close
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "status": "",
+  "newStatus": "TODO"
+}
