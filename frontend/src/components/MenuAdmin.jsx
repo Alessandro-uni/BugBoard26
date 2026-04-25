@@ -2,9 +2,9 @@ import React from "react";
 import {Home, List, PlusCircle, UserPlus, ClipboardList, Key, LogOut, CircleAlert, X} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function Menu({ currentPage, onNavigate, isOpen, onClose }) {
+function MenuAdmin({ currentPage, onNavigate, isOpen, onClose }) {
 
-    // Configurazione del menu
+    //Configurazione del menu
     const menuSections = [
         {
             title: 'Menu Principale',
@@ -16,7 +16,13 @@ function Menu({ currentPage, onNavigate, isOpen, onClose }) {
                 { icon: PlusCircle, label: 'Crea Issue' },
             ]
         },
-
+        {
+            title: 'Gestione',
+            items: [
+                { icon: UserPlus, label: 'Aggiungi nuovo utente' },
+                { icon: ClipboardList, label: 'Assegna Issue' },
+            ]
+        },
         {
             title: 'Account',
             items: [
@@ -26,14 +32,15 @@ function Menu({ currentPage, onNavigate, isOpen, onClose }) {
         }
     ];
 
+
     const handleNavigate = (page) => {
         onNavigate(page);
-        onClose(); // Chiude la sidebar dopo il click
+        onClose(); // Chiude il menu dopo il click
     };
 
     return (
         <>
-            {/* Overlay: lo sfondo scuro che appare dietro la sidebar */}
+            {/* Overlay: lo sfondo scuro che appare dietro il menu */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -59,14 +66,13 @@ function Menu({ currentPage, onNavigate, isOpen, onClose }) {
                     >
 
 
-                        {/* Logo o Titolo */}
+                        {/*Titolo */}
                         <div className="p-6 pt-20">
                             <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Chiudi Menu">
                                 <X size={24} className="text-gray-900" />
                             </button>
-
                             <h1 className="text-2xl font-bold text-gray-900">Menu</h1>
-                            <p className="text-xs text-blue-900 mt-1">User</p>
+                            <p className="text-xs text-blue-900 mt-1">Admin</p>
                         </div>
 
                         {/* Navigazione */}
@@ -104,6 +110,12 @@ function Menu({ currentPage, onNavigate, isOpen, onClose }) {
                                 </div>
                             ))}
                         </nav>
+
+
+
+
+
+
                     </motion.aside>
                 )}
             </AnimatePresence>
@@ -111,4 +123,4 @@ function Menu({ currentPage, onNavigate, isOpen, onClose }) {
     );
 }
 
-export default Menu;
+export default MenuAdmin;
