@@ -1,0 +1,53 @@
+### 1. Crea l'admin
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "mail": "ciao",
+  "username": "Pippo",
+  "rawPassword": "password",
+  "repeatRawPassword": "password",
+  "role": "ADMIN"
+}
+
+### 2. Login con admin
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "ciao",
+  "rawPassword": "password"
+}
+
+### 3. Controllo se ho il login
+POST http://localhost:8080/api/users/me
+Content-Type: application/json
+
+{
+  
+}
+
+### 4. Crea issue 2
+POST http://localhost:8080/api/issues
+Content-Type: application/json
+
+{
+  "title": "MiaIssue2",
+  "description": "Midsdfhdfghdfgsfasda",
+  "priority": false,
+  "tags": ["CIaonE"],
+  "type": "BUG"
+}
+
+### 5. Crea issue 3
+POST http://localhost:8080/api/issues
+Content-Type: application/json
+
+{
+  "title": "MiaIssue3",
+  "description": "Miasdfsdgsgdsgsda",
+  "image": "No",
+  "priority": false,
+  "tags": ["Ciaone"],
+  "type": "BUG"
+}
