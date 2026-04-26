@@ -7,10 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.swe.bugboard.dto.IssueResponse;
-import org.swe.bugboard.dto.ReportIssueRequest;
-import org.swe.bugboard.dto.UpdateIssueRequest;
-import org.swe.bugboard.dto.UserRequest;
+import org.swe.bugboard.dto.*;
 import org.swe.bugboard.service.IssueService;
 
 import java.util.List;
@@ -55,9 +52,15 @@ public class IssueController {
 
     @PutMapping("/assign")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<IssueResponse> assignIssue(@Valid @RequestBody UpdateIssueRequest assignIssueRequest,
-                                                     @Valid @RequestBody UserRequest userToAssignRequest) {
-        IssueResponse response = issueService.assignUserToIssue(assignIssueRequest, userToAssignRequest);
+    public ResponseEntity<IssueResponse> assignIssue(@Valid @RequestBody AssignIssueToUserRequest issueAndUserRequest) {
+        IssueResponse response = issueService.assignUserToIssue(issueAndUserRequest.getIssue(), issueAndUserRequest.getUser());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<IssueResponse>> searchIssue(@Valid @RequestBody IssueRequest searchIssueRequest) {
+        List<IssueResponse> response = issueService.getFilteredIssues(searchIssueRequest);
 
         return ResponseEntity.ok(response);
     }
@@ -68,5 +71,4 @@ public class IssueController {
 
         return ResponseEntity.ok(response);
     }
-
 }
