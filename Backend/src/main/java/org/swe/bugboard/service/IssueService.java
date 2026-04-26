@@ -95,6 +95,10 @@ public class IssueService {
             throw new UnsupportedOperationException("Issue già assegnata all'utente: " + issue.getAssignedUser().getUsername());
         }
 
+        if (!issue.getStatus().equals(IssueStatus.TODO)) {
+            throw new UnsupportedOperationException("Impossibile assegnare questa issue, si trova già nello stato: " + issue.getStatus().name());
+        }
+
         User assignedUser = findUserOrThrow(userRequest.getId());
         issue.setAssignedUser(assignedUser);
 
@@ -112,17 +116,13 @@ public class IssueService {
     public List<IssueResponse> getFilteredIssues(IssueRequest request){
         issueList = null;
 
-        if (request.getAssignedUserId() == -1) { //todo: ricorda di metterlo così nel frontend
-            getIssuesToBeAssigned();
-        } else {
-            getIssuesByAssignedUser(request.getAssignedUserId());
-        }
+        getIssuesByAssignedUser(request.getAssignedUserId());
         getIssuesByReportingUser(request.getReportingUserId());
         getIssuesByTags(request.getTags());
         getIssuesByCreationDateRange(request.getStartCreationDate(), request.getEndCreationDate());
         getIssuesByLastModifiedDateRange(request.getStartLastModifiedDate(), request.getEndLastModifiedDate());
-        getIssuesByStatus(IssueStatus.valueOf(request.getStatus()));
-        getIssuesByType(IssueType.valueOf(request.getType()));
+        getIssuesByStatus(request.getStatus());
+        getIssuesByType(request.getType());
         getIssuesWithPriority(request.getPriority());
 
         return issueList.stream().map(this::convertModelToResponse).toList();
@@ -131,9 +131,27 @@ public class IssueService {
     @Transactional(readOnly = true)
     protected void getIssuesToBeAssigned() {
         if (issueList == null) {
-            issueList = issueRepository.findIssueWithNoAssignedUser();
+            issueList = issueRepository.getIssueByAssignedUserNull();
         } else {
             issueList = issueList.stream().filter(issue -> issue.getAssignedUser() == null).toList();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    protected void getIssuesByAssignedUser(Long assignedUserId) {
+        if (assignedUserId == null) {
+            return;
+        }
+
+        if (assignedUserId == -1) { //todo: ricorda di metterlo così nel frontend
+            getIssuesToBeAssigned();
+            return;
+        }
+
+        if (issueList == null) {
+            issueList = issueRepository.getIssueByAssignedUserId(assignedUserId);
+        } else {
+            issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), assignedUserId)).toList();
         }
     }
 
@@ -164,28 +182,17 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    protected void getIssuesByAssignedUser(Long assignedUserId) {
-        if (assignedUserId == null) {
-            return;
-        }
-
-        if (issueList == null) {
-            issueList = issueRepository.getIssueByAssignedUserId(assignedUserId);
-        } else {
-            issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), assignedUserId)).toList();
-        }
-    }
-
-    @Transactional(readOnly = true)
-    protected void getIssuesByType(IssueType type) {
+    protected void getIssuesByType(String type) {
         if (type == null) {
             return;
         }
 
+        IssueType issueType = IssueType.valueOf(type.toUpperCase());
+
         if (issueList == null) {
-            issueList = issueRepository.getIssueByType(type);
+            issueList = issueRepository.getIssueByType(issueType);
         } else {
-            issueList = issueList.stream().filter(issue -> issue.getType().equals(type)).toList();
+            issueList = issueList.stream().filter(issue -> issue.getType().equals(issueType)).toList();
         }
     }
 
@@ -211,15 +218,17 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    protected void getIssuesByStatus(IssueStatus status) {
+    protected void getIssuesByStatus(String status) {
         if (status == null) {
             return;
         }
 
+        IssueStatus issueStatus = IssueStatus.valueOf(status);
+
         if (issueList == null) {
-            issueList = issueRepository.getIssueByStatus(status);
+            issueList = issueRepository.getIssueByStatus(issueStatus);
         } else {
-            issueList = issueList.stream().filter(issue -> issue.getStatus() == status).toList();
+            issueList = issueList.stream().filter(issue -> issue.getStatus() == issueStatus).toList();
         }
     }
 
