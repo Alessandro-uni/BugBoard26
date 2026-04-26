@@ -22,7 +22,9 @@ public class UserController {
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         Long userId = jwt.getClaim("userId");
         SearchUserRequest request = SearchUserRequest.builder().id(userId).build();
+
         List<UserResponse> response = userService.getUser(request);
+
         return ResponseEntity.ok(response.getFirst());
     }
 
@@ -32,18 +34,30 @@ public class UserController {
 
         Long userId = jwt.getClaim("userId");
         UserRequest userRequest = UserRequest.builder().id(userId).build();
+
         UserResponse response = userService.changeUserPassword(userRequest, changePasswordUserRequest);
+
         return ResponseEntity.ok(response);
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<UserResponse> createUserByAdmin(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
+    //@PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         UserResponse response = userService.createUser(signUpUserRequest);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/availabile")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<UserResponse>> viewAvailabileUsers() {
+        List<UserResponse> response = userService.getUserByAvailabilityAsc();
+
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserResponse>> viewAllUsers() {
         List<UserResponse> response = userService.getAllUser();
 
