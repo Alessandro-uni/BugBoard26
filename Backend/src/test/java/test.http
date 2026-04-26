@@ -52,7 +52,29 @@ Authorization: Bearer {{auth_token}}
 GET http://localhost:8080/api/users/me
 Authorization: Bearer {{auth_token}}
 
-### 5. Crea issue 1
+### 5. Crea tag 1
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Primo tag"
+}
+
+### 5b. Crea tag 2
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Secondo tag"
+}
+
+### 6. Visualizza tags
+GET http://localhost:8080/api/tags
+Authorization: Bearer {{auth_token}}
+
+### 7. Crea issue 1
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -65,7 +87,7 @@ Content-Type: application/json
   "type": "BUG"
 }
 
-### 6. Crea issue 2
+### 7b. Crea issue 2
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -74,11 +96,11 @@ Content-Type: application/json
   "title": "MiaIssue2",
   "description": "Risolvete la seconda issue",
   "priority": true,
-  "tags": ["Inesistente"],
+  "tags": ["Primo tag", "Secondo tag"],
   "type": "FEATURE"
 }
 
-### 7. Assegna issue
+### 8. Assegna issue
 PUT http://localhost:8080/api/issues/assign
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -92,10 +114,10 @@ Content-Type: application/json
   }
 }
 
-### 8. Visualizza issues
+### 9. Visualizza issues
 GET http://localhost:8080/api/issues
 
-### 9. Filtra issue
+### 10. Filtra issue
 GET http://localhost:8080/api/issues/search
 Content-Type: application/json
 
@@ -103,7 +125,7 @@ Content-Type: application/json
   "assignedUserId": -1
 }
 
-### 10. Chiude issue duplicata
+### 11. Chiude issue duplicata
 PUT http://localhost:8080/api/issues/close
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -111,3 +133,7 @@ Content-Type: application/json
 {
   "id": 2
 }
+
+### 12. Visualizza users per disponibilità
+GET http://localhost:8080/api/users/availabile
+Authorization: Bearer {{auth_token}}
