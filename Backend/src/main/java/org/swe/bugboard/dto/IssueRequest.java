@@ -13,7 +13,6 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class IssueRequest {
-    private String title;
     private String type;
     private String status;
     private Boolean priority;
