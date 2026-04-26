@@ -34,8 +34,4 @@ public class TagService {
     private TagResponse convertModelToResponse(Tag tag) {
         return new TagResponse(tag.getId(), tag.getName());
     }
-
-    private TagRequest convertModelToRequest(Tag tag) {
-        return new TagRequest(tag.getName());
-    }
 }

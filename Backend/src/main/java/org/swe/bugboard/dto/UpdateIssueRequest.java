@@ -12,14 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UpdateIssueRequest {
-    @NotEmpty(message = "Inserisci un id")
+    @NotEmpty(message = "Id assente")
     private Long id;
 
-    private String status;
     private String newStatus;
-
-    @AssertTrue(message = "Inserire lo stato attuale per poter cambiare stato")
-    private boolean isValidRequest() {
-        return status != null || newStatus == null;
-    }
 }
