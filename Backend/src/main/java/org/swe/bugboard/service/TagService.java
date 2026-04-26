@@ -3,6 +3,7 @@ package org.swe.bugboard.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.swe.bugboard.dto.CreateTagRequest;
 import org.swe.bugboard.dto.TagRequest;
 import org.swe.bugboard.dto.TagResponse;
 import org.swe.bugboard.model.Tag;
@@ -16,7 +17,7 @@ public class TagService {
     private final TagRepository tagRepository;
 
     @Transactional
-    public TagResponse createTag(TagRequest tag){
+    public TagResponse createTag(CreateTagRequest tag){
         Tag newTag = Tag.builder().name(tag.getName()).build();
 
         Tag savedTag = tagRepository.save(newTag);
