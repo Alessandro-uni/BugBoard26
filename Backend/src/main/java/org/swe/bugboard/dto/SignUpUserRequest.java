@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.swe.bugboard.validation.ValidMail;
-import org.swe.bugboard.validation.ValidPassword;
-import org.swe.bugboard.validation.ValidUniqueTagName;
-import org.swe.bugboard.validation.ValidUniqueUserMail;
+import org.swe.bugboard.validation.*;
 
 @Data
 @NoArgsConstructor
@@ -27,7 +24,7 @@ public class SignUpUserRequest {
     private CharSequence repeatRawPassword;
 
     @NotBlank(message = "Username assente")
-    @ValidUniqueTagName
+    @ValidUniqueUserUsername
     private String username;
 
     @NotBlank(message = "Ruolo assente")
