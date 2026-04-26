@@ -1,6 +1,6 @@
 package org.swe.bugboard.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TagRequest {
-    @NotEmpty(message = "Nome assente")
+    @NotBlank(message = "Nome assente")
     private String name;
 }

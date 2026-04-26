@@ -25,10 +25,12 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1024, nullable = false)
+    @Column(length = 1024,
+            nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT",
+            nullable = false)
     private String description;
 
     @Enumerated(EnumType.STRING)

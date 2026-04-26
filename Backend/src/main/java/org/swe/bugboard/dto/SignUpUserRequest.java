@@ -1,30 +1,36 @@
 package org.swe.bugboard.dto;
 
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.swe.bugboard.validation.ValidMail;
+import org.swe.bugboard.validation.ValidPassword;
+import org.swe.bugboard.validation.ValidUniqueTagName;
+import org.swe.bugboard.validation.ValidUniqueUserMail;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class SignUpUserRequest {
-    @NotEmpty(message = "Mail assente")
+    @ValidMail
+    @ValidUniqueUserMail
     private String mail;
 
-    @NotEmpty(message = "Password assente")
+    @ValidPassword
     private CharSequence rawPassword;
 
-    @NotEmpty(message = "Password ripetuta assente")
+    @ValidPassword
     private CharSequence repeatRawPassword;
 
-    @NotEmpty(message = "Username assente")
+    @NotBlank(message = "Username assente")
+    @ValidUniqueTagName
     private String username;
 
-    @NotEmpty(message = "Ruolo assente")
+    @NotBlank(message = "Ruolo assente")
     private String role;
 
     @AssertTrue(message = "La nuova password e la conferma non coincido")

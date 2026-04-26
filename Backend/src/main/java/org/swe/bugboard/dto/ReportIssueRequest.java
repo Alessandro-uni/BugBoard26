@@ -1,6 +1,7 @@
 package org.swe.bugboard.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,16 +14,16 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class ReportIssueRequest {
-    @NotEmpty(message = "Titolo assente")
+    @NotBlank(message = "Titolo assente")
     private String title;
 
-    @NotEmpty(message = "Descrizione assente")
+    @NotBlank(message = "Descrizione assente")
     private String description;
 
-    @NotEmpty(message = "Tipo assente")
+    @NotBlank(message = "Tipo assente")
     private String type;
 
-    @NotEmpty(message = "Priorità assente")
+    @NotNull(message = "Priorità assente")
     private Boolean priority;
 
     private Set<String> tags;

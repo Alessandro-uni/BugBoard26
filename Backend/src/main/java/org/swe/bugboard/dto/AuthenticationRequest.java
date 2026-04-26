@@ -1,17 +1,18 @@
 package org.swe.bugboard.dto;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.swe.bugboard.validation.ValidMail;
+import org.swe.bugboard.validation.ValidPassword;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthenticationRequest {
-    @NotEmpty(message = "Mail assente")
+    @ValidMail
     private String mail;
 
-    @NotEmpty(message = "Password assente")
+    @ValidPassword
     private CharSequence rawPassword;
 }

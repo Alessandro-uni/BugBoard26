@@ -1,24 +1,24 @@
 package org.swe.bugboard.dto;
 
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.swe.bugboard.validation.ValidPassword;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ChangePasswordUserRequest {
-    @NotEmpty(message = "Password corrente assente")
+    @ValidPassword
     private CharSequence oldRawPassword;
 
-    @NotEmpty(message = "Password nuova assente")
+    @ValidPassword
     private CharSequence newRawPassword;
 
-    @NotEmpty(message = "Password nuova ripetuta assente")
+    @ValidPassword
     private CharSequence repeatNewRawPassword;
 
     @AssertTrue(message = "La nuova password e la conferma non coincidono")
