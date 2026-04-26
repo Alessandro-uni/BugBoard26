@@ -3,11 +3,23 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "mail": "ciao",
+  "mail": "ciao@unina.it",
   "username": "Pippo",
-  "rawPassword": "password",
-  "repeatRawPassword": "password",
+  "rawPassword": "OttimaPW!1",
+  "repeatRawPassword": "OttimaPW!1",
   "role": "ADMIN"
+}
+
+### 1b. Crea l'user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "mail": "salve@unina.it",
+  "username": "Pluto",
+  "rawPassword": "PWperfetta?2",
+  "repeatRawPassword": "PWperfetta?2",
+  "role": "USER"
 }
 
 ### 2. Login con admin
@@ -15,53 +27,87 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "mail": "ciao",
-  "rawPassword": "password"
+  "mail": "ciao@unina.it",
+  "rawPassword": "OttimaPW!1"
 }
 
 > {% client.global.set("auth_token", response.body.token) %}
 
-### 3. Controllo se ho il login
+### 2b. Login con user
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "salve@unina.it",
+  "rawPassword": "PWperfetta?2"
+}
+
+> {% client.global.set("auth_token", response.body.token) %}
+
+### 3. Visualizza users
+GET http://localhost:8080/api/users
+Authorization: Bearer {{auth_token}}
+
+### 4. Controllo se ho il login
 GET http://localhost:8080/api/users/me
 Authorization: Bearer {{auth_token}}
 
-### 4. Crea issue 1
+### 5. Crea issue 1
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
   "title": "MiaIssue1",
-  "description": "Midsdfhdfghdfgsfasda",
+  "description": "Risolvete la prima issue",
   "image": "No",
   "priority": false,
-  "tags": ["CIaonE"],
   "type": "BUG"
 }
 
-### 5. Crea issue 2
+### 6. Crea issue 2
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
   "title": "MiaIssue2",
-  "description": "Miasdfsdgsgdsgsda",
-  "priority": false,
-  "tags": ["Ciaone"],
-  "type": "BUG"
+  "description": "Risolvete la seconda issue",
+  "priority": true,
+  "tags": ["Inesistente"],
+  "type": "FEATURE"
 }
 
-### 6. Visualizza issues
-GET http://localhost:8080/api/issues
+### 7. Assegna issue
+PUT http://localhost:8080/api/issues/assign
 Authorization: Bearer {{auth_token}}
+Content-Type: application/json
 
-### 7. Chiude issue duplicata
+{
+  "issue": {
+    "id": 1
+  },
+  "user": {
+    "id": 2
+  }
+}
+
+### 8. Visualizza issues
+GET http://localhost:8080/api/issues
+
+### 9. Filtra issue
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "assignedUserId": -1
+}
+
+### 10. Chiude issue duplicata
 PUT http://localhost:8080/api/issues/close
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "status": "",
-  "newStatus": "TODO"
+  "id": 2
 }
