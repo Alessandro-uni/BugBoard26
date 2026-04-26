@@ -27,9 +27,6 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     @Query("select i from Issue i WHERE i.tags IS EMPTY")
     List<Issue> findIssuesWithNoTags();
 
-    @Query("select i from Issue i WHERE i.assignedUser is NULL")
-    List<Issue> findIssueWithNoAssignedUser();
-
     ArrayList<Issue> getIssueByTagsName(String name);
 
     List<Issue> getIssueByStatus(IssueStatus status);
