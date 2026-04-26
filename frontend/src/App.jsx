@@ -4,6 +4,8 @@ import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
 import MenuAdmin from "./components/MenuAdmin.jsx";
 import HomePage from "./components/HomePage.jsx";
+import ViewIssueList from "./components/ViewIssueList.jsx";
+import CreateIssue from "./components/CreateIssue.jsx";
 
 //import './App.css'
 import { jwtDecode } from 'jwt-decode'; //libreria perla decodifica di JWT(Json Web Token)
@@ -113,14 +115,14 @@ function App() {
    */
   const renderPage = () => {
     switch (currentPage) {
-      case 'Home':
+      case 'HomePage':
         return <HomePage onViewIssue={handleViewIssue} />;
 
-      case 'Visualizza tutte le Issues':
-        return <ViewAllIssuesPage onViewIssue={handleViewIssue} />;
+      case 'Visualizza tutte le Issue':
+        return <ViewIssueList onViewIssue={handleViewIssue} />;
 
       case 'Crea Issue':
-        return <CreateIssuePage />;
+        return <CreateIssue />;
 
       case 'Assegna Issues':
         return <AssignIssuesPage />;
