@@ -21,7 +21,7 @@ public class IssueService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    private List<Issue> issueList;
+    private List<Issue> issueList; // todo: potenzialmente pericolo, decidere se tenerlo
 
     @Transactional
     public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest) {
