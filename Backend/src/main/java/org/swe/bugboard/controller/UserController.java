@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         UserResponse response = userService.createUser(signUpUserRequest);
 
@@ -58,7 +58,7 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserResponse>> viewAllUsers() {
+    public ResponseEntity<List<UserResponse>> viewAllUsers() { // todo: decidere se lasciare o meno
         List<UserResponse> response = userService.getAllUser();
 
         return ResponseEntity.ok(response);
