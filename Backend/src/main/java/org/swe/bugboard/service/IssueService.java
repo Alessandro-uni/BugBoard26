@@ -20,6 +20,7 @@ public class IssueService {
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
+    private final HistoryService historyService;
 
     private List<Issue> issueList; // todo: potenzialmente pericolo, decidere se tenerlo
 
@@ -42,7 +43,12 @@ public class IssueService {
                 .reportingUser(reportingUser)
                 .assignedUser(null).build();
 
-        return convertModelToResponse(issueRepository.save(issue));
+        Issue savedIssue = issueRepository.save(issue);
+
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Segnalata issue");
+        historyService.createHistory(historyRequest, userRequest);
+
+        return convertModelToResponse(savedIssue);
     }
 
     @Transactional
@@ -71,11 +77,16 @@ public class IssueService {
 
         issue.setStatus(newStatus);
 
-        return convertModelToResponse(issueRepository.save(issue));
+        Issue savedIssue = issueRepository.save(issue);
+
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Stato aggiornato in: " + savedIssue.getStatus());
+        historyService.createHistory(historyRequest, userRequest);
+
+        return convertModelToResponse(savedIssue);
     }
 
     @Transactional
-    public IssueResponse closeIssue(UpdateIssueRequest closeIssueRequest) {
+    public IssueResponse closeIssue(UpdateIssueRequest closeIssueRequest, UserRequest userRequest) {
         Issue issue = findIssueOrThrow(closeIssueRequest.getId());
 
         if (issue.getStatus().equals(IssueStatus.CLOSED)) {
@@ -84,11 +95,16 @@ public class IssueService {
 
         issue.setStatus(IssueStatus.CLOSED);
 
-        return convertModelToResponse(issueRepository.save(issue));
+        Issue savedIssue = issueRepository.save(issue);
+
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "La issue è stata chiusa poiché ritenuta duplicata "); // todo: completare la frase...
+        historyService.createHistory(historyRequest, userRequest);
+
+        return convertModelToResponse(savedIssue);
     }
 
     @Transactional
-    public IssueResponse assignUserToIssue(UpdateIssueRequest issueRequest, UserRequest userRequest) {
+    public IssueResponse assignUserToIssue(UpdateIssueRequest issueRequest, UserRequest userToAssign, UserRequest userRequest) {
         Issue issue = findIssueOrThrow(issueRequest.getId());
 
         if (issue.getAssignedUser() != null) {
@@ -99,10 +115,15 @@ public class IssueService {
             throw new UnsupportedOperationException("Impossibile assegnare questa issue, si trova già nello stato: " + issue.getStatus().name());
         }
 
-        User assignedUser = findUserOrThrow(userRequest.getId());
+        User assignedUser = findUserOrThrow(userToAssign.getId());
         issue.setAssignedUser(assignedUser);
 
-        return convertModelToResponse(issueRepository.save(issue));
+        Issue savedIssue = issueRepository.save(issue);
+
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Issue assegnata all'utente: " + savedIssue.getAssignedUser().getUsername());
+        historyService.createHistory(historyRequest, userRequest);
+
+        return convertModelToResponse(savedIssue);
     }
 
     @Transactional(readOnly = true)
