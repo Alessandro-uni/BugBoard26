@@ -89,7 +89,7 @@ function App() {
   //funziona che porta l'utente dalla  pagina generale  ViewIssue a quella specifica di un singolo issue
   const handleViewIssue = (issueId) => {
     setSelectIssueId(issueId); //indichi quale issue hai selezionato
-    setCurrentPage('Visualizza Singola Issue'); //aggiorna la pagina
+    setCurrentPage('Assegna Issue'); //aggiorna la pagina
   };
 
   //funzione di torna indietro
@@ -123,12 +123,9 @@ function App() {
       case 'Crea Issue':
         return <CreateIssue />;
 
-      case 'Assegna Issues':
-        return <AssignIssuesPage />;
-
-      case 'Visulizza singola Issue':
+      case 'Assegna Issue':
         return selectIssueId ? (
-            <ViewSingleIssuePage issueId={selectIssueId} userRole={userRole}  onBack={handleBackToList}/>
+            <ViewSingleIssue issueId={selectIssueId} userRole={userRole}  onBack={handleBackToList}/>
         ):(
             <HomePage onViewIssue={handleViewIssue} />
         );
