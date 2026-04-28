@@ -6,6 +6,9 @@ import MenuAdmin from "./components/MenuAdmin.jsx";
 import HomePage from "./components/HomePage.jsx";
 import ViewIssueList from "./components/ViewIssueList.jsx";
 import CreateIssue from "./components/CreateIssue.jsx";
+import CreateUser from "./components/CreateUser.jsx";
+import ChangePassword from "./components/ChangePassword.jsx";
+import ViewSingleIssue from "./components/ViewSingleIssue.jsx";
 
 //import './App.css'
 import { jwtDecode } from 'jwt-decode'; //libreria perla decodifica di JWT(Json Web Token)
@@ -23,12 +26,6 @@ function App() {
   const [currentPage, setCurrentPage] = useState('HomePage');
 
   const [selectIssueId, setSelectIssueId] = useState(null);
-
-  // modalità aggiungi utente
-  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
-
-  // modalità cambia pw
-  const [isChangePwModalOpen, setIsChangePwModalOpen] = useState(false);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState('ADMIN');
@@ -72,15 +69,17 @@ function App() {
 
     setIsMenuOpen(false);
     //controlli
-    if(page == 'Logout') {
+    if(page == 'Esci') {
       setIsLoggedIn(false);
       setUserRole('user');
       setCurrentPage('HomePage');
       setSelectIssueId(null);
-    }else if (page == 'Aggiungi User') {
-      setIsAddUserModalOpen(true);
+    }else if (page == 'Aggiungi nuovo utente') {
+      setCurrentPage('Aggiungi nuovo utente');
+      setSelectIssueId(null);
     }else if (page == 'Cambia Password') {
-      setIsChangePwModalOpen(true);
+      setCurrentPage('Cambia Password');
+      setSelectIssueId(null);
     }else {
       setCurrentPage(page);
       setSelectIssueId(null);
@@ -134,6 +133,12 @@ function App() {
             <HomePage onViewIssue={handleViewIssue} />
         );
 
+      case 'Aggiungi nuovo utente':
+        return <CreateUser onCreateUser={handleNavigation} />;
+
+      case 'Cambia Password':
+        return <ChangePassword onChangePassword={handleNavigation}/>;
+
       default:
         return <HomePage onViewIssue={handleViewIssue} />;
     }
@@ -159,17 +164,6 @@ function App() {
           </main>
         </div>
 
-      {/*
-          <AddUserModal
-            isOpen={isAddUserModalOpen}
-            onClose={() => setIsAddUserModalOpen(false)}
-          />
-
-          <ChangePwModal
-            isOpen={isChangePwModalOpen}
-            onClone={() => setIsChangePwModalOpen(false)}
-          />
-        */}
     </div>
   )
 }
