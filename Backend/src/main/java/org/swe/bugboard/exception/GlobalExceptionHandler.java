@@ -35,6 +35,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Errore di validazione", errors);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException e) {
+        return buildErrorResponse(HttpStatus.CONFLICT, "Stato non valido", e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllOtherException(Exception e) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Errore interno", e.getMessage());

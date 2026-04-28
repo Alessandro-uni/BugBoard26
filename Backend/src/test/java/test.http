@@ -93,7 +93,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "title": "MiaIssue2",
+  "title": "Mia bella Issue2",
   "description": "Risolvete la seconda issue",
   "priority": true,
   "tags": ["Primo tag", "Secondo tag"],
@@ -110,7 +110,7 @@ Content-Type: application/json
     "id": 1
   },
   "user": {
-    "id": 2
+    "id": 1
   }
 }
 
@@ -122,7 +122,7 @@ GET http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "assignedUserId": 2
+  "id": -1
 }
 
 ### 11. Chiude issue duplicata
@@ -131,8 +131,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "id": 2,
-  "idDuplicateIssue": 1
+  "id": 2
 }
 
 ### 12. Visualizza users per disponibilità
