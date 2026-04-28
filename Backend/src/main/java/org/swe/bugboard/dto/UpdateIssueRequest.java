@@ -14,6 +14,5 @@ public class UpdateIssueRequest {
     @NotNull(message = "Id assente")
     private Long id;
 
-    private Long idDuplicateIssue;
     private String newStatus;
 }
