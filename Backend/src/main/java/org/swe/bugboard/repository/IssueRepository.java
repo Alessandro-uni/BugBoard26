@@ -32,13 +32,13 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
     List<Issue> getIssueByStatus(IssueStatus status);
 
     @Query("SELECT i FROM Issue i WHERE " +
-            "(:startDate IS NULL OR i.creationDate >= :startDate) AND " +
-            "(:endDate IS NULL OR i.creationDate <= :endDate)")
+            "(CAST(:startDate AS java.time.LocalDateTime) IS NULL OR i.creationDate >= :startDate) AND " +
+            "(CAST(:endDate AS java.time.LocalDateTime) IS NULL OR i.creationDate <= :endDate)")
     List<Issue> findByCreationDateRange (@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT i FROM Issue i WHERE " +
-            "(:startDate IS NULL OR i.lastModifiedDate >= :startDate) AND " +
-            "(:endDate IS NULL OR i.lastModifiedDate <= :endDate)")
+            "(CAST(:startDate AS java.time.LocalDateTime) IS NULL OR i.lastModifiedDate >= :startDate) AND " +
+            "(CAST(:endDate AS java.time.LocalDateTime) IS NULL OR i.lastModifiedDate <= :endDate)")
     List<Issue> findByLastModifiedDateRange (@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
     List<Issue> getIssueByAssignedUserNull();
