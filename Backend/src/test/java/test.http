@@ -3,22 +3,23 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "mail": "ciao@unina.it",
-  "username": "Pippo",
-  "rawPassword": "OttimaPW!1",
-  "repeatRawPassword": "OttimaPW!1",
+  "mail": "admin@unina.it",
+  "username": "admin",
+  "rawPassword": "Admin01!",
+  "repeatRawPassword": "Admin01!",
   "role": "ADMIN"
 }
 
 ### 1b. Crea l'user
 POST http://localhost:8080/api/users
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "mail": "salve@unina.it",
-  "username": "Pluto",
-  "rawPassword": "PWperfetta?2",
-  "repeatRawPassword": "PWperfetta?2",
+  "mail": "PippoDePippis@unina.it",
+  "username": "Pippo De' Pippis",
+  "rawPassword": "PWperfetta?1",
+  "repeatRawPassword": "PWperfetta?1",
   "role": "USER"
 }
 
@@ -27,8 +28,8 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "mail": "ciao@unina.it",
-  "rawPassword": "OttimaPW!1"
+  "mail": "admin@unina.it",
+  "rawPassword": "Admin01!"
 }
 
 > {% client.global.set("auth_token", response.body.token) %}
@@ -135,7 +136,7 @@ Content-Type: application/json
 }
 
 ### 12. Visualizza users per disponibilità
-GET http://localhost:8080/api/users/availabile
+GET http://localhost:8080/api/users/available
 Authorization: Bearer {{auth_token}}
 
 ### 13. Aggiorna stato della issue
