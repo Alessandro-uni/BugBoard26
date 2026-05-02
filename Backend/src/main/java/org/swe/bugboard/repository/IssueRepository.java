@@ -22,8 +22,6 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
 
     List<Issue> getIssueByType(IssueType type);
 
-    List<Issue> getIssueByTagsId(Long id);
-
     @Query("select i from Issue i WHERE i.tags IS EMPTY")
     List<Issue> findIssuesWithNoTags();
 
