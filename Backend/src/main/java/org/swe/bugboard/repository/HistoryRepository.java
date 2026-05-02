@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
-    List<History> findByIssue_IdOrderByDateDesc(Long issueId);
+    List<History> findByIssue_IdOrderByDateDesc(Long issueId); // todo: decidere se lasciarlo
 
     List<History> findByIssue_IdOrderByDateAsc(Long issueId);
 }
