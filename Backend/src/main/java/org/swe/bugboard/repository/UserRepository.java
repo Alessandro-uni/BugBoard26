@@ -17,7 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
     Optional<List<User>> findByRole(UserRole role);
 
-    //todo: considera se passare la lista di status interessati o semplicemente mettere i.status <> 'RESOLVED' AND i.status <> 'CLOSED'
     @Query("SELECT u FROM User u LEFT JOIN u.assignedIssues i " +
             "ON i.status IN :activedStatus GROUP BY u ORDER BY COUNT(i) ASC")
     List<User> findByActivedStatusAsc(@Param("activedStatus") List<IssueStatus> activedStatus);
