@@ -7,8 +7,6 @@ import org.swe.bugboard.service.AuthenticationService;
 import org.swe.bugboard.dto.AuthenticationRequest;
 import org.swe.bugboard.dto.AuthenticationResponse;
 
-import java.util.Objects;
-
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
