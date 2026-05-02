@@ -20,11 +20,13 @@ public class IssueController {
     private final IssueService issueService;
     private final HistoryService historyService;
 
+    private static final String USER_ID_CLAIM = "userId";
+
     @PostMapping
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<IssueResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
                                                      @Valid @RequestBody ReportIssueRequest reportIssueRequest) {
-        Long userId = jwt.getClaim("userId");
+        Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserRequest userRequest = UserRequest.builder().id(userId).build();
 
         IssueResponse response = issueService.createIssue(reportIssueRequest, userRequest);
@@ -36,7 +38,7 @@ public class IssueController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<IssueResponse> updateIssueStatus(@AuthenticationPrincipal Jwt jwt,
                                                            @Valid @RequestBody UpdateIssueRequest updateIssueRequest) {
-        Long userId = jwt.getClaim("userId");
+        Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserRequest userRequest = UserRequest.builder().id(userId).build();
 
         IssueResponse response = issueService.updateIssueStatus(updateIssueRequest, userRequest);
@@ -48,7 +50,7 @@ public class IssueController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IssueResponse> closeIssue(@AuthenticationPrincipal Jwt jwt,
                                                     @Valid @RequestBody UpdateIssueRequest updateIssueRequest) {
-        Long userId = jwt.getClaim("userId");
+        Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserRequest userRequest = UserRequest.builder().id(userId).build();
 
         IssueResponse response = issueService.closeIssue(updateIssueRequest, userRequest);
@@ -60,7 +62,7 @@ public class IssueController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IssueResponse> assignIssue(@AuthenticationPrincipal Jwt jwt,
                                                      @Valid @RequestBody AssignIssueToUserRequest issueAndUserRequest) {
-        Long userId = jwt.getClaim("userId");
+        Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserRequest userRequest = UserRequest.builder().id(userId).build();
 
         IssueResponse response = issueService.assignUserToIssue(issueAndUserRequest.getIssue(), issueAndUserRequest.getUser(), userRequest);
