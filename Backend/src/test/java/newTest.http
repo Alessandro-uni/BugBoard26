@@ -1,0 +1,287 @@
+### ==========================================
+### 1: AUTENTICAZIONE E GESTIONE UTENTI
+### ==========================================
+
+### 1.1 Login come ADMIN
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "admin@unina.it",
+  "rawPassword": "Admin01!"
+}
+
+> {% client.global.set("admin_token", response.body.token) %}
+
+### 1.2 Crea un nuovo utente (Richiede ADMIN)
+POST http://localhost:8080/api/users
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "mail": "MickeyMouse@unina.it",
+  "username": "Mickey Mouse",
+  "rawPassword": "Password?123",
+  "repeatRawPassword": "Password?123",
+  "role": "USER"
+}
+
+### 1.3 Crea un nuovo lurker (Richiede ADMIN)
+POST http://localhost:8080/api/users
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "mail": "DonaldDuck@unina.it",
+  "username": "Donald Duck",
+  "rawPassword": "Impossibile!!!100",
+  "repeatRawPassword": "Impossibile!!!100",
+  "role": "LURKER"
+}
+
+### 1.4 Visualizza tutti gli utenti (Richiede ADMIN)
+GET http://localhost:8080/api/users
+Authorization: Bearer {{admin_token}}
+
+### 1.5 Visualizza utenti disponibili (Richiede ADMIN)
+GET http://localhost:8080/api/users/available
+Authorization: Bearer {{admin_token}}
+
+### 1.6 Login con Mickey Mouse
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "MickeyMouse@unina.it",
+  "rawPassword": "Password?123"
+}
+
+> {% client.global.set("user_token", response.body.token) %}
+
+### 1.7 Ottieni i dati dell'utente corrente
+GET http://localhost:8080/api/users/me
+Authorization: Bearer {{user_token}}
+
+
+### ==========================================
+### 2: GESTIONE TAG
+### ==========================================
+
+### 2.1 Crea Tag "Frontend" (USER o ADMIN)
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "name": "Frontend"
+}
+
+### 2.2 Crea Tag "Database" (USER o ADMIN)
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "name": "Database"
+}
+
+### 2.3 Visualizza tutti i Tags
+GET http://localhost:8080/api/tags
+Authorization: Bearer {{user_token}}
+
+
+### ==========================================
+### 3: CICLO DI VITA DELLE ISSUE
+### ==========================================
+
+### 3.1 Crea una Issue di tipo BUG
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "title": "Errore query SQL",
+  "description": "La query di ricerca va in timeout",
+  "priority": true,
+  "type": "BUG",
+  "tags": ["Database"]
+}
+
+### 3.2 Crea una Issue di tipo FEATURE
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "title": "Aggiunta animazione",
+  "description": "Animazione al click del bottone login",
+  "priority": false,
+  "type": "FEATURE",
+  "tags": ["Frontend"]
+}
+
+### 3.3 Visualizza tutte le Issues (Senza filtri)
+GET http://localhost:8080/api/issues
+Authorization: Bearer {{user_token}}
+
+### 3.4 Assegna la Issue 1 all'Utente Mickey Mouse" (Richiede ADMIN)
+PUT http://localhost:8080/api/issues/assign
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "issue": {
+    "id": 1
+  },
+  "user": {
+    "id": 2
+  }
+}
+
+### 3.5 Aggiorna stato della Issue 3 (Passa a INPROGRESS)
+PUT http://localhost:8080/api/issues/status
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "id": 3,
+  "newStatus": "INPROGRESS"
+}
+
+### 3.6 Aggiorna stato della Issue 1 (Passa a RESOLVED)
+PUT http://localhost:8080/api/issues/status
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "id": 3,
+  "newStatus": "RESOLVED"
+}
+
+### 3.7 Visualizza la History della Issue 3
+GET http://localhost:8080/api/issues/history
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "id": 3
+}
+
+
+### ==========================================
+### 4: RICERCHE AVANZATE E FILTRI
+### ==========================================
+
+### 4 Login con Donald Duck
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "DonaldDuck@unina.it",
+  "rawPassword": "Impossibile!!!100"
+}
+
+> {% client.global.set("lurker_token", response.body.token) %}
+
+
+### 4.1 Cerca Issue per Tipo (BUG)
+GET http://localhost:8080/api/issues/search
+Authorization: Bearer {{lurker_token}}
+Content-Type: application/json
+
+{
+  "type": "BUG"
+}
+
+### 4.2 Cerca Issue per Priorità (true) e Tag
+GET http://localhost:8080/api/issues/search
+Authorization: Bearer {{lurker_token}}
+Content-Type: application/json
+
+{
+  "priority": true,
+  "tags": ["Database"]
+}
+
+### 4.3 Cerca Issue per Data di Creazione (Range)
+# TODO: DA RIVEDERE
+GET http://localhost:8080/api/issues/search
+Authorization: Bearer {{lurker_token}}
+Content-Type: application/json
+
+{
+  "startCreationDate": "2025-01-01T00:00:00",
+  "endCreationDate": "2025-12-31T23:59:59"
+}
+
+### 4.4 Cerca Issue per Data di Ultima modifica (Range)
+# TODO: DA RIVEDERE
+GET http://localhost:8080/api/issues/search
+Authorization: Bearer {{lurker_token}}
+Content-Type: application/json
+
+{
+  "startLastModifiedDate": "2026-01-01T00:00:00",
+  "endLastModifiedDate": "2026-12-31T23:59:59"
+}
+
+
+### ==========================================
+### 5: TEST DI SICUREZZA E VALIDAZIONE
+### ==========================================
+
+### 5.1 Fallimento: Utente tenta di chiudere una Issue (Atteso: 403 Forbidden)
+PUT http://localhost:8080/api/issues/close
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "id": 2
+}
+
+### 5.2 Fallimento: Utente tenta di assegnare una Issue (Atteso: 403 Forbidden)
+PUT http://localhost:8080/api/issues/assign
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "issue": { "id": 4 },
+  "user": { "id": 9 }
+}
+
+### 5.3 Fallimento: Creazione Issue con dati mancanti (Atteso: 400 Bad Request)
+# Manca il titolo e il tipo per far scattare @Valid
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{user_token}}
+Content-Type: application/json
+
+{
+  "description": "Descrizione senza titolo",
+  "priority": true
+}
+
+### 5.4 Fallimento: Creazione Utente con password debole (Atteso: 400 Bad Request)
+# Presuppone che @ValidPassword richieda criteri specifici (es. maiuscola/speciale)
+POST http://localhost:8080/api/users
+Authorization: Bearer {{admin_token}}
+Content-Type: application/json
+
+{
+  "mail": "errore@unina.it",
+  "username": "User Errore",
+  "rawPassword": "123",
+  "repeatRawPassword": "123",
+  "role": "USER"
+}
+
+### 5.5 Fallimento: Creazione di Issue da parte di lurker (Atteso: 403 Access Denied)
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{lurker_token}}
+Content-Type: application/json
+
+{
+  "title": "Issue malvagia",
+  "description": "Questa non la risolverete mai",
+  "priority": true,
+  "type": "BUG"
+}
