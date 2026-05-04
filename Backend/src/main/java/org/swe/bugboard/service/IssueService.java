@@ -2,6 +2,7 @@ package org.swe.bugboard.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.*;
@@ -56,23 +57,27 @@ public class IssueService {
         User assignedUser = findUserOrThrow(userRequest.getId());
         Issue issue = findIssueOrThrow(updateIssueRequest.getId());
 
+        if (issue.getAssignedUser() == null) {
+            throw new AccessDeniedException("Nessun utente assegnato a questa issue");
+        }
+
         if (!Objects.equals(assignedUser.getId(), issue.getAssignedUser().getId())) {
-            throw new UnsupportedOperationException("Utente non abilitato a modificare lo stato di questa issue");
+            throw new AccessDeniedException("Utente non abilitato a modificare lo stato di questa issue");
         }
 
         IssueStatus oldStatus = issue.getStatus();
         IssueStatus newStatus = findStatusOrThrow(updateIssueRequest.getNewStatus());
 
         if (oldStatus == newStatus) {
-            throw new UnsupportedOperationException("La issue si trova già nello stato: " + oldStatus.name());
+            throw new IllegalStateException("La issue si trova già nello stato: " + oldStatus.name());
         }
 
         if (oldStatus == IssueStatus.RESOLVED || oldStatus == IssueStatus.CLOSED) {
-            throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue che si trova nello stato '" + oldStatus.name() + "'");
+            throw new IllegalStateException("Impossibile modificare lo stato di una Issue che si trova nello stato '" + oldStatus.name() + "'");
         }
 
         if (newStatus == IssueStatus.TODO) {
-            throw new UnsupportedOperationException("Impossibile modificare lo stato di una Issue in '" + updateIssueRequest.getNewStatus() + "'");
+            throw new IllegalStateException("Impossibile modificare lo stato di una Issue in '" + updateIssueRequest.getNewStatus() + "'");
         }
 
         issue.setStatus(newStatus);
@@ -90,14 +95,14 @@ public class IssueService {
         Issue issue = findIssueOrThrow(closeIssueRequest.getId());
 
         if (issue.getStatus().equals(IssueStatus.CLOSED)) {
-            throw new UnsupportedOperationException("La issue si trova già nello stato: " + issue.getStatus().name());
+            throw new IllegalStateException("La issue si trova già nello stato: " + issue.getStatus().name());
         }
 
         issue.setStatus(IssueStatus.CLOSED);
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "La issue è stata chiusa poiché ritenuta duplicata "); // todo: completare la frase...
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "La issue è stata chiusa poiché ritenuta duplicata ");
         historyService.createHistory(historyRequest, userRequest);
 
         return convertModelToResponse(savedIssue);
@@ -108,11 +113,11 @@ public class IssueService {
         Issue issue = findIssueOrThrow(issueRequest.getId());
 
         if (issue.getAssignedUser() != null) {
-            throw new UnsupportedOperationException("Issue già assegnata all'utente: " + issue.getAssignedUser().getUsername());
+            throw new IllegalStateException("Issue già assegnata all'utente: " + issue.getAssignedUser().getUsername());
         }
 
         if (!issue.getStatus().equals(IssueStatus.TODO)) {
-            throw new UnsupportedOperationException("Impossibile assegnare questa issue, si trova già nello stato: " + issue.getStatus().name());
+            throw new IllegalStateException("Impossibile assegnare questa issue, si trova già nello stato: " + issue.getStatus().name());
         }
 
         User assignedUser = findUserOrThrow(userToAssign.getId());
@@ -137,14 +142,22 @@ public class IssueService {
     public List<IssueResponse> getFilteredIssues(IssueRequest request){
         issueList = null;
 
-        getIssuesByAssignedUser(request.getAssignedUserId());
-        getIssuesByReportingUser(request.getReportingUserId());
-        getIssuesByTags(request.getTags());
-        getIssuesByCreationDateRange(request.getStartCreationDate(), request.getEndCreationDate());
-        getIssuesByLastModifiedDateRange(request.getStartLastModifiedDate(), request.getEndLastModifiedDate());
-        getIssuesByStatus(request.getStatus());
-        getIssuesByType(request.getType());
-        getIssuesWithPriority(request.getPriority());
+        if (request.getId() != null) {
+            if (request.getId() == -1) {
+                return getAllIssue();
+            }
+
+            issueList = issueRepository.findById(request.getId()).stream().toList();
+        } else {
+            getIssuesByAssignedUser(request.getAssignedUserId());
+            getIssuesByReportingUser(request.getReportingUserId());
+            getIssuesByTags(request.getTags());
+            getIssuesByCreationDateRange(request.getStartCreationDate(), request.getEndCreationDate());
+            getIssuesByLastModifiedDateRange(request.getStartLastModifiedDate(), request.getEndLastModifiedDate());
+            getIssuesByStatus(request.getStatus());
+            getIssuesByType(request.getType());
+            getIssuesWithPriority(request.getPriority());
+        }
 
         return issueList.stream().map(this::convertModelToResponse).toList();
     }

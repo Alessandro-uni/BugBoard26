@@ -47,7 +47,7 @@ public class UserService {
             throw new IllegalArgumentException("La vecchia password non è corretta");
         }
 
-        oldUser.setHashedPassword(passwordEncoder.encode(userPasswords.getOldRawPassword()));
+        oldUser.setHashedPassword(passwordEncoder.encode(userPasswords.getNewRawPassword()));
 
         User savedUser = userRepository.save(oldUser);
 

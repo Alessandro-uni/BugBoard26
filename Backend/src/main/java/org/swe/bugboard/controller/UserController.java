@@ -48,9 +48,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/availabile")
+    @GetMapping("/available")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserResponse>> viewAvailabileUsers() {
+    public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
         List<UserResponse> response = userService.getUserByAvailabilityAsc();
 
         return ResponseEntity.ok(response);
