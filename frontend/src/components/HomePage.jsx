@@ -9,6 +9,15 @@ function HomePage({onViewIssue}){
         { id: 5, title: 'Implementare dark mode', status: 'Completato', priority: 'Media', completedAt: '2026-03-20' },
     ];
 
+    const getPriorityStyle = (priority) => {
+        switch (priority) {
+            case 'Alta': return 'bg-red-50 text-red-700 border-red-100';
+            case 'Media': return 'bg-orange-50 text-orange-700 border-orange-100';
+            case 'Bassa': return 'bg-blue-50 text-blue-700 border-blue-100';
+            default: return 'bg-gray-50 text-gray-700 border-gray-100';
+        }
+    };
+
     return (
         <div className="p-6">
             <div className="max-w-7xl mx-auto">
@@ -32,9 +41,15 @@ function HomePage({onViewIssue}){
 
                                         {/* Sostituzione icone con pallini colorati o emoji */}
                                         <div className="mt-1">
-                                            {issue.status === 'Completato' }
-                                            {issue.status === 'In Progress' }
-                                            {issue.status === 'Aperto' }
+                                            {issue.status === 'Completato' && (
+                                                <span className="flex h-3 w-3 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" title="Completato"></span>
+                                            )}
+                                            {issue.status === 'In Progress' && (
+                                                <span className="flex h-3 w-3 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.5)]" title="In Progress"></span>
+                                            ) }
+                                            {issue.status === 'Aperto' && (
+                                                <span className="flex h-3 w-3 rounded-full bg-gray-400 shadow-[0_0_8px_rgba(156,163,175,0.5)]" title="Aperto"></span>
+                                            ) }
                                         </div>
 
                                         <div className="flex-1">
@@ -42,6 +57,18 @@ function HomePage({onViewIssue}){
                                                 {issue.title}
                                             </h4>
                                         </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        {/* Badge Stato (Testuale) */}
+                                        <span className="text-xs font-medium text-gray-500 px-2 py-1 bg-gray-100 rounded-md">
+                                            {issue.status}
+                                        </span>
+
+                                        {/* Badge Priorità */}
+                                        <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-md border ${getPriorityStyle(issue.priority)}`}>
+                                            {issue.priority}
+                                        </span>
                                     </div>
 
                                 </div>

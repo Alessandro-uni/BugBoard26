@@ -12,7 +12,6 @@ function MenuAdmin({ currentPage, onNavigate, isOpen, onClose }) {
                 { icon: Home, label: 'Home' },
                 { icon: List, label: 'Le mie Issue' },
                 { icon: List, label: 'Visualizza tutte le Issue' },
-                { icon: CircleAlert, label: 'Segnala Issue' },
                 { icon: PlusCircle, label: 'Crea Issue' },
             ]
         },

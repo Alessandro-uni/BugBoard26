@@ -40,7 +40,7 @@ function ChangePassword({onChangePassword}) {
     };
 
     return (
-        <div className="size-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="size-full flex items-center justify-center bg-gradient-to-br ">
 
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
@@ -58,7 +58,7 @@ function ChangePassword({onChangePassword}) {
                             </div>
                             <input type="text" value={rawPassword} onChange={(e) => setRawPassword(e.target.value)}
                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci l'username'"
+                                   placeholder="Inserisci la vecchia password"
                                    required
                             />
                         </div>
@@ -73,7 +73,7 @@ function ChangePassword({onChangePassword}) {
                             </div>
                             <input type="password" value={rawPassword} onChange={(e) => setRawPassword(e.target.value)}
                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci la password"
+                                   placeholder="Inserisci la nuova password"
                                    required
                             />
                         </div>
@@ -88,7 +88,7 @@ function ChangePassword({onChangePassword}) {
                             </div>
                             <input type="password" value={repeatRawPassword} onChange={(e) => setRepeatRawPassword(e.target.value)}
                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci la password"
+                                   placeholder="Inserisci la nuova  password"
                                    required
                             />
                         </div>

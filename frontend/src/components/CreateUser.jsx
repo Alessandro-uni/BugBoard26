@@ -41,7 +41,7 @@ function CreateUser({onCreateUser}) {
     };
 
     return (
-        <div className="size-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="size-full flex items-center justify-center bg-gradient-to-br ">
 
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
@@ -117,11 +117,18 @@ function CreateUser({onCreateUser}) {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
 
                             </div>
-                            <input type="password" value={role} onChange={(e) => setRole(e.target.value)}
-                                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci la password"
-                                   required
-                            />
+                            <select
+                                id="type"
+                                value={role}
+                                onChange={(e) => setRole(e.target.value)}
+                                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
+                                required
+                            >
+                                <option value="" disabled>Seleziona un ruolo</option>
+                                <option value="admin">Admin</option>
+                                <option value="user">User</option>
+                                <option value="lurker">Lurker</option>
+                            </select>
                         </div>
                     </div>
 

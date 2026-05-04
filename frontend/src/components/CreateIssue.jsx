@@ -13,7 +13,11 @@ function CreateIssue(){
     const [type, setType] = useState('');
     const [priority, setPriority] = useState('');
 
-    const availableTags = ['Frontend', 'Backend', 'Database', 'UI/UX', 'Performance', 'Security', 'Testing'];
+    const [availableTags, setAvailableTags] = useState([
+        'Frontend', 'Backend', 'Database', 'UI/UX', 'Performance', 'Security', 'Testing'
+    ]);
+    const [newTag, setNewTag] = useState('');
+
 
     //GESTIONE
 
@@ -24,6 +28,15 @@ function CreateIssue(){
         } else {
             setSelectedTags([...selectedTags, tag]);
         }
+    };
+
+    const handleAddTag = () => {
+        const trimmed = newTag.trim();
+        if (trimmed && !availableTags.includes(trimmed)) {
+            setAvailableTags([...availableTags, trimmed]);
+            setSelectedTags([...selectedTags, trimmed]); // selezionato automaticamente
+        }
+        setNewTag('');
     };
 
     // Gestisce l'aggiunta dei nomi dei file
@@ -190,8 +203,35 @@ function CreateIssue(){
 
 
                         {/* Sezione Tag */}
-                        <div>
+                        <div className="p-4 border border-b-black-300 rounded-lg">
                             <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
+
+                            {/* Input per aggiungere nuovi tag */}
+                            <div className="flex gap-2 mb-3">
+                                <input
+                                    type="text"
+                                    value={newTag}
+                                    onChange={(e) => setNewTag(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleAddTag();
+                                        }
+                                    }}
+                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="Aggiungi un nuovo tag..."
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleAddTag}
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1"
+                                >
+                                    <Plus size={16} />
+                                    Aggiungi
+                                </button>
+                            </div>
+
+                            {/* Lista tag selezionabili */}
                             <div className="flex flex-wrap gap-2">
                                 {availableTags.map((tag) => (
                                     <button
@@ -204,10 +244,10 @@ function CreateIssue(){
                                                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         }`}
                                     >
-                    <span className="flex items-center gap-2">
-                      <Tag size={14} />
-                        {tag}
-                    </span>
+                <span className="flex items-center gap-2">
+                    <Tag size={14} />
+                    {tag}
+                </span>
                                     </button>
                                 ))}
                             </div>
