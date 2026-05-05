@@ -250,7 +250,7 @@ Content-Type: application/json
 }
 
 ### 5.3 Fallimento: Creazione Issue con dati mancanti (Atteso: 400 Bad Request)
-# Manca il titolo e il tipo per far scattare @Valid
+# Manca il titolo e il tipo per far scattare l'anno tazione Valid
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{user_token}}
 Content-Type: application/json
@@ -261,7 +261,7 @@ Content-Type: application/json
 }
 
 ### 5.4 Fallimento: Creazione Utente con password debole (Atteso: 400 Bad Request)
-# Presuppone che @ValidPassword richieda criteri specifici (es. maiuscola/speciale)
+# Presuppone che l'annotazione ValidPassword richieda criteri specifici (es. maiuscola/speciale)
 POST http://localhost:8080/api/users
 Authorization: Bearer {{admin_token}}
 Content-Type: application/json
