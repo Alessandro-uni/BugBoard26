@@ -1,6 +1,5 @@
 package org.swe.bugboard.security;
 
-import lombok.AllArgsConstructor;
 import org.jspecify.annotations.NullMarked;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,15 +10,10 @@ import org.swe.bugboard.model.UserRole;
 import java.util.Collection;
 import java.util.List;
 
-@AllArgsConstructor
-public class CustomUserDetails implements UserDetails {
-    private final User user;
-
-    public User getUser() {
-        return user;
+public record CustomUserDetails(User user) implements UserDetails {
+    public Long getId() {
+        return user.getId();
     }
-
-    public Long getId() { return user.getId(); }
 
     public UserRole getRole() {
         return user.getRole();

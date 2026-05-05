@@ -1,11 +1,11 @@
 package org.swe.bugboard.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -27,41 +27,39 @@ public class AuthenticationService {
     @Value("${application.security.jwt.expiration-time}")
     private Long jwtExpiration;
 
+    @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            request.getMail(),
-                            request.getRawPassword()
-                    )
-            );
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getMail(),
+                        request.getRawPassword()
+                )
+        );
 
-            Instant now = Instant.now();
-            Instant expirationTime = now.plusMillis(jwtExpiration);
+        Instant now = Instant.now();
+        Instant expirationTime = now.plusMillis(jwtExpiration);
 
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String mail = userDetails.getUsername();
-            Long id = userDetails.getId();
-            String role = userDetails.getRole().name();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        assert userDetails != null;
+        String mail = userDetails.getUsername();
+        Long id = userDetails.getId();
+        String role = userDetails.getRole().name();
 
-            JwtClaimsSet claims = JwtClaimsSet.builder()
-                    .issuer("bugboard")
-                    .issuedAt(now)
-                    .expiresAt(expirationTime)
-                    .subject(mail)
-                    .claim("userId", id)
-                    .claim("role", role).build();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("bugboard")
+                .issuedAt(now)
+                .expiresAt(expirationTime)
+                .subject(mail)
+                .claim("userId", id)
+                .claim("role", role).build();
 
-            JwtEncoderParameters parameters = JwtEncoderParameters.from(
-                    JwsHeader.with(MacAlgorithm.HS256).build(),
-                    claims
-            );
+        JwtEncoderParameters parameters = JwtEncoderParameters.from(
+                JwsHeader.with(MacAlgorithm.HS256).build(),
+                claims
+        );
 
-            String jwtToken = jwtEncoder.encode(parameters).getTokenValue();
+        String jwtToken = jwtEncoder.encode(parameters).getTokenValue();
 
-            return new AuthenticationResponse(jwtToken, "Login avvenuto con successo");
-        } catch (AuthenticationException e) {
-            return new AuthenticationResponse(null, "Mail o Password errati");
-        }
+        return new AuthenticationResponse(jwtToken);
     }
 }
