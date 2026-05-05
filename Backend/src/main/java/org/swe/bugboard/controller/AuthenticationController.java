@@ -1,5 +1,6 @@
 package org.swe.bugboard.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,9 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         AuthenticationResponse response =  authenticationService.authenticate(authenticationRequest);
 
-        if(response.getToken() == null){
-            return ResponseEntity.badRequest().body(response);
-        }
         return ResponseEntity.ok(response);
     }
 }
