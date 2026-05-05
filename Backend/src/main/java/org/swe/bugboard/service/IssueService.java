@@ -242,7 +242,7 @@ public class IssueService {
             } else {
                 for (String s : tagNames) {
                     issueList = new ArrayList<>();
-                    issueList.addAll(issueRepository.getIssueByTagsName(s)); //todo: testa se funziona...
+                    issueList.addAll(issueRepository.getIssueByTagsName(s));
                 }
             }
         } else {
