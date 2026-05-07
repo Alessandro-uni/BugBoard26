@@ -14,13 +14,16 @@ function CreateUser({onCreateUser}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log("questo è "+ role);
         try {
-            const response = await fetch('http://localhost:8080/api/auth/login', {
+            const token = localStorage.getItem('token');
+            const response = await fetch('http://localhost:8080/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({username: username, mail: mail, rawPassword: rawPassword, repeatRawPassword: repeatRawPassword, role: role }),
+                body: JSON.stringify({ mail: mail, username: username, rawPassword: rawPassword, repeatRawPassword: repeatRawPassword, role: role }),
             });
 
             if(response.ok){
@@ -59,7 +62,7 @@ function CreateUser({onCreateUser}) {
                             </div>
                             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci l'username'"
+                                   placeholder="Inserisci l'username"
                                    required
                             />
                         </div>
@@ -125,9 +128,9 @@ function CreateUser({onCreateUser}) {
                                 required
                             >
                                 <option value="" disabled>Seleziona un ruolo</option>
-                                <option value="admin">Admin</option>
-                                <option value="user">User</option>
-                                <option value="lurker">Lurker</option>
+                                <option value="ADMIN">Admin</option>
+                                <option value="USER">User</option>
+                                <option value="LURKER">Lurker</option>
                             </select>
                         </div>
                     </div>

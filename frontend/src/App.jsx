@@ -30,6 +30,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [userRole, setUserRole] = useState('ADMIN');
 
+
   /*
     FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
     si occupano di cambiare stato

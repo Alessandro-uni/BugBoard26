@@ -1,5 +1,5 @@
 import {useState} from "react";
-import { Paperclip, X, Tag } from 'lucide-react';
+import { Paperclip, X, Tag, Plus } from 'lucide-react';
 
 function CreateIssue(){
 
@@ -18,6 +18,8 @@ function CreateIssue(){
     ]);
     const [newTag, setNewTag] = useState('');
 
+    const [showSuccess, setShowSucces] = useState(false);
+
 
     //GESTIONE
 
@@ -34,7 +36,7 @@ function CreateIssue(){
         const trimmed = newTag.trim();
         if (trimmed && !availableTags.includes(trimmed)) {
             setAvailableTags([...availableTags, trimmed]);
-            setSelectedTags([...selectedTags, trimmed]); // selezionato automaticamente
+            setSelectedTags([...selectedTags, trimmed]);
         }
         setNewTag('');
     };
@@ -55,21 +57,44 @@ function CreateIssue(){
     };
 
     // Gestione invio modulo
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Qui andrebbe la chiamata fetch verso il backend
-        const issueData = {
-            title,
-            description,
-            type,
-            priority,
-            tags: selectedTags,
-            attachments
-        };
+        const token = localStorage.getItem('token');
 
-        console.log("Invio dati issue:", issueData);
-        alert('Issue creata con successo!');
+        const priorityBoolean = priority === 'alta';
+
+        try {
+            const response = await fetch('http://localhost:8080/api/issues',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({title: title, description: description, type: type, priority: priorityBoolean, tags: selectedTags})
+            });
+
+
+            if(response.ok){
+                const data = await response.json();
+                console.log("Issue creata con successo:",data);
+
+                setShowSucces(true);
+                setTitle('');
+                setDescription('');
+                setPriority('');
+                setType('');
+
+            }else{
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
+            }
+
+        }catch (error){
+            console.error("Errore nella chiamata al backend:", error);
+            alert('Errore: ' + error.message);
+        }
+
     };
 
 
@@ -112,11 +137,11 @@ function CreateIssue(){
                                     required
                                 >
                                     <option value="">Nessuno</option>
-                                    <option value="todo"> Todo</option>
-                                    <option value="bug"> Bug</option>
-                                    <option value="question">Domanda</option>
-                                    <option value="feature">Funzionalità</option>
-                                    <option value="documentation">Documentazione</option>
+                                    <option value="TODO"> Todo</option>
+                                    <option value="BUG"> Bug</option>
+                                    <option value="QUESTION">Domanda</option>
+                                    <option value="FEATURE">Funzionalità</option>
+                                    <option value="DOCUMENTATION">Documentazione</option>
                                 </select>
                             </div>
                         </div>
@@ -190,14 +215,13 @@ function CreateIssue(){
                             <select
                                 id="priority"
                                 value={priority}
-                                onChange={(e) => setPriority(e.target.value)}
+                                onChange={(e) => setPriority(e.target.value === 'true')}
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                 required
                             >
                                 <option value="">Seleziona priorità</option>
-                                <option value="bassa">Bassa</option>
-                                <option value="media">Media</option>
-                                <option value="alta">Alta</option>
+                                <option value="false">Bassa</option>
+                                <option value="true">Alta</option>
                             </select>
                         </div>
 
@@ -273,6 +297,39 @@ function CreateIssue(){
                     </form>
                 </div>
             </div>
+
+
+            {/*POPUP DI SUCCESSO CREAZIONE*/}
+            {showSuccess && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
+                        {/* Icona Successo */}
+                        <div className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-2">
+                            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+
+                        {/* Testo */}
+                        <div className="space-y-2">
+                            <h2 className="text-xl font-bold text-gray-900">Issue Inviata!</h2>
+                            <p className="text-sm text-gray-600">
+                                La segnalazione è stata salvata correttamente nel sistema.
+                            </p>
+                        </div>
+
+                        {/* Pulsante per chiudere */}
+                        <div className="pt-2">
+                            <button
+                                onClick={() => setShowSucces(false)}
+                                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-md"
+                            >
+                                Ottimo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 

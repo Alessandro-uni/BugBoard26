@@ -21,10 +21,12 @@ function LoginPage({onLogin}) {
             });
 
             if(response.ok){
-                const userData = await response.json();
-                console.log("Login riuscito:", userData);
+                const token = await response.json();
+                localStorage.setItem("authentication_token", token);
+                console.log("Login riuscito");
 
-                onLogin(userData);
+
+                onLogin(token);
             }else{
                 const errorJson = await response.json();
                 alert("Errore: " + errorJson.message);

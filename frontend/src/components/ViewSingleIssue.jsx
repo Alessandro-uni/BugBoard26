@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Paperclip, Tag, UserPlus, X} from "lucide-react";
+import { Paperclip, Tag, UserPlus, X, Search, Check} from "lucide-react";
 
 function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
 
@@ -31,7 +31,7 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
         try {
             const response = await fetch(`http://localhost:8080/api/issues/${issueData?.id}/assign`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ userId: selectedUser.id }),
             });
             if (response.ok) {
@@ -156,7 +156,7 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
 
                                 {/* Tasto Chiudi Issue */}
                                 <button
-                                    onClick={() => onAssignIssue(issueData?.id)}
+                                    onClick={() => setShowClosePopup(true)}
                                     className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
                                 >
                                     Chiudi Issue
