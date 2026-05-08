@@ -59,7 +59,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Primo tag"
+  "name": "Backend"
 }
 
 ### 5b. Crea tag 2
@@ -68,7 +68,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "name": "Secondo tag"
+  "name": "Frontend"
 }
 
 ### 6. Visualizza tags
