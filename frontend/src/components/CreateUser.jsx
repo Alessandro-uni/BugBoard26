@@ -14,7 +14,6 @@ function CreateUser({onCreateUser}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("questo è "+ role);
         try {
             const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:8080/api/users', {

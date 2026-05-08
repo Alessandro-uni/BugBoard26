@@ -13,6 +13,8 @@ function CreateIssue(){
     const [type, setType] = useState('');
     const [priority, setPriority] = useState('');
 
+    // todo : prelevare dati dal db
+
     const [availableTags, setAvailableTags] = useState([
         'Frontend', 'Backend', 'Database', 'UI/UX', 'Performance', 'Security', 'Testing'
     ]);
@@ -103,7 +105,7 @@ function CreateIssue(){
         <div className="p-6">
             <div className="max-w-4xl mx-auto">
 
-                {/* Card d el Form*/}
+                {/* Card del Form*/}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -136,12 +138,12 @@ function CreateIssue(){
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                     required
                                 >
-                                    <option value="">Nessuno</option>
-                                    <option value="TODO"> Todo</option>
-                                    <option value="BUG"> Bug</option>
-                                    <option value="QUESTION">Domanda</option>
-                                    <option value="FEATURE">Funzionalità</option>
-                                    <option value="DOCUMENTATION">Documentazione</option>
+                                    {/*todo:prelevare dal db*/}
+                                    <option value="">Seleziona tipo</option>
+                                    <option value="BUG">Bug</option>
+                                    <option value="QUESTION">Question</option>
+                                    <option value="FEATURE">Feature</option>
+                                    <option value="DOCUMENTATION">Documentation</option>
                                 </select>
                             </div>
                         </div>
@@ -225,6 +227,7 @@ function CreateIssue(){
                             </select>
                         </div>
 
+                        {/*todo : aggiungere barra di ricerca tag*/}
 
                         {/* Sezione Tag */}
                         <div className="p-4 border border-b-black-300 rounded-lg">
@@ -243,7 +246,7 @@ function CreateIssue(){
                                         }
                                     }}
                                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                    placeholder="Aggiungi un nuovo tag..."
+                                    placeholder="Crea un nuovo tag..."
                                 />
                                 <button
                                     type="button"
