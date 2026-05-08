@@ -22,7 +22,7 @@ public class ChangePasswordUserRequest {
     private CharSequence repeatNewRawPassword;
 
     @AssertTrue(message = "La nuova password e la conferma non coincidono")
-    public boolean isRepeatPasswordMatch() {
+    private boolean isRepeatPasswordMatch() {
         if (newRawPassword != null && repeatNewRawPassword != null) {
             return newRawPassword.toString().equals(repeatNewRawPassword.toString());
         }

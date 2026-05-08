@@ -31,7 +31,7 @@ public class SignUpUserRequest {
     private String role;
 
     @AssertTrue(message = "La nuova password e la conferma non coincido")
-    public boolean isRepeatPasswordMatch() {
+    private boolean isRepeatPasswordMatch() {
         if (rawPassword != null && repeatRawPassword != null) {
             return rawPassword.toString().equals(repeatRawPassword.toString());
         }
