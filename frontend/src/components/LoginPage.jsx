@@ -29,7 +29,7 @@ function LoginPage({onLogin}) {
                 onLogin(token);
             }else{
                 const errorJson = await response.json();
-                alert("Errore: " + errorJson.message);
+                alert("Errore: Mail o password errati");
             }
         } catch (error){
             console.error("Errore di connessione:", error);
