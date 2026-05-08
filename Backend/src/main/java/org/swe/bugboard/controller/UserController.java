@@ -42,25 +42,17 @@ public class UserController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')")
+    //@PreAuthorize("hasAuthority('ADMIN')") // todo: togliere il commento dopo aver collegato il db persistente
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         UserResponse response = userService.createUser(signUpUserRequest);
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/available")
+    @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
         List<UserResponse> response = userService.getUserByAvailabilityAsc();
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<UserResponse>> viewAllUsers() { // todo: decidere se lasciare o meno
-        List<UserResponse> response = userService.getAllUser();
 
         return ResponseEntity.ok(response);
     }
