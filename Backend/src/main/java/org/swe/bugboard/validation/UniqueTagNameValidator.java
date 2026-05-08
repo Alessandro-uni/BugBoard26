@@ -2,14 +2,14 @@ package org.swe.bugboard.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.swe.bugboard.repository.TagRepository;
 
 import java.util.Collections;
 
+@RequiredArgsConstructor
 public class UniqueTagNameValidator implements ConstraintValidator<ValidUniqueTagName, String> {
-    @Autowired
-    private TagRepository tagRepository;
+    private final TagRepository tagRepository;
 
     @Override
     public boolean isValid(String name,  ConstraintValidatorContext context) {

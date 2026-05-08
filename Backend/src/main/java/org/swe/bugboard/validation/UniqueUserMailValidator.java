@@ -2,12 +2,12 @@ package org.swe.bugboard.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.swe.bugboard.repository.UserRepository;
 
+@RequiredArgsConstructor
 public class UniqueUserMailValidator implements ConstraintValidator<ValidUniqueUserMail, String> {
-    @Autowired
-    private UserRepository userRepository ;
+    private final UserRepository userRepository ;
 
     @Override
     public boolean isValid(String mail,  ConstraintValidatorContext context) {
