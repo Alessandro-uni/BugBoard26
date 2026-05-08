@@ -1,25 +1,46 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { Paperclip, X, Tag, Plus } from 'lucide-react';
 
 function CreateIssue(){
-
-
     const [selectedTags, setSelectedTags] = useState([]);
     const [attachments, setAttachments] = useState([]);
-
-
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
     const [priority, setPriority] = useState('');
+    const [availableTags, setAvailableTags] = useState([]);
 
-    // todo : prelevare dati dal db
+    useEffect(() => {
+        const fetchTags = async () => {
+            const token = localStorage.getItem('token');
 
-    const [availableTags, setAvailableTags] = useState([
-        'Frontend', 'Backend', 'Database', 'UI/UX', 'Performance', 'Security', 'Testing'
-    ]);
+            try {
+                const response = await fetch('http://localhost:8080/api/tags', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Dati: ", data);
+
+                    setAvailableTags(data.map(tag => tag.name));
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchTags();
+    }, []);
+
     const [newTag, setNewTag] = useState('');
-
     const [showSuccess, setShowSucces] = useState(false);
 
 
