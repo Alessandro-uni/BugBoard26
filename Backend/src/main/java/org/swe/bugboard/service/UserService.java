@@ -55,14 +55,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponse> getAllUser() {
-        List<User> users = userRepository.findAll();
-
-        return users.stream().map(this::convertModelToResponse).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserResponse> getUser(SearchUserRequest user) { // todo: rendere come getFilteredIssues (mettere i metodi protected a void)
+    public List<UserResponse> getUser(SearchUserRequest user) {
         if (user.getId() != null) {
             UserResponse userResponse = getUserById(user.getId());
             return Collections.singletonList(userResponse);
@@ -88,32 +81,28 @@ public class UserService {
         throw new IllegalArgumentException("Nessun utente trovato con almeno uno dei parametri di ricerca forniti");
     }
 
-    @Transactional(readOnly = true)
-    protected UserResponse getUserById(Long id) {
+    private UserResponse getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
 
         return user.map(this::convertModelToResponse).
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con id: " + id));
     }
 
-    @Transactional(readOnly = true)
-    protected UserResponse getUserByMail(String mail) {
+    private UserResponse getUserByMail(String mail) {
         Optional<User> user = userRepository.findByMail(mail);
 
         return user.map(this::convertModelToResponse).
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con mail: " + mail));
     }
 
-    @Transactional(readOnly = true)
-    protected UserResponse getUserByUsername(String username) {
+    private UserResponse getUserByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
 
         return user.map(this::convertModelToResponse).
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con username: " + username));
     }
 
-    @Transactional(readOnly = true)
-    protected List<UserResponse> getUsersByRole(UserRole role) {
+    private List<UserResponse> getUsersByRole(UserRole role) {
         Optional<List<User>> users = userRepository.findByRole(role);
 
         return users.filter(list -> !list.isEmpty())
