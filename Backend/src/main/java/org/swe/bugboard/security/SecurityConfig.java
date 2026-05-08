@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/api/**").permitAll() // todo: dopo aver collegato il db persistente mettere /auth/login
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
