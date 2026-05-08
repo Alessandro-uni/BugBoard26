@@ -42,7 +42,7 @@ public class HistoryService {
 
     @Transactional(readOnly = true)
     public List<HistoryResponse> getHistory(IssueRequest issueRequest) {
-        List<History> history = historyRepository.findByIssue_IdOrderByDateAsc(issueRequest.getId());
+        List<History> history = historyRepository.findByIssue_IdOrderByDateDesc(issueRequest.getId());
 
         return history.stream().map(this::convertModelToResponse).toList();
     }
