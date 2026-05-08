@@ -32,10 +32,10 @@ public class User {
     @Column(unique = true,
             nullable = false
     )
-    private String username; //todo: considerare se usare lo username o se usare la prima parte della mail (e.g. nome.cognome@mail.net -> nome.cognome)
+    private String username;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false) //todo: capisci come mettere una check per vedere che sia effettivamente "Admin" o "User" (se usiamo questo metodo)
+    @Column(nullable = false)
     private UserRole role;
 
     @OneToMany(mappedBy = "reportingUser",
