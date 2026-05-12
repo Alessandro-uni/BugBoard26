@@ -139,7 +139,11 @@ public class IssueService {
 
     @Transactional(readOnly = true)
     public List<IssueResponse> getFilteredIssues(IssueRequest request){ //todo: rimpiazzare tutto questo con SQL dinamico se si riesce
-        /*Manca il filtro per tag
+
+        if(request.getId() != null){
+            return issueRepository.findById(request.getId()).stream().map(this::convertModelToResponse).toList();
+        }
+
         Specification<Issue> specification = Specification.unrestricted();
 
         if(request.getAssignedUserId() != null) {
@@ -180,9 +184,14 @@ public class IssueService {
             specification = specification.and(IssueSpecification.hasLastModifiedDateBefore(request.getEndLastModifiedDate()));
         }
 
-        return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();
-        */
+        if(request.getTags() != null){
+            specification = specification.and(IssueSpecification.hasTags(request.getTags()));
+        }
 
+
+        return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();
+
+        /*
         class FilteredIssues{
             List<Issue> issueList= null;
 
@@ -330,7 +339,7 @@ public class IssueService {
         FilteredIssues f = new FilteredIssues();
 
         if (request.getId() != null) {
-            if (request.getId() == -1) { //todo: ricorda di metterlo così nel frontend (vuole tutte le issue)
+            if (request.getId() == -1) {
                 return getAllIssue();
             }
 
@@ -347,7 +356,7 @@ public class IssueService {
             f.filterByTags();
         }
 
-        return f.issueList.stream().map(this::convertModelToResponse).toList();
+        return f.issueList.stream().map(this::convertModelToResponse).toList();*/
     }
 
     private Issue findIssueOrThrow(Long issueId) {

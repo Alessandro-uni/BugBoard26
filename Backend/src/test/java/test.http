@@ -71,6 +71,24 @@ Content-Type: application/json
   "name": "Frontend"
 }
 
+### 5c. Crea tag 3
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Graphics"
+}
+
+### 5d. Crea tag 4
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "OutOfBoundsGlitch"
+}
+
 ### 6. Visualizza tags
 GET http://localhost:8080/api/tags
 Authorization: Bearer {{auth_token}}
@@ -97,8 +115,34 @@ Content-Type: application/json
   "title": "Mia bella Issue2",
   "description": "Risolvete la seconda issue",
   "priority": true,
-  "tags": ["Primo tag", "Secondo tag"],
+  "tags": ["Graphics", "Frontend"],
   "type": "FEATURE"
+}
+
+### 7b. Crea issue 3
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Mia bella Issue3",
+  "description": "Risolvete la terza issue",
+  "priority": true,
+  "tags": ["Backend"],
+  "type": "FEATURE"
+}
+
+### 7b. Crea issue 4
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Mia bella Issue4",
+  "description": "Risolvete la quarta issue",
+  "priority": true,
+  "tags": ["OutOfBoundsGlitch", "Frontend"],
+  "type": "BUG"
 }
 
 ### 8. Assegna issue
@@ -118,12 +162,20 @@ Content-Type: application/json
 ### 9. Visualizza issues
 GET http://localhost:8080/api/issues
 
-### 10. Filtra issue
+### 10a. Filtra issue: prendi issue specifica
 GET http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "id": -1
+  "id": 1
+}
+
+### 10b. Filtra issue: prendi issues segnalate da reportingUser 1
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "id": 1
 }
 
 ### 11. Chiude issue duplicata
@@ -132,7 +184,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "id": 2
+  "type": "BUG"
 }
 
 ### 12. Visualizza users per disponibilità

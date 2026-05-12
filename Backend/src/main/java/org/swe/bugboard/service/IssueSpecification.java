@@ -1,16 +1,23 @@
 package org.swe.bugboard.service;
 
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 import org.swe.bugboard.model.Issue;
+import org.swe.bugboard.model.Tag;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Set;
 
 //todo: capisci come usare JPA static metamodel generator per rimuovere le stringhe
 public class IssueSpecification {
 
     public static Specification<Issue> hasReportingUser(Long Id){
         return ((root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("reportingUser"), Id));
+                criteriaBuilder.equal(root.get("reportingUser").get("id"), Id));
     }
 
     public static Specification<Issue> hasNoAssignedUser(){
@@ -20,7 +27,7 @@ public class IssueSpecification {
 
     public static Specification<Issue> hasAssignedUser(Long Id){
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("assignedUser"), Id);
+                criteriaBuilder.equal(root.get("assignedUser").get("id"), Id);
     }
 
     public static Specification<Issue> hasPriority(Boolean priority){
@@ -60,14 +67,25 @@ public class IssueSpecification {
                 criteriaBuilder.lessThanOrEqualTo(root.get("lastModifiedDate"), end);
     }
 
-    /*todo:Risolvi sta roba
-    public static Specification<Issue> hasTags(Set<String> tags){
-        return (root, query, criteriaBuilder) ->{
-            query.distinct(true);
-            Root<Issue> issue = root;
-            Subquery<Tag> tagSubquery = query.subquery(Tag.class);
-            Root<Tag> tag = tagSubquery.from(Tag.class);
-            Expression<Collection<Issue>> tag
-        }
-    }*/
+    /*todo:Risolvi sta roba*/
+    public static Specification<Issue> hasTags(Set<String> tagNames){
+        return (root, query, criteriaBuilder) -> {
+            Join<Issue, Tag> tags = root.join("Tag");
+            query.groupBy(root.get("Issue").get("id"));
+            query.where(root.get("Tag").get("name").in(tagNames));
+            return criteriaBuilder.equal(criteriaBuilder.count(tags), tagNames.size());
+        };
+
+
+        /*{
+            Subquery<Long> tagCountsQuery = query.subquery(Long.class);
+            Root<Tag> subqueryRoot = tagCountsQuery.from(Tag.class);
+
+            tagCountsQuery.select(criteriaBuilder.count(subqueryRoot.get("tag").get("id")))
+                    .where(subqueryRoot.get("tag").get("id").in(tagIds))
+                    .groupBy(subqueryRoot.get("tag").get("id"));
+
+            return criteriaBuilder.equal(tagCountsQuery, tagIds.size());
+        };*/
+    }
 }
