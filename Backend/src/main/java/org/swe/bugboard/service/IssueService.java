@@ -2,6 +2,7 @@ package org.swe.bugboard.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,6 +139,49 @@ public class IssueService {
 
     @Transactional(readOnly = true)
     public List<IssueResponse> getFilteredIssues(IssueRequest request){ //todo: rimpiazzare tutto questo con SQL dinamico se si riesce
+        /*Manca il filtro per tag
+        Specification<Issue> specification = Specification.unrestricted();
+
+        if(request.getAssignedUserId() != null) {
+            if(request.getAssignedUserId() == -1){
+                specification = specification.and(IssueSpecification.hasNoAssignedUser());
+            }else{
+                specification = specification.and(IssueSpecification.hasAssignedUser(request.getAssignedUserId()));
+            }
+        }
+
+        if(request.getReportingUserId() != null){
+            specification = specification.and(IssueSpecification.hasReportingUser(request.getReportingUserId()));
+        }
+
+        if(request.getPriority() != null){
+            specification = specification.and(IssueSpecification.hasPriority(request.getPriority()));
+        }
+
+        if(request.getStatus() != null){
+            specification = specification.and(IssueSpecification.hasStatus(request.getStatus()));
+        }
+
+        if(request.getType() != null){
+            specification = specification.and(IssueSpecification.hasType(request.getType()));
+        }
+
+        if(request.getStartCreationDate() != null){
+            specification = specification.and(IssueSpecification.hasCreationDateAfter(request.getStartCreationDate()));
+        }
+        if(request.getEndCreationDate() != null){
+            specification = specification.and(IssueSpecification.hasCreationDateBefore(request.getEndCreationDate()));
+        }
+
+        if(request.getStartLastModifiedDate() != null){
+            specification = specification.and(IssueSpecification.hasLastModifiedDateAfter(request.getStartLastModifiedDate()));
+        }
+        if(request.getEndLastModifiedDate() != null){
+            specification = specification.and(IssueSpecification.hasLastModifiedDateBefore(request.getEndLastModifiedDate()));
+        }
+
+        return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();
+        */
 
         class FilteredIssues{
             List<Issue> issueList= null;
@@ -228,7 +272,7 @@ public class IssueService {
                             issueList.addAll(issueRepository.getIssueByTagsName(s));
                         }
                     }
-                } else {
+                } else { //Sbagliato, dovrebbe vedere che tags è un subset di issue.getTags, non che siano uguali
                     Set<Tag> tags = tagRepository.findByNameIn(request.getTags());
                     issueList = issueList.stream().filter(issue -> issue.getTags().equals(tags)).toList();
                 }
