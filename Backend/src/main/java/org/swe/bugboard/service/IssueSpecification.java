@@ -10,6 +10,7 @@ import org.swe.bugboard.model.Tag;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 //todo: capisci come usare JPA static metamodel generator per rimuovere le stringhe
@@ -67,25 +68,20 @@ public class IssueSpecification {
                 criteriaBuilder.lessThanOrEqualTo(root.get("lastModifiedDate"), end);
     }
 
-    /*todo:Risolvi sta roba*/
     public static Specification<Issue> hasTags(Set<String> tagNames){
         return (root, query, criteriaBuilder) -> {
-            Join<Issue, Tag> tags = root.join("Tag");
-            query.groupBy(root.get("Issue").get("id"));
-            query.where(root.get("Tag").get("name").in(tagNames));
-            return criteriaBuilder.equal(criteriaBuilder.count(tags), tagNames.size());
+            Join<Issue, Tag> tags = root.join("tags");
+            query.groupBy(root.get("id"));
+            query.where(root.get("tags").get("name").in(tagNames));
+            query.having(criteriaBuilder.equal(criteriaBuilder.count(tags), tagNames.size()));
+            return query.getRestriction();
         };
+    }
 
-
-        /*{
-            Subquery<Long> tagCountsQuery = query.subquery(Long.class);
-            Root<Tag> subqueryRoot = tagCountsQuery.from(Tag.class);
-
-            tagCountsQuery.select(criteriaBuilder.count(subqueryRoot.get("tag").get("id")))
-                    .where(subqueryRoot.get("tag").get("id").in(tagIds))
-                    .groupBy(subqueryRoot.get("tag").get("id"));
-
-            return criteriaBuilder.equal(tagCountsQuery, tagIds.size());
-        };*/
+    //todo: fix this pls
+    public static Specification<Issue> hasNoTags(){
+        return (root, query, criteriaBuilder) -> {
+            return query.where(root.get("id").in(root.join("tags").get("id"))).getRestriction();
+        };
     }
 }

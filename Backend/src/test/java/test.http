@@ -20,7 +20,7 @@ Content-Type: application/json
   "username": "Pippo",
   "rawPassword": "PWperfetta?1",
   "repeatRawPassword": "PWperfetta?1",
-  "role": "LURKER"
+  "role": "USER"
 }
 
 ### 2. Login con admin
@@ -39,8 +39,8 @@ POST http://localhost:8080/api/auth/login
 Content-Type: application/json
 
 {
-  "mail": "salve@unina.it",
-  "rawPassword": "PWperfetta?2"
+  "mail": "Pippo@unina.it",
+  "rawPassword": "PWperfetta?1"
 }
 
 > {% client.global.set("auth_token", response.body.token) %}
@@ -119,7 +119,7 @@ Content-Type: application/json
   "type": "FEATURE"
 }
 
-### 7b. Crea issue 3
+### 7c. Crea issue 3
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -132,7 +132,7 @@ Content-Type: application/json
   "type": "FEATURE"
 }
 
-### 7b. Crea issue 4
+### 7d. Crea issue 4
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -152,7 +152,7 @@ Content-Type: application/json
 
 {
   "issue": {
-    "id": 1
+    "id": 3
   },
   "user": {
     "id": 1
@@ -175,7 +175,73 @@ GET http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "id": 1
+  "reportingUserId": 1
+}
+
+### 10c. Filtra issue: prendi issues assegnate da assignedUser 1
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "assignedUserId": 1
+}
+
+### 10d. Filtra issue: prendi issues di un certo tipo
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "type": "FEATURE"
+}
+
+### 10e. Filtra issue: prendi issues di un certo stato
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "status": "INPROGRESS"
+}
+
+### 10f. Filtra issue: prendi issues con/senza priorità
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "priority": false
+}
+
+### 10g. Filtra issue: prendi issues in un certo range di data di creazione
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "startCreationDate": "2026-05-12T14:46:38",
+  "endCreationDate": "2026-05-12T14:46:56"
+}
+
+### 10h. Filtra issue: prendi issues in un certo range di data di ultima modifica
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "startLastModifiedDate": "2026-05-12T14:47:38",
+  "endLastModifiedDate": "2026-05-12T14:51:56"
+}
+
+
+### 10i. Filtra issue: prendi issues con almeno i tag segnati
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "tags": []
+}
+
+### 10j. Filtra issue: prendi tutte le issue
+GET http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
 }
 
 ### 11. Chiude issue duplicata
@@ -197,7 +263,7 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-  "id": 1,
+  "id": 3,
   "newStatus": "INPROGRESS"
 }
 

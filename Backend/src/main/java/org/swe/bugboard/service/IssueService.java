@@ -183,10 +183,15 @@ public class IssueService {
         if(request.getEndLastModifiedDate() != null){
             specification = specification.and(IssueSpecification.hasLastModifiedDateBefore(request.getEndLastModifiedDate()));
         }
-
+        
         if(request.getTags() != null){
-            specification = specification.and(IssueSpecification.hasTags(request.getTags()));
+            if(!request.getTags().isEmpty())
+                specification = specification.and(IssueSpecification.hasTags(request.getTags()));
+            else{
+                specification = specification.and(IssueSpecification.hasNoTags());
+            }
         }
+
 
 
         return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();

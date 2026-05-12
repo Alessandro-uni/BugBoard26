@@ -28,7 +28,7 @@ public class UserService {
     @Transactional
     public UserResponse createUser(SignUpUserRequest user) {
         User newUser = User.builder()
-                .mail(user.getMail())
+                .mail(user.getMail().toLowerCase())
                 .username(user.getUsername())
                 .hashedPassword(passwordEncoder.encode(user.getRawPassword()))
                 .role(UserRole.valueOf(user.getRole())).build();
@@ -89,7 +89,7 @@ public class UserService {
     }
 
     private UserResponse getUserByMail(String mail) {
-        Optional<User> user = userRepository.findByMail(mail);
+        Optional<User> user = userRepository.findByMail(mail.toLowerCase());
 
         return user.map(this::convertModelToResponse).
                 orElseThrow(() -> new RuntimeException("Nessun utente trovato con mail: " + mail));

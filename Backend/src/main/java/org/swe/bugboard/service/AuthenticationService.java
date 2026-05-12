@@ -31,7 +31,7 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getMail(),
+                        request.getMail().toLowerCase(),
                         request.getRawPassword()
                 )
         );
