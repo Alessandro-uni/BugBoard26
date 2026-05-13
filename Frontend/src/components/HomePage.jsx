@@ -1,13 +1,48 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 
-function HomePage({onViewIssue}){
-    const myIssues = [
-        { id: 1, title: 'Implementare sistema di notifiche', status: 'In Progress', priority: 'Alta', completedAt: null },
-        { id: 2, title: 'Ottimizzare query database', status: 'Completato', priority: 'Media', completedAt: '2026-03-28' },
-        { id: 3, title: 'Fix bug login mobile', status: 'Completato', priority: 'Alta', completedAt: '2026-03-25' },
-        { id: 4, title: 'Aggiornare documentazione API', status: 'Aperto', priority: 'Bassa', completedAt: null },
-        { id: 5, title: 'Implementare dark mode', status: 'Completato', priority: 'Media', completedAt: '2026-03-20' },
-    ];
+// todo: far funzionare
+function HomePage({onViewIssue}, {currentUserId}){
+    const [myIssues, setMyIssues] = useState([]);
+
+    useEffect(() => {
+        const fetchIssues = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/issues/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({reportingUserId: currentUserId})
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Dati: ", data);
+
+                    const mappedIssues = data.map(item => ({
+                        id: item.id,
+                        title: item.title,
+                        status: item.status,
+                        priority: item.priority
+                    }));
+
+                    setMyIssues(mappedIssues);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        if (currentUserId) {
+            fetchIssues();
+        }
+    }, [currentUserId]);
 
     const getPriorityStyle = (priority) => {
         switch (priority) {
