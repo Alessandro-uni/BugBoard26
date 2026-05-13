@@ -1,16 +1,11 @@
 package org.swe.bugboard.service;
 
-import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 import org.swe.bugboard.model.Issue;
 import org.swe.bugboard.model.Tag;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 //todo: capisci come usare JPA static metamodel generator per rimuovere le stringhe
@@ -36,13 +31,11 @@ public class IssueSpecification {
                 criteriaBuilder.equal(root.get("priority"), priority);
     }
 
-    //Forse problemi con enum, se sì, prova ad aggiunger .as(String.class) al root.get()
     public static Specification<Issue> hasStatus(String status){
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status"), status);
     }
 
-    //Forse problemi con enum, se sì, prova ad aggiunger .as(String.class) al root.get()
     public static Specification<Issue> hasType(String type){
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("type"), type);
@@ -78,10 +71,9 @@ public class IssueSpecification {
         };
     }
 
-    //todo: fix this pls
     public static Specification<Issue> hasNoTags(){
         return (root, query, criteriaBuilder) -> {
-            return query.where(root.get("id").in(root.join("tags").get("id"))).getRestriction();
+            return criteriaBuilder.isEmpty(root.get("tags"));
         };
     }
 }

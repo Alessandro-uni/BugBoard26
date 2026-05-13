@@ -234,7 +234,7 @@ GET http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "tags": []
+  "tags": ["Frontend"]
 }
 
 ### 10j. Filtra issue: prendi tutte le issue

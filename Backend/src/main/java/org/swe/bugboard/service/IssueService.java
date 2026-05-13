@@ -138,16 +138,20 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getFilteredIssues(IssueRequest request){ //todo: rimpiazzare tutto questo con SQL dinamico se si riesce
+    public List<IssueResponse> getFilteredIssues(IssueRequest request){
+
+        /* A null value represents the fact that the filter for that value is not requested
+         * If the filter for the absence of a value can exist it is specified by a comment
+         */
 
         if(request.getId() != null){
-            return issueRepository.findById(request.getId()).stream().map(this::convertModelToResponse).toList();
+            return issueRepository.findById(request.getId()).stream().map(this::convertModelToResponse).toList(); //skip the filters
         }
 
-        Specification<Issue> specification = Specification.unrestricted();
+        Specification<Issue> specification = Specification.unrestricted(); //Makes it possible to fetch all issues with an empty filter request
 
         if(request.getAssignedUserId() != null) {
-            if(request.getAssignedUserId() == -1){
+            if(request.getAssignedUserId() == -1){ //Filtered for issues without an assigned user todo: do it like this in frontend
                 specification = specification.and(IssueSpecification.hasNoAssignedUser());
             }else{
                 specification = specification.and(IssueSpecification.hasAssignedUser(request.getAssignedUserId()));
@@ -183,185 +187,16 @@ public class IssueService {
         if(request.getEndLastModifiedDate() != null){
             specification = specification.and(IssueSpecification.hasLastModifiedDateBefore(request.getEndLastModifiedDate()));
         }
-        
+
         if(request.getTags() != null){
-            if(!request.getTags().isEmpty())
+            if(!request.getTags().isEmpty()) //Filtered for issues without tags
                 specification = specification.and(IssueSpecification.hasTags(request.getTags()));
             else{
                 specification = specification.and(IssueSpecification.hasNoTags());
             }
         }
 
-
-
         return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();
-
-        /*
-        class FilteredIssues{
-            List<Issue> issueList= null;
-
-            private void getIssuesToBeAssigned() {
-                if (issueList == null) {
-                    issueList = issueRepository.getIssueByAssignedUserNull();
-                } else {
-                    issueList = issueList.stream().filter(issue -> issue.getAssignedUser() == null).toList();
-                }
-            }
-
-            private void filterByAssignerUser() {
-                Long id = request.getAssignedUserId();
-
-                if (id == null) { //Filtro non chiede un assignedUser specifico
-                    return;
-                }
-
-                if (id == -1) { //todo: ricorda di metterlo così nel frontend (richiesta di issues senza user assegnato)
-                    getIssuesToBeAssigned();
-                    return;
-                }
-
-                if (issueList == null) {
-                    issueList = issueRepository.getIssueByAssignedUserId(id);
-                } else {
-                    issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), id)).toList();
-                }
-            }
-
-            private void filterByReportingUser() {
-                Long id = request.getReportingUserId();
-
-                if (id == null) { //Filtro non chiede un reportinUser specifico
-                    return;
-                }
-
-                if (issueList == null) {
-                    issueList = issueRepository.getIssueByReportingUserId(id);
-                } else {
-                    issueList = issueList.stream().filter(issue -> Objects.equals(issue.getReportingUser().getId(), id)).toList();
-                }
-            }
-
-            private void filterByPriority() {
-                Boolean priority = request.getPriority();
-
-                if (priority == null) { //Filtro non chiede una priority specifica
-                    return;
-                }
-
-                if (issueList == null) {
-                    issueList = issueRepository.getIssueByPriority(priority);
-                } else {
-                    issueList = issueList.stream().filter(issue -> Objects.equals(issue.getPriority(), priority)).toList();
-                }
-            }
-
-            private void filterByIssueType() {
-
-                if (request.getType() == null) { //Filtro non chiede un issueType specifico
-                    return;
-                }
-
-                IssueType.valueOf(null);
-
-                IssueType issueType = IssueType.valueOf(request.getType().toUpperCase());
-
-                if (issueList == null) {
-                    issueList = issueRepository.getIssueByType(issueType);
-                } else {
-                    issueList = issueList.stream().filter(issue -> issue.getType().equals(issueType)).toList();
-                }
-            }
-
-            private void filterByTags() {
-                if (request.getTags() == null) { //Filtro non chiede un set di Tag specifici
-                    return;
-                }
-
-                if (issueList == null) {
-                    if(request.getTags().isEmpty()){ //Filtro chiede specificamente le issue senza tag
-                        issueList = issueRepository.findIssuesWithNoTags();
-                    } else {
-                        for (String s : request.getTags()) {
-                            issueList = new ArrayList<>();
-                            issueList.addAll(issueRepository.getIssueByTagsName(s));
-                        }
-                    }
-                } else { //Sbagliato, dovrebbe vedere che tags è un subset di issue.getTags, non che siano uguali
-                    Set<Tag> tags = tagRepository.findByNameIn(request.getTags());
-                    issueList = issueList.stream().filter(issue -> issue.getTags().equals(tags)).toList();
-                }
-            }
-
-            private void filterByIssueStatus() {
-                if (request.getStatus() == null) { //Filtro non chiede un issueStatus specifico
-                    return;
-                }
-
-                IssueStatus issueStatus = IssueStatus.valueOf(request.getStatus());
-
-                if (issueList == null) {
-                    issueList = issueRepository.getIssueByStatus(issueStatus);
-                } else {
-                    issueList = issueList.stream().filter(issue -> issue.getStatus() == issueStatus).toList();
-                }
-            }
-
-            private void filterByCreationDateRange() {
-                LocalDateTime start = request.getStartCreationDate();
-                LocalDateTime end = request.getEndCreationDate();
-
-                if (start == null && end == null) { //Filtro non chiede un range specifico
-                    return;
-                }
-
-                if (issueList == null) {
-                    issueList = issueRepository.findByCreationDateRange(start, end);
-                } else {
-                    issueList = issueList.stream()
-                            .filter(issue -> (issue.getCreationDate().isAfter(start) && issue.getCreationDate().isBefore(end)))
-                            .toList();
-                }
-            }
-
-            private void filterByLastModifiedDateRange() {
-                LocalDateTime start = request.getStartLastModifiedDate();
-                LocalDateTime end = request.getEndLastModifiedDate();
-
-                if (start == null && end == null) { //Filtro non chiede un range specifico
-                    return;
-                }
-
-                if (issueList == null) {
-                    issueList = issueRepository.findByLastModifiedDateRange(start, end);
-                } else {
-                    issueList = issueList.stream()
-                            .filter(issue -> (issue.getLastModifiedDate().isAfter(start) && issue.getLastModifiedDate().isBefore(end)))
-                            .toList();
-                }
-            }
-        }
-
-        FilteredIssues f = new FilteredIssues();
-
-        if (request.getId() != null) {
-            if (request.getId() == -1) {
-                return getAllIssue();
-            }
-
-            f.issueList = issueRepository.findById(request.getId()).stream().toList();
-
-        } else {
-            f.filterByCreationDateRange();
-            f.filterByLastModifiedDateRange();
-            f.filterByIssueStatus();
-            f.filterByIssueType();
-            f.filterByPriority();
-            f.filterByAssignerUser();
-            f.filterByReportingUser();
-            f.filterByTags();
-        }
-
-        return f.issueList.stream().map(this::convertModelToResponse).toList();*/
     }
 
     private Issue findIssueOrThrow(Long issueId) {
