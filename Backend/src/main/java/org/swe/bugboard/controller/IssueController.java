@@ -71,7 +71,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<List<IssueResponse>> searchIssue(@Valid @RequestBody IssueRequest searchIssueRequest) {
         List<IssueResponse> response = issueService.getFilteredIssues(searchIssueRequest);
 
@@ -85,6 +85,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    // todo: decidere se usare una POST oppure passare l'id per parametro
     @GetMapping("/history")
     public ResponseEntity<List<HistoryResponse>> getIssueHistory(@Valid @RequestBody IssueRequest getHistoryIssueRequest) {
         List<HistoryResponse> response = historyService.getHistory(getHistoryIssueRequest);

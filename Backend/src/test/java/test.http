@@ -163,7 +163,7 @@ Content-Type: application/json
 GET http://localhost:8080/api/issues
 
 ### 10a. Filtra issue: prendi issue specifica
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -171,7 +171,7 @@ Content-Type: application/json
 }
 
 ### 10b. Filtra issue: prendi issues segnalate da reportingUser 1
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -179,7 +179,7 @@ Content-Type: application/json
 }
 
 ### 10c. Filtra issue: prendi issues assegnate da assignedUser 1
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -187,7 +187,7 @@ Content-Type: application/json
 }
 
 ### 10d. Filtra issue: prendi issues di un certo tipo
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -195,7 +195,7 @@ Content-Type: application/json
 }
 
 ### 10e. Filtra issue: prendi issues di un certo stato
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -203,7 +203,7 @@ Content-Type: application/json
 }
 
 ### 10f. Filtra issue: prendi issues con/senza priorità
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -211,7 +211,7 @@ Content-Type: application/json
 }
 
 ### 10g. Filtra issue: prendi issues in un certo range di data di creazione
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -220,7 +220,7 @@ Content-Type: application/json
 }
 
 ### 10h. Filtra issue: prendi issues in un certo range di data di ultima modifica
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -230,7 +230,7 @@ Content-Type: application/json
 
 
 ### 10i. Filtra issue: prendi issues con almeno i tag segnati
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
@@ -238,7 +238,7 @@ Content-Type: application/json
 }
 
 ### 10j. Filtra issue: prendi tutte le issue
-GET http://localhost:8080/api/issues/search
+POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
