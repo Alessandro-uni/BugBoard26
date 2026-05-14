@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 
-// todo: far funzionare
-function HomePage({onViewIssue}, {currentUserId}){
+function HomePage({onViewIssue, currentUserId, userName}){
     const [myIssues, setMyIssues] = useState([]);
 
     useEffect(() => {
@@ -58,7 +57,7 @@ function HomePage({onViewIssue}, {currentUserId}){
             <div className="max-w-7xl mx-auto">
                 <div className="mb-8">
                     <h2 className="text-2xl font-bold text-gray-900">Home</h2>
-                    <p className="text-gray-600">Benvenuto nella tua area di lavoro</p>
+                    <p className="text-gray-600">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
                 </div>
 
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
