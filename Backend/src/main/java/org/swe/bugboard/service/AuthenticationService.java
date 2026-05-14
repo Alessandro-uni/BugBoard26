@@ -43,6 +43,7 @@ public class AuthenticationService {
         assert userDetails != null;
         String mail = userDetails.getUsername();
         Long id = userDetails.getId();
+        String username = userDetails.getName();
         String role = userDetails.getRole().name();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
@@ -51,6 +52,7 @@ public class AuthenticationService {
                 .expiresAt(expirationTime)
                 .subject(mail)
                 .claim("userId", id)
+                .claim("username", username)
                 .claim("role", role).build();
 
         JwtEncoderParameters parameters = JwtEncoderParameters.from(

@@ -19,6 +19,10 @@ public record CustomUserDetails(User user) implements UserDetails {
         return user.getRole();
     }
 
+    public String getName() {
+        return user.getUsername();
+    }
+
     @Override
     @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
