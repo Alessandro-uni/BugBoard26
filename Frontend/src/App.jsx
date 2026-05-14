@@ -28,8 +28,9 @@ function App() {
   const [selectIssueId, setSelectIssueId] = useState(null);
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [userRole, setUserRole] = useState('ADMIN');
-
+  const [userId, setUserId] = useState(null)
+  const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState(null);
 
   /*
     FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
@@ -47,12 +48,20 @@ function App() {
         const decoded = jwtDecode(userData.token);
         console.log("Token decodificato:", decoded);
 
+        //Estrazione dell'id
+        const id = decoded.userId;
+
         //Estrazione del ruolo
         const role = decoded.role ? decoded.role.toLowerCase().trim() : 'user';
 
+        //Estrazione dello username
+        const username = decoded.username;
+
         //Aggiornamento dello stato
         setIsLoggedIn(true);
+        setUserId(id);
         setUserRole(role);
+        setUserName(username);
         localStorage.setItem('token', userData.token);
 
       } catch (error) {
@@ -72,9 +81,11 @@ function App() {
     //controlli
     if(page == 'Esci') {
       setIsLoggedIn(false);
-      setUserRole('user');
+      setUserRole(null);
       setCurrentPage('HomePage');
       setSelectIssueId(null);
+      setUserId(null);
+      setUserName(null);
     }else if (page == 'Aggiungi nuovo utente') {
       setCurrentPage('Aggiungi nuovo utente');
       setSelectIssueId(null);
@@ -116,29 +127,29 @@ function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'HomePage':
-        return <HomePage onViewIssue={handleViewIssue} />;
+        return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>;
 
       case 'Visualizza tutte le Issue':
-        return <ViewIssueList onViewIssue={handleViewIssue} />;
+        return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId}/>;
 
       case 'Crea Issue':
-        return <CreateIssue />;
+        return <CreateIssue onCancel={() => handleNavigation('HomePage')} />;
 
       case 'Assegna Issue':
         return selectIssueId ? (
-            <ViewSingleIssue issueId={selectIssueId} userRole={userRole}  onBack={handleBackToList}/>
+            <ViewSingleIssue issueId={selectIssueId} userRole={userRole} onBack={handleBackToList}/>
         ):(
-            <HomePage onViewIssue={handleViewIssue} />
+            <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>
         );
 
       case 'Aggiungi nuovo utente':
-        return <CreateUser onCreateUser={handleNavigation} />;
+        return <CreateUser onCreateUser={handleNavigation}/>;
 
       case 'Cambia Password':
         return <ChangePassword onChangePassword={handleNavigation}/>;
 
       default:
-        return <HomePage onViewIssue={handleViewIssue} />;
+        return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>;
     }
   };
 
