@@ -42,7 +42,7 @@ function CreateIssue({onCancel}){
 
     const [newTag, setNewTag] = useState('');
     const [showSuccess, setShowSucces] = useState(false);
-
+    const [searchTag, setSearchTag] = useState('');
 
     //GESTIONE
 
@@ -146,7 +146,9 @@ function CreateIssue({onCancel}){
 
     };
 
-
+    const filteredTags = availableTags.filter(tag =>
+        tag.toLowerCase().includes(searchTag.toLowerCase())
+    );
 
     return (
         <div className="p-6">
@@ -280,6 +282,17 @@ function CreateIssue({onCancel}){
                         <div className="p-4 border border-b-black-300 rounded-lg">
                             <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
 
+                            {/* Input per la ricerca dei tag */}
+                            <div className="mb-4">
+                                <input
+                                    type="text"
+                                    value={searchTag}
+                                    onChange={(e) => setSearchTag(e.target.value)}
+                                    className="w-full px-4 py-2 bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="Cerca un tag esistente"
+                                />
+                            </div>
+
                             {/* Input per aggiungere nuovi tag */}
                             <div className="flex gap-2 mb-3">
                                 <input
@@ -293,7 +306,7 @@ function CreateIssue({onCancel}){
                                         }
                                     }}
                                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                    placeholder="Crea un nuovo tag..."
+                                    placeholder="Crea un nuovo tag"
                                 />
                                 <button
                                     type="button"
@@ -307,23 +320,27 @@ function CreateIssue({onCancel}){
 
                             {/* Lista tag selezionabili */}
                             <div className="flex flex-wrap gap-2">
-                                {availableTags.map((tag) => (
-                                    <button
-                                        key={tag}
-                                        type="button"
-                                        onClick={() => handleTagToggle(tag)}
-                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                            selectedTags.includes(tag)
-                                                ? 'bg-blue-600 text-white'
-                                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
-                                    >
-                <span className="flex items-center gap-2">
-                    <Tag size={14} />
-                    {tag}
-                </span>
-                                    </button>
-                                ))}
+                                {filteredTags.length > 0 ? (
+                                    filteredTags.map((tag) => (
+                                        <button
+                                            key={tag}
+                                            type="button"
+                                            onClick={() => handleTagToggle(tag)}
+                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                                selectedTags.includes(tag)
+                                                    ? 'bg-blue-600 text-white'
+                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                        >
+                                        <span className="flex items-center gap-2">
+                                            <Tag size={14} />
+                                            {tag}
+                                        </span>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic">Nessun tag trovato con "{searchTag}"</p>
+                                )}
                             </div>
                         </div>
 

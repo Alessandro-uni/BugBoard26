@@ -27,14 +27,6 @@ public class TagController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/search")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
-    public ResponseEntity<TagResponse> searchTag(@Valid @RequestBody TagRequest tagRequest) {
-        TagResponse response = tagService.searchTag(tagRequest);
-
-        return ResponseEntity.ok(response);
-    }
-
     @GetMapping
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<List<TagResponse>> viewAllTags() {
