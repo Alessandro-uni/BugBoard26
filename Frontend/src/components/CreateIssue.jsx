@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import { Paperclip, X, Tag, Plus } from 'lucide-react';
 
-function CreateIssue(){
+function CreateIssue({onCancel}){
     const [selectedTags, setSelectedTags] = useState([]);
     const [attachments, setAttachments] = useState([]);
     const [title, setTitle] = useState('');
@@ -313,6 +313,7 @@ function CreateIssue(){
                             </button>
                             <button
                                 type="button"
+                                onClick={onCancel}
                                 className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                             >
                                 Annulla
