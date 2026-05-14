@@ -55,13 +55,40 @@ function CreateIssue({onCancel}){
         }
     };
 
-    const handleAddTag = () => {
+    const handleAddTag = async () => {
         const trimmed = newTag.trim();
-        if (trimmed && !availableTags.includes(trimmed)) {
-            setAvailableTags([...availableTags, trimmed]);
-            setSelectedTags([...selectedTags, trimmed]);
+        if (!trimmed || availableTags.includes(trimmed)) {
+            setNewTag('');
+        } else {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/tags', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({name: trimmed})
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Tag creato con successo:", data);
+
+                    setAvailableTags([...availableTags, trimmed]);
+                    setSelectedTags([...selectedTags, trimmed]);
+                    setNewTag('');
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error){
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
         }
-        setNewTag('');
     };
 
     // Gestisce l'aggiunta dei nomi dei file
@@ -97,10 +124,9 @@ function CreateIssue({onCancel}){
                 body: JSON.stringify({title: title, description: description, type: type, priority: priorityBoolean, tags: selectedTags})
             });
 
-
             if(response.ok){
                 const data = await response.json();
-                console.log("Issue creata con successo:",data);
+                console.log("Issue creata con successo:", data);
 
                 setShowSucces(true);
                 setTitle('');
