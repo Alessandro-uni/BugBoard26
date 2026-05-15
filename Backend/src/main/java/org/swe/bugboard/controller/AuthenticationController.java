@@ -11,7 +11,7 @@ import org.swe.bugboard.dto.AuthenticationResponse;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://renounce-pennant-marlin.ngrok-free.dev"})
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 

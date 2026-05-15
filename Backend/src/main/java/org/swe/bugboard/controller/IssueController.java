@@ -16,7 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/issues")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "https://renounce-pennant-marlin.ngrok-free.dev"})
 public class IssueController {
     private final IssueService issueService;
     private final HistoryService historyService;
