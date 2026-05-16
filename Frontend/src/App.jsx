@@ -11,7 +11,7 @@ import ChangePassword from "./components/ChangePassword.jsx";
 import ViewSingleIssue from "./components/ViewSingleIssue.jsx";
 
 //import './App.css'
-import { jwtDecode } from 'jwt-decode'; //libreria perla decodifica di JWT(Json Web Token)
+import { jwtDecode } from 'jwt-decode'; //libreria per la decodifica di JWT(Json Web Token)
 
 function App() {
 
@@ -133,7 +133,10 @@ function App() {
         return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId}/>;
 
       case 'Crea Issue':
-        return <CreateIssue onCancel={() => handleNavigation('HomePage')} />;
+        return <CreateIssue
+                  onCancel={() => handleNavigation('HomePage')}
+                  onIssueCreated={handleViewIssue}
+                />;
 
       case 'Assegna Issue':
         return selectIssueId ? (
