@@ -1,15 +1,16 @@
 import {useEffect, useState} from "react";
 import { Paperclip, X, Tag, Plus } from 'lucide-react';
 
-function CreateIssue({onCancel}){
+function CreateIssue({onCancel, onIssueCreated}){
     const [selectedTags, setSelectedTags] = useState([]);
     const [attachments, setAttachments] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
-    const [priority, setPriority] = useState('');
+    const [priority, setPriority] = useState(false);
     const [availableTags, setAvailableTags] = useState([]);
 
+    // Fetch tags
     useEffect(() => {
         const fetchTags = async () => {
             const token = localStorage.getItem('token');
@@ -24,8 +25,6 @@ function CreateIssue({onCancel}){
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log("Dati: ", data);
-
                     setAvailableTags(data.map(tag => tag.name));
                 } else {
                     const errorJson = await response.json();
@@ -40,11 +39,21 @@ function CreateIssue({onCancel}){
         fetchTags();
     }, []);
 
-    const [newTag, setNewTag] = useState('');
-    const [showSuccess, setShowSucces] = useState(false);
-    const [searchTag, setSearchTag] = useState('');
+    const [inputTagValue, setInputTagValue] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [createdIssueId, setCreatedIssueId] = useState(null);
 
     //GESTIONE
+
+    // Ricerca tag tramite sottostringa
+    const filteredTags = availableTags.filter(tag =>
+        tag.toLowerCase().includes(inputTagValue.toLowerCase())
+    );
+
+    // Verifica esistenza tag
+    const existTag = availableTags.some(
+        (tag) => tag.toLowerCase() === inputTagValue.trim().toLowerCase()
+    );
 
     // Aggiunge o rimuove un tag dalla lista selezionata
     const handleTagToggle = (tag) => {
@@ -55,39 +64,41 @@ function CreateIssue({onCancel}){
         }
     };
 
+    // Crea un nuovo tag e lo aggiunge alla lista selezionata
     const handleAddTag = async () => {
-        const trimmed = newTag.trim();
-        if (!trimmed || availableTags.includes(trimmed)) {
-            setNewTag('');
-        } else {
-            const token = localStorage.getItem('token');
+        const tag = inputTagValue.trim();
+        if (!tag || existTag) {
+            setInputTagValue('');
+            return;
+        }
 
-            try {
-                const response = await fetch('http://localhost:8080/api/tags', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({name: trimmed})
-                });
+        const token = localStorage.getItem('token');
 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log("Tag creato con successo:", data);
+        try {
+            const response = await fetch('http://localhost:8080/api/tags', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({name: tag})
+            });
 
-                    setAvailableTags([...availableTags, trimmed]);
-                    setSelectedTags([...selectedTags, trimmed]);
-                    setNewTag('');
-                } else {
-                    const errorJson = await response.json();
-                    alert("Errore: " + errorJson.message);
-                }
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Tag creato con successo:", data);
 
-            } catch (error){
-                console.error("Errore nella chiamata al backend:", error);
-                alert('Errore: ' + error.message);
+                setAvailableTags([...availableTags, tag]);
+                setSelectedTags([...selectedTags, tag]);
+                setInputTagValue('');
+            } else {
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
             }
+
+        } catch (error){
+            console.error("Errore nella chiamata al backend:", error);
+            alert('Errore: ' + error.message);
         }
     };
 
@@ -112,8 +123,6 @@ function CreateIssue({onCancel}){
 
         const token = localStorage.getItem('token');
 
-        const priorityBoolean = priority === 'alta';
-
         try {
             const response = await fetch('http://localhost:8080/api/issues',{
                 method: 'POST',
@@ -121,19 +130,22 @@ function CreateIssue({onCancel}){
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({title: title, description: description, type: type, priority: priorityBoolean, tags: selectedTags})
+                body: JSON.stringify({title: title, description: description, type: type, priority: priority, tags: selectedTags})
             });
 
             if(response.ok){
                 const data = await response.json();
                 console.log("Issue creata con successo:", data);
 
-                setShowSucces(true);
-                setTitle('');
-                setDescription('');
-                setPriority('');
-                setType('');
+                setCreatedIssueId(data.id);
+                setShowSuccess(true);
 
+                setTitle('');
+                setType('');
+                setDescription('');
+                setAttachments([]);
+                setPriority(false);
+                setSelectedTags([]);
             }else{
                 const errorJson = await response.json();
                 alert("Errore: " + errorJson.message);
@@ -143,12 +155,7 @@ function CreateIssue({onCancel}){
             console.error("Errore nella chiamata al backend:", error);
             alert('Errore: ' + error.message);
         }
-
     };
-
-    const filteredTags = availableTags.filter(tag =>
-        tag.toLowerCase().includes(searchTag.toLowerCase())
-    );
 
     return (
         <div className="p-6">
@@ -175,7 +182,7 @@ function CreateIssue({onCancel}){
                                 />
                             </div>
 
-
+                            {/* Tipo */}
                             <div>
                                 <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
                                     Tipo
@@ -211,7 +218,6 @@ function CreateIssue({onCancel}){
                                 placeholder="Descrivi il problema o la richiesta in dettaglio..."
                                 required
                             />
-
 
                             {/* Allega File */}
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -258,69 +264,77 @@ function CreateIssue({onCancel}){
                             )}
                         </div>
 
+                        {/* Priorità */}
+                        <div className="flex items-center justify-between p-4 border border-gray-300 rounded-lg bg-white">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-900">
+                                    Priorità alta
+                                </label>
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Contrassegna questa issue come urgente
+                                </p>
+                            </div>
 
-                        <div>
-                            <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
-                                Priorità
+                            {/* Switch button todo: rivedere il funzionamento! */}
+                            <label className="relative inline-flex items-center cursor-pointer">
+                                {/* Checkbox */}
+                                <input
+                                    type="checkbox"
+                                    className="sr-only peer"
+                                    checked={priority}
+                                    onChange={(e) => setPriority(e.target.checked)}
+                                />
+                                {/* Switch sovrapposto */}
+                                <div className="w-11 h-6 bg-gray-200 rounded-full peer
+                                    peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300
+                                    peer-checked:bg-red-600
+                                    peer-checked:after:translate-x-full peer-checked:after:border-white
+                                    after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                    after:bg-white after:border-gray-300 after:border after:rounded-full
+                                    after:h-5 after:w-5 after:transition-all">
+                                </div>
                             </label>
-                            <select
-                                id="priority"
-                                value={priority}
-                                onChange={(e) => setPriority(e.target.value === 'true')}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                required
-                            >
-                                <option value="">Seleziona priorità</option>
-                                <option value="false">Bassa</option>
-                                <option value="true">Alta</option>
-                            </select>
                         </div>
-
-                        {/*todo : aggiungere barra di ricerca tag*/}
 
                         {/* Sezione Tag */}
                         <div className="p-4 border border-b-black-300 rounded-lg">
                             <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
 
-                            {/* Input per la ricerca dei tag */}
+                            {/* Input per la ricerca/creazione dei tag */}
                             <div className="mb-4">
                                 <input
                                     type="text"
-                                    value={searchTag}
-                                    onChange={(e) => setSearchTag(e.target.value)}
-                                    className="w-full px-4 py-2 bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                    placeholder="Cerca un tag esistente"
-                                />
-                            </div>
-
-                            {/* Input per aggiungere nuovi tag */}
-                            <div className="flex gap-2 mb-3">
-                                <input
-                                    type="text"
-                                    value={newTag}
-                                    onChange={(e) => setNewTag(e.target.value)}
+                                    value={inputTagValue}
+                                    onChange={(e) => setInputTagValue(e.target.value)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
                                             e.preventDefault();
-                                            handleAddTag();
+                                            if (inputTagValue.trim() && !existTag) {
+                                                handleAddTag();
+                                            }
                                         }
                                     }}
-                                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                    placeholder="Crea un nuovo tag"
+                                    className="w-full px-4 py-2 bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                    placeholder="Cerca o crea un tag..."
                                 />
-                                <button
-                                    type="button"
-                                    onClick={handleAddTag}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1"
-                                >
-                                    <Plus size={16} />
-                                    Aggiungi
-                                </button>
                             </div>
 
-                            {/* Lista tag selezionabili */}
-                            <div className="flex flex-wrap gap-2">
-                                {filteredTags.length > 0 ? (
+                            {/* Risultati e creazione tag */}
+                            <div className="flex flex-wrap gap-2 items-center">
+                                {/* Pulsante Crea appare solo se il tag non esiste */}
+                                {inputTagValue.trim() !== '' && !existTag && (
+                                    <button
+                                        type="button"
+                                        onClick={handleAddTag}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1"
+                                    >
+                                        <Plus size={16} />
+                                        Crea "{inputTagValue.trim()}"
+                                    </button>
+                                )}
+
+                                {/* Lista tag esistenti filtrati */}
+                                {filteredTags.length > 0 && (
                                     filteredTags.map((tag) => (
                                         <button
                                             key={tag}
@@ -332,21 +346,17 @@ function CreateIssue({onCancel}){
                                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                             }`}
                                         >
-                                        <span className="flex items-center gap-2">
-                                            <Tag size={14} />
-                                            {tag}
-                                        </span>
+                                            <span className="flex items-center gap-2">
+                                                <Tag size={14} />
+                                                {tag}
+                                            </span>
                                         </button>
                                     ))
-                                ) : (
-                                    <p className="text-sm text-gray-500 italic">Nessun tag trovato con "{searchTag}"</p>
                                 )}
                             </div>
                         </div>
 
-
-
-                        {/* Azioni finali */}
+                        {/* Riquadro di conferma */}
                         <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
                             <button
                                 type="submit"
@@ -366,11 +376,19 @@ function CreateIssue({onCancel}){
                 </div>
             </div>
 
-
             {/*POPUP DI SUCCESSO CREAZIONE*/}
             {showSuccess && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
+                    <div className="relative bg-white rounded-xl shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
+                        {/* Pulsante X di chiusura popup */}
+                        <button
+                            onClick={() => setShowSuccess(false)}
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 rounded-full p-1"
+                            aria-label="Chiudi"
+                        >
+                            <X size={20} />
+                        </button>
+
                         {/* Icona Successo */}
                         <div className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-2">
                             <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -386,13 +404,13 @@ function CreateIssue({onCancel}){
                             </p>
                         </div>
 
-                        {/* Pulsante per chiudere */}
+                        {/* Pulsante per andare alla issue */}
                         <div className="pt-2">
                             <button
-                                onClick={() => setShowSucces(false)}
+                                onClick={() => onIssueCreated(createdIssueId)}
                                 className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-md"
                             >
-                                Ottimo
+                                Vai alla issue
                             </button>
                         </div>
                     </div>
@@ -400,9 +418,6 @@ function CreateIssue({onCancel}){
             )}
         </div>
     );
-
-
 }
-
 
 export default CreateIssue;
