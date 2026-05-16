@@ -1,61 +1,126 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Paperclip, Tag, UserPlus, X, Search, Check} from "lucide-react";
 
-function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
+function ViewSingleIssue({issueId, onBack, userRole}) {
 
-    const [title, setTitle] = useState(issueData?.title || "");
-    const [description, setDescription] = useState(issueData?.description || "");
+    const [issueData, setIssueData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isClosedSuccess, setIsClosedSuccess] = useState(false);
+    const [isAssignSuccess, setIsAssignSuccess] = useState(false);
+
+    // Fetch dettagli della issue
+    const fetchIssueDetails = async () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch('http://localhost:8080/api/issues/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({id: issueId})
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+
+                if (data && data.length > 0) {
+                    setIssueData(data[0]);
+                } else {
+                    setIssueData(null);
+                }
+
+            } else {
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
+            }
+
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:", error);
+            alert('Errore: ' + error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    // Caricamento iniziale dettagli della issue
+    useEffect(() => {
+        if (issueId) {
+           fetchIssueDetails();
+        }
+    }, [issueId]);
+
     const [showAssignPopup, setShowAssignPopup] = useState(false);
     const [showClosePopup, setShowClosePopup] = useState(false);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
-    // Fetch utenti dal backend
+    // Fetch utenti
     useEffect(() => {
         if (showAssignPopup) {
-            fetch("http://localhost:8080/api/users")
+            const token = localStorage.getItem('token');
+            fetch("http://localhost:8080/api/users", {
+                headers: {'Authorization': `Bearer ${token}`}
+            })
                 .then(res => res.json())
                 .then(data => setUsers(data))
                 .catch(err => console.error("Errore caricamento utenti:", err));
         }
     }, [showAssignPopup]);
 
+    // Filtro utenti
     const filteredUsers = users.filter(u =>
-        u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        u.role.toLowerCase().includes(searchQuery.toLowerCase())
+        u.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        u.role?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleAssignConfirm = async () => {
         if (!selectedUser) return;
+
+        const token = localStorage.getItem('token');
+
         try {
-            const response = await fetch(`http://localhost:8080/api/issues/${issueData?.id}/assign`, {
+            const response = await fetch(`http://localhost:8080/api/issues/assign`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json"},
-                body: JSON.stringify({ userId: selectedUser.id }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({issue: {id: issueData?.id}, user: {id: selectedUser.id}}),
             });
+
             if (response.ok) {
-                onAssignIssue(selectedUser);
-                setShowAssignPopup(false);
-                setSelectedUser(null);
+                setIsAssignSuccess(true);
             } else {
                 alert("Errore durante l'assegnazione");
             }
+
         } catch (err) {
             console.error("Errore:", err);
         }
     };
 
     const handleCloseIssue = async () => {
+        const token = localStorage.getItem('token');
+
         try {
-            const response = await fetch(`http://localhost:8080/api/issues/${issueData?.id}/close`, {
+            const response = await fetch(`http://localhost:8080/api/issues/close`, {
                 method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({id: issueData?.id}),
             });
+
             if (response.ok) {
-                setShowClosePopup(false);
+                setIsClosedSuccess(true)
             } else {
                 alert("Errore durante la chiusura");
             }
+
         } catch (err) {
             console.error("Errore:", err);
         }
@@ -63,17 +128,46 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
 
     const getStatusStyle = (status) => {
         switch (status) {
-            case 'Aperto': return 'bg-red-100 text-red-700 border-red-200';
-            case 'In Progress': return 'bg-yellow-100 text-yellow-700 border-yellow-200';
-            case 'Chiuso': return 'bg-green-100 text-green-700 border-green-200';
+            case 'TODO': return 'bg-gray-100 text-gray-700 border-gray-200';
+            case 'IN_PROGRESS': return 'bg-blue-100 text-blue-700 border-blue-200';
+            case 'RESOLVED': return 'bg-green-100 text-green-700 border-green-200';
+            case 'CLOSED': return 'bg-red-100 text-red-700 border-red-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
     };
+
+    // Rotella di caricamento
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                <div className="text-gray-500 font-medium animate-pulse">Caricamento dettagli issue...</div>
+            </div>
+        )
+    }
+
+    // Verifica esistenza della issue
+    if (!issueData) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+                <p className="text-red-500 font-medium mb-4">Impossibile trovare l'issue richiesta</p>
+                <button onClick={onBack} className="text-blue-600 hover:underline">&larr; Torna indietro</button>
+            </div>
+        );
+    }
 
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             <div className="max-w-4xl mx-auto space-y-6">
 
+                {/* Pulsante torna alla lista issue */}
+                <button
+                    onClick={onBack}
+                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium transition-colors mb-2"
+                >
+                    <span className="text-xl leading-none">&larr;</span> Torna alla lista
+                </button>
+
+                {/* Proprietà issue */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
                     <div className="space-y-4">
                         <div className="flex flex-wrap gap-3">
@@ -83,27 +177,33 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
                             </span>
                             {/* Tipo */}
                             <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                                {issueData?.type || 'Bug'}
+                                {issueData?.type || 'Tipo non definito'}
                             </span>
                             {/* Priorità */}
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
-                                Priorità: {issueData?.priority || 'Media'}
-                            </span>
+                            {issueData?.priority && (
+                                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                        Priorità
+                                    </span>
+                            )}
                         </div>
 
                         {/* Tag */}
-                        <div className="flex items-center gap-2 text-gray-500">
-                            <Tag size={16} />
-                            <div className="flex gap-2">
-                                {['Frontend', 'Urgent'].map(tag => (
-                                    <span key={tag} className="text-sm bg-gray-50 px-2 py-0.5 rounded border border-gray-200">#{tag}</span>
-                                ))}
+                        {issueData?.tags && issueData.tags.length > 0 && (
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <Tag size={16} />
+                                <div className="flex gap-2">
+                                    {issueData.tags.map(tag => (
+                                        <span key={tag} className="text-sm bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
+                                            #{tag}
+                                        </span>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Tasto Assegna */}
-                    {userRole === 'admin' && (
+                    {userRole === 'admin' && issueData.status !== "CLOSED" && !issueData?.assignedUserId && (
                         <button
                             onClick={() => setShowAssignPopup(true)}
                             className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
@@ -111,11 +211,26 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
                             <UserPlus size={18} />
                             Assegna Issue
                         </button>
+
+                    )}
+
+                    {/* Utente assegnato */}
+                    {issueData?.assignedUserId && (
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
+                            Utente assegnato: {issueData.assignedUserId}
+                        </span>
+                    )}
+
+                    {/* Nessun utente assegnato */}
+                    {!(userRole === 'admin' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
+                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                            Nessun utente assegnato
+                        </span>
                     )}
 
                 </div>
 
-                {/* CARD  */}
+                {/* Dettagli issue */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="p-8 space-y-6">
                         <h3 className="text-xl font-bold text-gray-900 border-b pb-4">Dettagli Issue</h3>
@@ -126,12 +241,9 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wider">
                                     Titolo
                                 </label>
-                                <input
-                                    type="text"
-                                    value={title}
-                                    readOnly
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 font-medium"
-                                />
+                                <div className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 font-medium">
+                                    {issueData?.title || "Nessun titolo"}
+                                </div>
                             </div>
 
                             {/* Descrizione */}
@@ -139,28 +251,31 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
                                 <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wider">
                                     Descrizione
                                 </label>
-                                <textarea
-                                    rows="6"
-                                    value={description}
-                                    readOnly
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 resize-none"
-                                />
+                                <div className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 resize-none wrap-break-word">
+                                     {issueData?.description || "Nessuna descrizione"}
+                                </div>
                             </div>
 
                             {/* Allegati */}
                             <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-sm font-medium text-blue-600 cursor-pointer hover:underline">
                                     <Paperclip size={16} />
-                                    <span>Visualizza allegati (2 file)</span>
+                                    <span>
+                                        {issueData?.attachments && issueData.attachments.length > 0
+                                            ? `Visualizza allegati (${issueData.attachments.length} file)`
+                                            : "Nessun allegato"}
+                                    </span>
                                 </div>
 
                                 {/* Tasto Chiudi Issue */}
-                                <button
-                                    onClick={() => setShowClosePopup(true)}
-                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
-                                >
-                                    Chiudi Issue
-                                </button>
+                                {userRole === 'admin' && issueData?.status !== 'CLOSED' && (
+                                    <button
+                                        onClick={() => setShowClosePopup(true)}
+                                        className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
+                                    >
+                                        Chiudi Issue
+                                    </button>
+                                )}
 
                             </div>
                         </div>
@@ -168,117 +283,175 @@ function ViewSingleIssue({ issueData, onAssignIssue, onBack, userRole }) {
                 </div>
             </div>
 
-            {/* POPUP ASSEGNA */}
+            {/* POPUP ASSEGNA ISSUE */}
             {showAssignPopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4">
 
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
-                                <UserPlus size={18} className="text-blue-700" />
-                            </div>
-                            <h2 className="text-lg font-bold text-gray-900">Assegna Issue</h2>
-                        </div>
-
-                        {/* Barra di ricerca */}
-                        <div className="relative">
-                            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Cerca utente..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
-                        </div>
-
-                        {/* Lista utenti */}
-                        <div className="max-h-56 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
-                            {filteredUsers.length === 0 ? (
-                                <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
-                            ) : (
-                                filteredUsers.map(user => (
-                                    <div
-                                        key={user.id}
-                                        onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
-                                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                                            selectedUser?.id === user.id
-                                                ? 'bg-blue-50'
-                                                : 'hover:bg-gray-50'
-                                        }`}
-                                    >
-                                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-semibold">
-                                            {user.username?.slice(0, 2).toUpperCase()}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-gray-800">{user.username}</p>
-                                            <p className="text-xs text-gray-400">{user.role}</p>
-                                        </div>
-                                        {selectedUser?.id === user.id && (
-                                            <Check size={16} className="text-blue-600 flex-shrink-0" />
-                                        )}
+                        {isAssignSuccess ? (
+                            <>
+                                {/* Schermata di successo */}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
+                                        <Check size={18} className="text-green-600"/>
                                     </div>
-                                ))
-                            )}
-                        </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Issue assegnata</h2>
+                                </div>
+                                <p className="text-sm text-gray-600">L'utente è stato assegnato con successo alla issue</p>
+                                <div className="flex gap-3 pt-1">
+                                    <button
+                                        onClick={() => {
+                                            setShowAssignPopup(false);
+                                            setIsAssignSuccess(false);
+                                            setSelectedUser(null);
+                                            setSearchQuery("");
+                                            fetchIssueDetails();
+                                        }}
+                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                    >
+                                        Ok
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {/* Schermata di assegnazione */}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <UserPlus size={18} className="text-blue-700" />
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Assegna Issue</h2>
+                                </div>
 
-                        {/* Utente selezionato */}
-                        {selectedUser && (
-                            <p className="text-xs text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
-                                Selezionato: <span className="font-semibold">{selectedUser.username}</span>
-                            </p>
+                                {/* Barra di ricerca */}
+                                <div className="relative">
+                                    <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        placeholder="Cerca utente..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </div>
+
+                                {/* Lista utenti */}
+                                <div className="max-h-56 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
+                                    {filteredUsers.length === 0 ? (
+                                        <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
+                                    ) : (
+                                        filteredUsers.map(user => (
+                                            <div
+                                                key={user.id}
+                                                onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
+                                                className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
+                                                    selectedUser?.id === user.id
+                                                        ? 'bg-blue-50'
+                                                        : 'hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-semibold">
+                                                    {user.username?.slice(0, 2).toUpperCase()}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-gray-800">{user.username}</p>
+                                                    <p className="text-xs text-gray-400">{user.role}</p>
+                                                </div>
+                                                {selectedUser?.id === user.id && (
+                                                    <Check size={16} className="text-blue-600 shrink-0" />
+                                                )}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                {/* Utente selezionato */}
+                                {selectedUser && (
+                                    <p className="text-xs text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
+                                        Selezionato: <span className="font-semibold">{selectedUser.username}</span>
+                                    </p>
+                                )}
+
+                                {/* Riquadro di conferma */}
+                                <div className="flex gap-3 pt-1">
+                                    <button
+                                        onClick={() => { setShowAssignPopup(false); setSelectedUser(null); setSearchQuery(""); }}
+                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                    >
+                                        Annulla
+                                    </button>
+                                    <button
+                                        onClick={handleAssignConfirm}
+                                        disabled={!selectedUser}
+                                        className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold rounded-lg transition-colors"
+                                    >
+                                        Assegna
+                                    </button>
+                                </div>
+                            </>
                         )}
-
-                        <div className="flex gap-3 pt-1">
-                            <button
-                                onClick={() => { setShowAssignPopup(false); setSelectedUser(null); setSearchQuery(""); }}
-                                className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
-                            >
-                                Annulla
-                            </button>
-                            <button
-                                onClick={handleAssignConfirm}
-                                disabled={!selectedUser}
-                                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold rounded-lg transition-colors"
-                            >
-                                Assegna
-                            </button>
-                        </div>
                     </div>
                 </div>
             )}
 
-            {/* POPUP CHIUDI */}
+            {/* POPUP CHIUDI ISSUE */}
             {showClosePopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-                                <X size={18} className="text-red-600" />
-                            </div>
-                            <h2 className="text-lg font-bold text-gray-900">Chiudi Issue</h2>
-                        </div>
-                        <p className="text-sm text-gray-600">Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "Chiuso".</p>
-                        <div className="flex gap-3 pt-1">
-                            <button
-                                onClick={() => setShowClosePopup(false)}
-                                className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
-                            >
-                                Annulla
-                            </button>
-                            <button
-                                onClick={handleCloseIssue}
-                                className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg"
-                            >
-                                Conferma
-                            </button>
-                        </div>
+                        {isClosedSuccess ? (
+                            <>
+                                {/* Schermata di successo */}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
+                                        <Check size={18} className="text-green-600"/>
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Issue chiusa</h2>
+                                </div>
+                                <p className="text-sm text-gray-600">La issue è stata chiusa con successo</p>
+                                <div className="flex gap-3 pt-1">
+                                    <button
+                                        onClick={() => {
+                                            setShowClosePopup(false);
+                                            setIsClosedSuccess(false);
+                                            fetchIssueDetails();
+                                        }}
+                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                    >
+                                        Ok
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {/* Schermata di chiusura */}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
+                                        <X size={18} className="text-red-600"/>
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Chiudi Issue</h2>
+                                </div>
+                                <p className="text-sm text-gray-600">Sei sicuro di voler chiudere questa issue? Lo stato
+                                    cambierà in "CLOSED"</p>
+                                <div className="flex gap-3 pt-1">
+                                    <button
+                                        onClick={() => setShowClosePopup(false)}
+                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                    >
+                                        Annulla
+                                    </button>
+                                    <button
+                                        onClick={handleCloseIssue}
+                                        className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg"
+                                    >
+                                        Conferma
+                                    </button>
+                                </div>
+                            </>
+                        )}
+
                     </div>
                 </div>
             )}
-
-
-
         </div>
     );
 }
