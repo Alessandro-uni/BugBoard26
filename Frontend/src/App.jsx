@@ -15,10 +15,6 @@ import { jwtDecode } from 'jwt-decode'; //libreria per la decodifica di JWT(Json
 
 function App() {
 
-  /*
-    useState resituisce una array che contiene due elementi [il primo = stato attuale / il secondo = stato aggiornato]
-   */
-
   //creo una costante per verificare lo stato: l'utente è loggato? false = no, true = si
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -46,7 +42,6 @@ function App() {
       try {
         //Decodifica del token
         const decoded = jwtDecode(userData.token);
-        console.log("Token decodificato:", decoded);
 
         //Estrazione dell'id
         const id = decoded.userId;
@@ -140,7 +135,7 @@ function App() {
 
       case 'Assegna Issue':
         return selectIssueId ? (
-            <ViewSingleIssue issueId={selectIssueId} userRole={userRole} onBack={handleBackToList}/>
+            <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
         ):(
             <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>
         );
