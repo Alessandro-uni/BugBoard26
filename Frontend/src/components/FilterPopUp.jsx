@@ -40,22 +40,6 @@ function FilterPopUp({isOpen,onClose}){
                 <form id="filterForm" onSubmit={handleSubmit} className="space-y-6">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Priorità */}
-                        <div>
-                            <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
-                                Priorità
-                            </label>
-                            <select
-                                id="priority"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                            >
-                                <option value="">Tutte</option>
-                                <option value="alta">Alta</option>
-                                <option value="media">Media</option>
-                                <option value="bassa">Bassa</option>
-                            </select>
-                        </div>
-
                         {/* Stato */}
                         <div>
                             <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
@@ -65,10 +49,11 @@ function FilterPopUp({isOpen,onClose}){
                                 id="status"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             >
-                                <option value="">Tutti</option>
-                                <option value="aperto">Aperto</option>
-                                <option value="inProgress">In Progress</option>
-                                <option value="completato">Completato</option>
+                                <option value="">Nessuno stato selezionato</option>
+                                <option value="TODO">Da svolgere</option>
+                                <option value="INPROGRESS">In lavorazione</option>
+                                <option value="RESOLVED">Risolta</option>
+                                <option value="CLOSED">Chiusa</option>
                             </select>
                         </div>
 
@@ -81,11 +66,43 @@ function FilterPopUp({isOpen,onClose}){
                                 id="type"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             >
-                                <option value="">Tutte</option>
-                                <option value="bug">Bug</option>
-                                <option value="feature">Feature</option>
-                                <option value="question">Question</option>
-                                <option value="documentation">Documentation</option>
+                                <option value="">Nessuna tipologia selezionata</option>
+                                <option value="BUG">Bug</option>
+                                <option value="QUESTION">Domanda</option>
+                                <option value="DOCUMENTATION">Documentazione</option>
+                                <option value="FEATURE">Funzionalità</option>
+                            </select>
+                        </div>
+
+                        {/* Utente Segnalatore */}
+                        <div>
+                            <label htmlFor="reportUser" className="block text-sm font-medium text-gray-700 mb-2">
+                                Creato da
+                            </label>
+                            <select
+                                id="reportUser"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                            >
+                                <option value="">Nessun utente selezionato</option>
+                                <option value="marco">Marco Rossi</option>
+                                <option value="laura">Laura Bianchi</option>
+                                <option value="giuseppe">Giuseppe Verdi</option>
+                            </select>
+                        </div>
+
+                        {/* Utente Assegnato */}
+                        <div>
+                            <label htmlFor="assignedUser" className="block text-sm font-medium text-gray-700 mb-2">
+                                Assegnato a
+                            </label>
+                            <select
+                                id="assignedUser"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                            >
+                                <option value="">Nessun utente selezionato</option>
+                                <option value="marco">Marco Rossi</option>
+                                <option value="laura">Laura Bianchi</option>
+                                <option value="giuseppe">Giuseppe Verdi</option>
                             </select>
                         </div>
 
@@ -109,36 +126,16 @@ function FilterPopUp({isOpen,onClose}){
                             </select>
                         </div>
 
-                        {/* Utente Segnalatore */}
+                        {/* Priorità */}
                         <div>
-                            <label htmlFor="reportUser" className="block text-sm font-medium text-gray-700 mb-2">
-                                Creato da
+                            <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
+                                Priorità
                             </label>
-                            <select
-                                id="reportUser"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                            >
-                                <option value="">Tutti</option>
-                                <option value="marco">Marco Rossi</option>
-                                <option value="laura">Laura Bianchi</option>
-                                <option value="giuseppe">Giuseppe Verdi</option>
-                            </select>
-                        </div>
-
-                        {/* Utente Assegnato */}
-                        <div>
-                            <label htmlFor="assignedUser" className="block text-sm font-medium text-gray-700 mb-2">
-                                Assegnato a
-                            </label>
-                            <select
-                                id="assignedUser"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                            >
-                                <option value="">Tutti</option>
-                                <option value="marco">Marco Rossi</option>
-                                <option value="laura">Laura Bianchi</option>
-                                <option value="giuseppe">Giuseppe Verdi</option>
-                            </select>
+                            <input
+                                type="checkbox"
+                                id="priority"
+                                className="text-sm font-medium text-gray-700 select-none cursor-pointer"
+                            />
                         </div>
                     </div>
 
