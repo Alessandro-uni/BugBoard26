@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
-import { Paperclip, Tag, UserPlus, X, Search, Check} from "lucide-react";
+import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle} from "lucide-react";
 
-function ViewSingleIssue({issueId, onBack, userRole}) {
+function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
     const [issueData, setIssueData] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isClosedSuccess, setIsClosedSuccess] = useState(false);
     const [isAssignSuccess, setIsAssignSuccess] = useState(false);
+    const [isStatusSuccess, setIsStatusSuccess] = useState(false);
+    const [isClosedSuccess, setIsClosedSuccess] = useState(false);
 
     // Fetch dettagli della issue
     const fetchIssueDetails = async () => {
@@ -52,6 +53,7 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
     }, [issueId]);
 
     const [showAssignPopup, setShowAssignPopup] = useState(false);
+    const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [showClosePopup, setShowClosePopup] = useState(false);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -76,6 +78,15 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
         u.role?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    // Calcolo prossimo stato issue
+    const statusTransition = {
+        'TODO' : 'INPROGRESS',
+        'INPROGRESS' : 'RESOLVED'
+    }
+
+    // Prossimo stato issue
+    const nextStatus = statusTransition[issueData?.status] || null;
+
     const handleAssignConfirm = async () => {
         if (!selectedUser) return;
 
@@ -95,6 +106,30 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                 setIsAssignSuccess(true);
             } else {
                 alert("Errore durante l'assegnazione");
+            }
+
+        } catch (err) {
+            console.error("Errore:", err);
+        }
+    };
+
+    const handleStatusIssue = async () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/issues/status`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({id: issueData?.id, newStatus: nextStatus}),
+            });
+
+            if (response.ok) {
+                setIsStatusSuccess(true)
+            } else {
+                alert("Errore durante il cambio di stato della issue");
             }
 
         } catch (err) {
@@ -129,7 +164,7 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
     const getStatusStyle = (status) => {
         switch (status) {
             case 'TODO': return 'bg-gray-100 text-gray-700 border-gray-200';
-            case 'IN_PROGRESS': return 'bg-blue-100 text-blue-700 border-blue-200';
+            case 'INPROGRESS': return 'bg-blue-100 text-blue-700 border-blue-200';
             case 'RESOLVED': return 'bg-green-100 text-green-700 border-green-200';
             case 'CLOSED': return 'bg-red-100 text-red-700 border-red-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
@@ -173,10 +208,10 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                         <div className="flex flex-wrap gap-3">
                             {/* Stato */}
                             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(issueData?.status)}`}>
-                                {issueData?.status || 'Stato'}
+                                {issueData?.status || 'Stato non definito'}
                             </span>
                             {/* Tipo */}
-                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
+                            <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
                                 {issueData?.type || 'Tipo non definito'}
                             </span>
                             {/* Priorità */}
@@ -233,7 +268,19 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                 {/* Dettagli issue */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="p-8 space-y-6">
-                        <h3 className="text-xl font-bold text-gray-900 border-b pb-4">Dettagli Issue</h3>
+                        <div className="flex justify-between items-center border-b pb-4">
+                            <h3 className="text-xl font-bold text-gray-900">Dettagli Issue</h3>
+
+                            {/* Tasto Cambia stato issue */}
+                            {userId === issueData?.assignedUserId && issueData?.status !== 'CLOSED' && issueData?.status !== 'RESOLVED' && (
+                                <button
+                                    onClick={() => setShowStatusPopup(true)}
+                                    className="ml-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
+                                >
+                                    Cambia stato
+                                </button>
+                            )}
+                        </div>
 
                         <div className="space-y-6">
                             {/* Titolo */}
@@ -256,8 +303,8 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                                 </div>
                             </div>
 
-                            {/* Allegati */}
                             <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                                {/* Allegati */}
                                 <div className="flex items-center gap-2 text-sm font-medium text-blue-600 cursor-pointer hover:underline">
                                     <Paperclip size={16} />
                                     <span>
@@ -271,7 +318,7 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                                 {userRole === 'admin' && issueData?.status !== 'CLOSED' && (
                                     <button
                                         onClick={() => setShowClosePopup(true)}
-                                        className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
+                                        className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
                                     >
                                         Chiudi Issue
                                     </button>
@@ -292,12 +339,12 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                             <>
                                 {/* Schermata di successo */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
+                                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
                                         <Check size={18} className="text-green-600"/>
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900">Issue assegnata</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">L'utente è stato assegnato con successo alla issue</p>
+                                <p className="text-sm text-gray-600">La issue è stata assegnata con successo all'utente</p>
                                 <div className="flex gap-3 pt-1">
                                     <button
                                         onClick={() => {
@@ -394,6 +441,64 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                 </div>
             )}
 
+
+            {/* POPUP CAMBIA STATO ISSUE */}
+            {showStatusPopup && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4">
+                        {isStatusSuccess ? (
+                            <>
+                                {/* Schermata di successo */}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
+                                        <Check size={18} className="text-green-600"/>
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Stato issue modificato</h2>
+                                </div>
+                                <p className="text-sm text-gray-600">Lo stato della issue è stato modificato con successo</p>
+                                <div className="flex gap-3 pt-1">
+                                    <button
+                                        onClick={() => {
+                                            setShowStatusPopup(false);
+                                            setIsStatusSuccess(false);
+                                            fetchIssueDetails();
+                                        }}
+                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                    >
+                                        Ok
+                                    </button>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                {/* Schermata di cambio stato */}
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <Info size={18} className="text-blue-600"/>
+                                    </div>
+                                    <h2 className="text-lg font-bold text-gray-900">Cambia stato Issue</h2>
+                                </div>
+                                <p className="text-sm text-gray-600">Clicca il pulsante di conferma per cambiare lo stato in "<strong>{nextStatus}</strong>"</p>
+                                <div className="flex gap-3 pt-1">
+                                    <button
+                                        onClick={() => setShowStatusPopup(false)}
+                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                    >
+                                        Annulla
+                                    </button>
+                                    <button
+                                        onClick={handleStatusIssue}
+                                        className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
+                                    >
+                                        Conferma
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* POPUP CHIUDI ISSUE */}
             {showClosePopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
@@ -423,15 +528,14 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                             </>
                         ) : (
                             <>
-                                {/* Schermata di chiusura */}
+                                {/* Schermata di chiusura issue */}
                                 <div className="flex items-center gap-3">
                                     <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-                                        <X size={18} className="text-red-600"/>
+                                        <AlertCircle size={18} className="text-red-600"/>
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900">Chiudi Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">Sei sicuro di voler chiudere questa issue? Lo stato
-                                    cambierà in "CLOSED"</p>
+                                <p className="text-sm text-gray-600">Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "<strong>CLOSED</strong>"</p>
                                 <div className="flex gap-3 pt-1">
                                     <button
                                         onClick={() => setShowClosePopup(false)}
@@ -448,7 +552,6 @@ function ViewSingleIssue({issueId, onBack, userRole}) {
                                 </div>
                             </>
                         )}
-
                     </div>
                 </div>
             )}
