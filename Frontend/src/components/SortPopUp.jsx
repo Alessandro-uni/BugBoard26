@@ -48,7 +48,6 @@ function SortPopUp({isOpen, onClose}){
                         >
                             <option value="creationDate">Data Creazione</option>
                             <option value="lastModified">Data Ultima Modifica</option>
-                            <option value="priority">Priorità</option>
                         </select>
                     </div>
 
