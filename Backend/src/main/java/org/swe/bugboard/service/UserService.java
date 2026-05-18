@@ -114,15 +114,16 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> getAllUser() {
-        List<User> users = userRepository.findAllByUsernameExistsOrderByUsernameAsc();
+        List<User> users = userRepository.findAllByUsernameExistsOrderByUsernameAsc(); // todo: decidere se mettere solo User e Admin o escludeere Lurker
 
         return users.stream().map(this::convertModelToResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUserByAvailabilityAsc() {
-        List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);
-        List<User> users = userRepository.findByActivedStatusAsc(activatedStatus);
+        List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);  // Stati considerati come "carico di lavoro"
+        List<UserRole> assignableRole = List.of(UserRole.USER, UserRole.ADMIN); // Ruoli di utenti a cui è possibile assegnare issue
+        List<User> users = userRepository.findByAvailabilityAsc(activatedStatus, assignableRole);
 
         return users.stream().map(this::convertModelToResponse).toList();
     }
