@@ -50,12 +50,17 @@ public class UserController {
     }
 
     @GetMapping
+    public ResponseEntity<List<UserResponse>> viewAllUsers() {
+        List<UserResponse> response = userService.getAllUser();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("available")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
         List<UserResponse> response = userService.getUserByAvailabilityAsc();
 
         return ResponseEntity.ok(response);
     }
-
-    // todo: lista utenti nome ordine??
 }

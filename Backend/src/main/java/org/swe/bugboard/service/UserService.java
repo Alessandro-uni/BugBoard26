@@ -113,6 +113,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    public List<UserResponse> getAllUser() {
+        List<User> users = userRepository.findAllByUsernameExistsOrderByUsernameAsc();
+
+        return users.stream().map(this::convertModelToResponse).toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<UserResponse> getUserByAvailabilityAsc() {
         List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);
         List<User> users = userRepository.findByActivedStatusAsc(activatedStatus);
