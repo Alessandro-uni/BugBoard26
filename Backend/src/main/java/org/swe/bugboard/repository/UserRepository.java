@@ -19,6 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByUsernameExistsOrderByUsernameAsc();
 
     @Query("SELECT u FROM User u LEFT JOIN u.assignedIssues i " +
-            "ON i.status IN :activedStatus GROUP BY u ORDER BY COUNT(i) ASC")
-    List<User> findByActivedStatusAsc(@Param("activedStatus") List<IssueStatus> activedStatus);
+            "ON i.status IN :activedStatus " +
+            "WHERE u.role IN :assignableRole GROUP BY u ORDER BY COUNT(i) ASC")
+    List<User> findByAvailabilityAsc(@Param("activedStatus") List<IssueStatus> activedStatus, @Param("assignableRole") List<UserRole> assignableRole);
 }
