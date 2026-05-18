@@ -3,15 +3,23 @@ import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle} from "lucide
 
 function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
+    // DOMINIO ISSUE
+
     const [issueData, setIssueData] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isAssignSuccess, setIsAssignSuccess] = useState(false);
-    const [isStatusSuccess, setIsStatusSuccess] = useState(false);
-    const [isClosedSuccess, setIsClosedSuccess] = useState(false);
+    const [isIssueLoading, setIsIssueLoading] = useState(true);
+    const [issueError, setIssueError] = useState(null);
 
     // Fetch dettagli della issue
     const fetchIssueDetails = async () => {
+        setIssueError(null);
+        setIsIssueLoading(true);
         const token = localStorage.getItem('token');
+
+        if (!token) {
+            setIssueError("Autenticazione assente");
+            setIsIssueLoading(false);
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:8080/api/issues/search', {
@@ -25,23 +33,23 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
             if (response.ok) {
                 const data = await response.json();
-
-                if (data && data.length > 0) {
-                    setIssueData(data[0]);
-                } else {
-                    setIssueData(null);
-                }
-
+                setIssueData(data && data.length > 0 ? data[0] : null);
             } else {
-                const errorJson = await response.json();
-                alert("Errore: " + errorJson.message);
+                const errorText = await response.text();
+                let errorMessage = "Errore durante il caricamento della issue";
+
+                try {
+                    errorMessage = JSON.parse(errorText).message || errorMessage;
+                } catch (e) {}
+
+                setIssueError(errorMessage);
             }
 
         } catch (error) {
             console.error("Errore nella chiamata al backend:", error);
-            alert('Errore: ' + error.message);
+            setIssueError("Impossibile connettersi al server");
         } finally {
-            setIsLoading(false);
+            setIsIssueLoading(false);
         }
     };
 
@@ -52,9 +60,10 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         }
     }, [issueId]);
 
+    // DOMINIO UTENTI ASSEGNABILI
+
     const [showAssignPopup, setShowAssignPopup] = useState(false);
-    const [showStatusPopup, setShowStatusPopup] = useState(false);
-    const [showClosePopup, setShowClosePopup] = useState(false);
+    const [isAssignSuccess, setIsAssignSuccess] = useState(false);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +72,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     useEffect(() => {
         if (showAssignPopup) {
             const token = localStorage.getItem('token');
-            fetch("http://localhost:8080/api/users", {
+            fetch("http://localhost:8080/api/users/available", {
                 headers: {'Authorization': `Bearer ${token}`}
             })
                 .then(res => res.json())
@@ -77,15 +86,6 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         u.username?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         u.role?.toLowerCase().includes(searchQuery.toLowerCase())
     );
-
-    // Calcolo prossimo stato issue
-    const statusTransition = {
-        'TODO' : 'INPROGRESS',
-        'INPROGRESS' : 'RESOLVED'
-    }
-
-    // Prossimo stato issue
-    const nextStatus = statusTransition[issueData?.status] || null;
 
     const handleAssignConfirm = async () => {
         if (!selectedUser) return;
@@ -113,6 +113,61 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         }
     };
 
+    // DOMINIO UTENTE ASSEGNATO
+
+    const [assignedUser, setAssignedUser] = useState(null);
+    const [isUserLoading, setIsUserLoading] = useState(false);
+    const [userError, setUserError] = useState(null);
+
+    // Fetch utente assesgnato
+    useEffect(() => {
+        const assignedId = issueData?.assignedUserId;
+
+        if (!assignedId) {
+            setAssignedUser(null);
+            return;
+        }
+
+        const fetchAssignedUser = async () => {
+            setIsUserLoading(true);
+            setUserError(null);
+
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/users/{assignedId}`, {
+                    headers: {'Authorization': `Bearer ${token}`}
+                });
+
+                if (!response.ok) throw new Error("Errore recupero utente");
+
+                const data = await response.json();
+                setAssignedUser(data);
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                setUserError("Impossibile connettersi al server");
+            } finally {
+                setIsUserLoading(false);
+            }
+        };
+
+        fetchAssignedUser();
+    }, [issueData?.assignedUserId]);
+
+    // DOMINIO STATO ISSUE
+
+    const [showStatusPopup, setShowStatusPopup] = useState(false);
+    const [isStatusSuccess, setIsStatusSuccess] = useState(false);
+
+    // Calcolo prossimo stato issue
+    const statusTransition = {
+        'TODO' : 'INPROGRESS',
+        'INPROGRESS' : 'RESOLVED'
+    }
+
+    // Prossimo stato issue
+    const nextStatus = statusTransition[issueData?.status] || null;
+
     const handleStatusIssue = async () => {
         const token = localStorage.getItem('token');
 
@@ -136,6 +191,11 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
             console.error("Errore:", err);
         }
     };
+
+    // DOMINIO CHIUSURA ISSUE
+
+    const [showClosePopup, setShowClosePopup] = useState(false);
+    const [isClosedSuccess, setIsClosedSuccess] = useState(false);
 
     const handleCloseIssue = async () => {
         const token = localStorage.getItem('token');
@@ -161,6 +221,8 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         }
     };
 
+    // FUNZIONI AUSILIARIE
+
     const getStatusStyle = (status) => {
         switch (status) {
             case 'TODO': return 'bg-gray-100 text-gray-700 border-gray-200';
@@ -172,7 +234,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     };
 
     // Rotella di caricamento
-    if (isLoading) {
+    if (isIssueLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
                 <div className="text-gray-500 font-medium animate-pulse">Caricamento dettagli issue...</div>
