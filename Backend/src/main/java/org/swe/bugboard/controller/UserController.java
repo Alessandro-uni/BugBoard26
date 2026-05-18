@@ -49,6 +49,14 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> findUserById(@PathVariable Long id) {
+        SearchUserRequest searchUserRequest = SearchUserRequest.builder().id(id).build();
+        UserResponse response = userService.getUser(searchUserRequest).getFirst();
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping
     public ResponseEntity<List<UserResponse>> viewAllUsers() {
         List<UserResponse> response = userService.getAllUser();
