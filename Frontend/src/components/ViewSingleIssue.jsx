@@ -135,7 +135,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch(`http://localhost:8080/api/users/{assignedId}`, {
+                const response = await fetch(`http://localhost:8080/api/users/${assignedId}`, {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
 
@@ -252,9 +252,18 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         );
     }
 
+    // RENDERIZZAZIONE
+
     return (
         <div className="p-6 bg-gray-50 min-h-screen">
             <div className="max-w-4xl mx-auto space-y-6">
+
+                {/* Pagina di errore visualizzazione issue */}
+                {issueError && (
+                    <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                        <p className="text-red-700">{issuError}</p>
+                    </div>
+                )}
 
                 {/* Pulsante torna alla lista issue */}
                 <button
@@ -314,7 +323,15 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     {/* Utente assegnato */}
                     {issueData?.assignedUserId && (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
-                            Utente assegnato: {issueData.assignedUserId}
+                            {isUserLoading ? (
+                                "Caricamento utente..."
+                            ) : userError ? (
+                                `Errore: ${userError}`
+                            ) : assignedUser ? (
+                                `Assegnato a: ${assignedUser.username}`
+                            ) : (
+                                "Utente non disponibile"
+                            )}
                         </span>
                     )}
 
@@ -339,7 +356,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     onClick={() => setShowStatusPopup(true)}
                                     className="ml-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
                                 >
-                                    Cambia stato
+                                    Cambia stato in {nextStatus}
                                 </button>
                             )}
                         </div>
