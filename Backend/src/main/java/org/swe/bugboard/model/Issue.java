@@ -39,7 +39,7 @@ public class Issue {
     @Enumerated(EnumType.STRING)
     private IssueStatus status;
 
-    private Boolean priority; //todo: considera il giusto tipo di questa variabile
+    private Boolean priority;
 
     @NotNull
     @ManyToMany
