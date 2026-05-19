@@ -2,57 +2,54 @@ import {useState} from "react";
 //import {User} from 'lucide-react';
 
 function CreateUser({onCreateUser}) {
-
-    //creiamo le variabili
-    const [username,setUsername] = useState('');
     const [mail,setMail] = useState('');
+    const [username,setUsername] = useState('');
     const [rawPassword, setRawPassword] = useState('');
     const [repeatRawPassword, setRepeatRawPassword] = useState('');
     const [role, setRole] = useState('');
 
-    //funzione: quando premi il tasto accedi si crea un oggetto che contiene tutte le info su quel click
+    // Gestione invio modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const token = localStorage.getItem('token');
+
         try {
-            const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:8080/api/users', {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Content-Type' : 'application/json'
+                    //'Authorization': `Bearer ${token}`  // todo: togliere il commento dopo aver collegato il db persistente
                 },
-                body: JSON.stringify({ mail: mail, username: username, rawPassword: rawPassword, repeatRawPassword: repeatRawPassword, role: role }),
+                body: JSON.stringify({mail: mail, username: username, rawPassword: rawPassword, repeatRawPassword: repeatRawPassword, role: role}),
             });
 
-            if(response.ok){
+            if (response.ok) {
                 const userData = await response.json();
                 console.log("Creazione riuscita:", userData);
 
                 onCreateUser(userData);
-            }else{
+            } else {
                 const errorJson = await response.json();
                 alert("Errore: " + errorJson.message);
             }
-        } catch (error){
-            console.error("Errore di connessione:", error);
-            alert("il server non risponde");
+
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:", error);
+            alert('Errore: ' + error.message);
         }
-
-
     };
 
     return (
-        <div className="size-full flex items-center justify-center bg-gradient-to-br ">
+        <div className="size-full flex items-center justify-center bg-gradient-to-br">
 
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
-
                     <p className="text-gray-600"> Crea un nuovo utente</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {/*inserimeto username*/}
+                    {/* Inserimento username */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
                         <div className="relative">
@@ -67,7 +64,7 @@ function CreateUser({onCreateUser}) {
                         </div>
                     </div>
 
-                    {/*inserimeto mail*/}
+                    {/* Inserimento mail */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Mail</label>
                         <div className="relative">
@@ -82,7 +79,7 @@ function CreateUser({onCreateUser}) {
                         </div>
                     </div>
 
-                    {/*inserimento pw*/}
+                    {/* Inserimento pw */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <div className="relative">
@@ -97,7 +94,7 @@ function CreateUser({onCreateUser}) {
                         </div>
                     </div>
 
-                    {/*inserimento ripeti pw*/}
+                    {/* Inserimento ripeti pw */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Ripeti password</label>
                         <div className="relative">
@@ -112,7 +109,7 @@ function CreateUser({onCreateUser}) {
                         </div>
                     </div>
 
-                    {/*inserimento ruolo*/}
+                    {/* Inserimento ruolo */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Ruolo</label>
                         <div className="relative">
@@ -134,15 +131,12 @@ function CreateUser({onCreateUser}) {
                         </div>
                     </div>
 
-
-
                     <button type="submit" className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">Crea utente</button>
 
                 </form>
             </div>
         </div>
     );
-
 }
 
 export default CreateUser;
