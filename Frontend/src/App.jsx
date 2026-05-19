@@ -2,7 +2,6 @@ import { useState } from 'react'
 import LoginPage from './components/LoginPage.jsx';
 import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
-import MenuAdmin from "./components/MenuAdmin.jsx";
 import HomePage from "./components/HomePage.jsx";
 import ViewIssueList from "./components/ViewIssueList.jsx";
 import CreateIssue from "./components/CreateIssue.jsx";
@@ -47,7 +46,7 @@ function App() {
         const id = decoded.userId;
 
         //Estrazione del ruolo
-        const role = decoded.role ? decoded.role.toLowerCase().trim() : 'user';
+        const role = decoded.role ? decoded.role.toUpperCase().trim() : 'LURKER';
 
         //Estrazione dello username
         const username = decoded.username;
@@ -84,8 +83,8 @@ function App() {
     }else if (page == 'Aggiungi nuovo utente') {
       setCurrentPage('Aggiungi nuovo utente');
       setSelectIssueId(null);
-    }else if (page == 'Cambia Password') {
-      setCurrentPage('Cambia Password');
+    }else if (page == 'Cambia password') {
+      setCurrentPage('Cambia password');
       setSelectIssueId(null);
     }else {
       setCurrentPage(page);
@@ -127,7 +126,9 @@ function App() {
       case 'Visualizza tutte le Issue':
         return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId}/>;
 
-      case 'Crea Issue':
+      // todo: aggiungere case di mie issue segnalate e mie issue assegnate
+
+      case 'Segnala Issue':
         return <CreateIssue
                   onCancel={() => handleNavigation('HomePage')}
                   onIssueCreated={handleViewIssue}
@@ -143,7 +144,7 @@ function App() {
       case 'Aggiungi nuovo utente':
         return <CreateUser onCreateUser={handleNavigation}/>;
 
-      case 'Cambia Password':
+      case 'Cambia password':
         return <ChangePassword onChangePassword={handleNavigation}/>;
 
       default:
@@ -155,21 +156,17 @@ function App() {
   //struttura visiva principale dell'app
   return (
     <div className="min-h-screen w-full flex flex-col md:flex-row bg-gray-50">
-      {/*<Menu currentPage={currentPage} onNavigate={handleNavigation}/>*/}
-      {userRole === 'admin' ? (
-          <MenuAdmin isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation}/>
-      ) : (
-          <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation} />
-      )}
+      {/* Menu */}
+      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation} role={userRole}/>
 
-        <div className="flex-1 flex flex-col min-w-0">
-          <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(!isMenuOpen)} onHomeClick={() => setCurrentPage('HomePage')}/>
-          <main className="p-4 md:p-8 lg:p-12 overflow-y-auto">
-            <div className="max-w-7xl mx-auto w-full">
-              {renderPage()}
-            </div>
-          </main>
-        </div>
+      <div className="flex-1 flex flex-col min-w-0">
+        <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(!isMenuOpen)} onHomeClick={() => setCurrentPage('HomePage')}/>
+        <main className="p-4 md:p-8 lg:p-12 overflow-y-auto">
+          <div className="max-w-7xl mx-auto w-full">
+            {renderPage()}
+          </div>
+        </main>
+      </div>
 
     </div>
   )
