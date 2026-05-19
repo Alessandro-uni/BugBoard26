@@ -10,166 +10,166 @@ import ChangePassword from "./components/ChangePassword.jsx";
 import ViewSingleIssue from "./components/ViewSingleIssue.jsx";
 
 //import './App.css'
-import { jwtDecode } from 'jwt-decode'; //libreria per la decodifica di JWT(Json Web Token)
+import { jwtDecode } from 'jwt-decode'; // Libreria per la decodifica di JWT (Json Web Token)
 
 function App() {
 
-  //creo una costante per verificare lo stato: l'utente è loggato? false = no, true = si
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // Creo una costante per verificare lo stato: l'utente è loggato? false = no, true = si
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  //verifico quale pagina è attualmente visibile nell'app
-  const [currentPage, setCurrentPage] = useState('HomePage');
+    // Verifico quale pagina è attualmente visibile nell'app
+    const [currentPage, setCurrentPage] = useState('HomePage');
 
-  const [selectIssueId, setSelectIssueId] = useState(null);
+    const [selectIssueId, setSelectIssueId] = useState(null);
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [userId, setUserId] = useState(null)
-  const [userName, setUserName] = useState('');
-  const [userRole, setUserRole] = useState(null);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [userId, setUserId] = useState(null)
+    const [userName, setUserName] = useState('');
+    const [userRole, setUserRole] = useState(null);
 
-  /*
-    FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
-    si occupano di cambiare stato
-   */
+    /*
+      FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
+      si occupano di cambiare stato
+    */
 
-  //funzione per l'accesso del login: accetta due parametri username e pw
-  const handleLogin = userData => {
-    //verifica che non siano entrambi  vuoti
-    if(userData){
-      setIsLoggedIn(true); //segna l'utente come autenticato tramite useState che aggiorna lo stato
+    // Funzione per l'accesso del login: accetta due parametri mail e pw
+    const handleLogin = userData => {
+        // Verifica che non siano entrambi vuoti
+        if (userData) {
+            setIsLoggedIn(true); // Segna l'utente come autenticato tramite useState che aggiorna lo stato
 
-      try {
-        //Decodifica del token
-        const decoded = jwtDecode(userData.token);
+            try {
+                // Decodifica del token
+                const decoded = jwtDecode(userData.token);
 
-        //Estrazione dell'id
-        const id = decoded.userId;
+                // Estrazione dell'id
+                const id = decoded.userId;
 
-        //Estrazione del ruolo
-        const role = decoded.role ? decoded.role.toUpperCase().trim() : 'LURKER';
+                // Estrazione del ruolo
+                const role = decoded.role ? decoded.role.toUpperCase().trim() : 'LURKER';
 
-        //Estrazione dello username
-        const username = decoded.username;
+                // Estrazione dello username
+                const username = decoded.username;
 
-        //Aggiornamento dello stato
-        setIsLoggedIn(true);
-        setUserId(id);
-        setUserRole(role);
-        setUserName(username);
-        localStorage.setItem('token', userData.token);
+                // Aggiornamento dello stato
+                setIsLoggedIn(true);
+                setUserId(id);
+                setUserRole(role);
+                setUserName(username);
+                localStorage.setItem('token', userData.token);
 
-      } catch (error) {
-        console.error("Errore nella decodifica del token:", error);
-        alert("Errore durante l'accesso.");
-      }
+            } catch (error) {
+                console.error("Errore nella decodifica del token:", error);
+                alert("Errore durante l'accesso.");
+            }
 
+        }
+      //setUserInfo(username);
+
+    };
+
+    // Funzione che aggiorna le pagine
+    const handleNavigation = (page) => {
+        setIsMenuOpen(false);
+
+        //controlli
+        if (page == 'Esci') {
+            setIsLoggedIn(false);
+            setUserRole(null);
+            setCurrentPage('HomePage');
+            setSelectIssueId(null);
+            setUserId(null);
+            setUserName(null);
+        } else if (page == 'Aggiungi nuovo utente') {
+            setCurrentPage('Aggiungi nuovo utente');
+            setSelectIssueId(null);
+        } else if (page == 'Cambia password') {
+            setCurrentPage('Cambia password');
+            setSelectIssueId(null);
+        } else {
+            setCurrentPage(page);
+            setSelectIssueId(null);
+        }
+    };
+
+    // Funziona che porta l'utente dalla  pagina generale  ViewIssue a quella specifica di un singolo issue
+    const handleViewIssue = (issueId) => {
+        setSelectIssueId(issueId);
+        setCurrentPage('Assegna Issue'); //aggiorna la pagina
+    };
+
+    // Funzione di torna indietro
+    const handleBackToList = () => {
+        setSelectIssueId(null);
+        setCurrentPage('Visualizza tutte le Issues');
+    };
+
+    const handleHomeClick = () => {
+        setCurrentPage('HomePage');
+        setSelectIssueId(null);
+    };
+
+    //CONTROLLO = se l'utente non accede, mostra solo la pagina di login
+
+    if (!isLoggedIn) {
+        return <LoginPage onLogin={handleLogin}/>;
     }
-    //setUserInfo(username);
 
-  };
+    /*
+      FUNZIONE = definiamo cosa deve apparire fisicamente sullo schermo
+    */
 
-  //funzione che aggiorna le pagine
-  const handleNavigation = (page) => {
+    const renderPage = () => {
+        switch (currentPage) {
+            case 'HomePage':
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
-    setIsMenuOpen(false);
-    //controlli
-    if(page == 'Esci') {
-      setIsLoggedIn(false);
-      setUserRole(null);
-      setCurrentPage('HomePage');
-      setSelectIssueId(null);
-      setUserId(null);
-      setUserName(null);
-    }else if (page == 'Aggiungi nuovo utente') {
-      setCurrentPage('Aggiungi nuovo utente');
-      setSelectIssueId(null);
-    }else if (page == 'Cambia password') {
-      setCurrentPage('Cambia password');
-      setSelectIssueId(null);
-    }else {
-      setCurrentPage(page);
-      setSelectIssueId(null);
-    }
-  };
+            case 'Visualizza tutte le Issue':
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId}/>;
 
-  //funziona che porta l'utente dalla  pagina generale  ViewIssue a quella specifica di un singolo issue
-  const handleViewIssue = (issueId) => {
-    setSelectIssueId(issueId); //indichi quale issue hai selezionato
-    setCurrentPage('Assegna Issue'); //aggiorna la pagina
-  };
+            // todo: aggiungere case di mie issue segnalate e mie issue assegnate
 
-  //funzione di torna indietro
-  const handleBackToList = () => {
-    setSelectIssueId(null);
-    setCurrentPage('Visualizza tutte le Issues');
-  };
+            case 'Segnala Issue':
+                return <CreateIssue
+                        onCancel={() => handleNavigation('HomePage')}
+                        onIssueCreated={handleViewIssue}
+                      />;
 
-  const handleHomeClick = () => {
-    setCurrentPage('HomePage');
-    setSelectIssueId(null);
-  };
+            case 'Assegna Issue':
+                return selectIssueId ? (
+                  <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
+                ) : (
+                  <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>
+                );
 
-  //CONTROLLO = se l'utente non accede, mostra solo la pagina di login
+            case 'Aggiungi nuovo utente':
+                return <CreateUser onCreateUser={handleNavigation}/>;
 
-  if(!isLoggedIn) {
-    return <LoginPage onLogin={handleLogin}/>;
-  }
+            case 'Cambia password':
+                return <ChangePassword onChangePassword={handleNavigation}/>;
 
-  /*
-    FUNZIONE = definiamo cosa deve apparire fisicamente sullo schermo
-   */
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'HomePage':
-        return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>;
+            default:
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>;
+        }
+    };
 
-      case 'Visualizza tutte le Issue':
-        return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId}/>;
+    // Struttura visiva principale dell'app
+    return (
+      <div className="min-h-screen w-full flex flex-col md:flex-row bg-gray-50">
+        {/* Menu */}
+        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation} userRole={userRole}/>
 
-      // todo: aggiungere case di mie issue segnalate e mie issue assegnate
+        <div className="flex-1 flex flex-col min-w-0">
+          <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(!isMenuOpen)} onHomeClick={() => setCurrentPage('HomePage')}/>
+          <main className="p-4 md:p-8 lg:p-12 overflow-y-auto">
+            <div className="max-w-7xl mx-auto w-full">
+              {renderPage()}
+            </div>
+          </main>
+        </div>
 
-      case 'Segnala Issue':
-        return <CreateIssue
-                  onCancel={() => handleNavigation('HomePage')}
-                  onIssueCreated={handleViewIssue}
-                />;
-
-      case 'Assegna Issue':
-        return selectIssueId ? (
-            <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
-        ):(
-            <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>
-        );
-
-      case 'Aggiungi nuovo utente':
-        return <CreateUser onCreateUser={handleNavigation}/>;
-
-      case 'Cambia password':
-        return <ChangePassword onChangePassword={handleNavigation}/>;
-
-      default:
-        return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>;
-    }
-  };
-
-
-  //struttura visiva principale dell'app
-  return (
-    <div className="min-h-screen w-full flex flex-col md:flex-row bg-gray-50">
-      {/* Menu */}
-      <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation} role={userRole}/>
-
-      <div className="flex-1 flex flex-col min-w-0">
-        <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(!isMenuOpen)} onHomeClick={() => setCurrentPage('HomePage')}/>
-        <main className="p-4 md:p-8 lg:p-12 overflow-y-auto">
-          <div className="max-w-7xl mx-auto w-full">
-            {renderPage()}
-          </div>
-        </main>
       </div>
-
-    </div>
-  )
+    )
 }
 
 export default App
