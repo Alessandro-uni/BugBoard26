@@ -3,7 +3,9 @@ import { X, ArrowUpDown } from 'lucide-react';
 
 function SortPopUp({isOpen, onClose}){
 
-    if(!isOpen) return null;
+    if (!isOpen) {
+        return null;
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -21,7 +23,7 @@ function SortPopUp({isOpen, onClose}){
             {/* Contenitore */}
             <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md mx-4 p-6 animate-in fade-in zoom-in duration-200">
 
-                {/* Header d */}
+                {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         <ArrowUpDown size={20} />
@@ -35,7 +37,7 @@ function SortPopUp({isOpen, onClose}){
                     </button>
                 </div>
 
-                {/* Form di Ordinamento */}
+                {/* Form di ordinamento */}
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                         <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700 mb-2">
@@ -65,7 +67,7 @@ function SortPopUp({isOpen, onClose}){
                         </select>
                     </div>
 
-                    {/* Pulsanti*/}
+                    {/* Riquadro di conferma */}
                     <div className="flex items-center gap-3 pt-4">
                         <button
                             type="submit"
@@ -81,8 +83,6 @@ function SortPopUp({isOpen, onClose}){
                             Annulla
                         </button>
                     </div>
-
-
                 </form>
             </div>
         </div>
