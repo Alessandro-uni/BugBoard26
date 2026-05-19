@@ -24,8 +24,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
-                    setAvailableTags(data.map(tag => tag.name));
+                    const tagData = await response.json();
+                    setAvailableTags(tagData.map(tag => tag.name));
                 } else {
                     const errorJson = await response.json();
                     alert("Errore: " + errorJson.message);
@@ -85,8 +85,8 @@ function CreateIssue({onCancel, onIssueCreated}){
             });
 
             if (response.ok) {
-                const data = await response.json();
-                console.log("Tag creato con successo:", data);
+                const tagData = await response.json();
+                console.log("Tag creato con successo:", tagData);
 
                 setAvailableTags([...availableTags, tag]);
                 setSelectedTags([...selectedTags, tag]);
@@ -96,7 +96,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                 alert("Errore: " + errorJson.message);
             }
 
-        } catch (error){
+        } catch (error) {
             console.error("Errore nella chiamata al backend:", error);
             alert('Errore: ' + error.message);
         }
@@ -134,10 +134,10 @@ function CreateIssue({onCancel, onIssueCreated}){
             });
 
             if(response.ok){
-                const data = await response.json();
-                console.log("Issue creata con successo:", data);
+                const issueData = await response.json();
+                console.log("Issue creata con successo:", issueData);
 
-                setCreatedIssueId(data.id);
+                setCreatedIssueId(issueData.id);
                 setShowSuccess(true);
 
                 setTitle('');
@@ -194,7 +194,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                     required
                                 >
-                                    {/*todo:prelevare dal db*/}
+                                    {/*todo: prelevare dal db*/}
                                     <option value="">Seleziona tipo</option>
                                     <option value="BUG">Bug</option>
                                     <option value="QUESTION">Question</option>
@@ -219,7 +219,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                 required
                             />
 
-                            {/* Allega File */}
+                            {/* Allega file */}
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Allega
                             </label>
@@ -296,7 +296,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </label>
                         </div>
 
-                        {/* Sezione Tag */}
+                        {/* Sezione tag */}
                         <div className="p-4 border border-b-black-300 rounded-lg">
                             <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
 
@@ -321,7 +321,7 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                             {/* Risultati e creazione tag */}
                             <div className="flex flex-wrap gap-2 items-center">
-                                {/* Pulsante Crea appare solo se il tag non esiste */}
+                                {/* Pulsante Crea (appare solo se il tag non esiste) */}
                                 {inputTagValue.trim() !== '' && !existTag && (
                                     <button
                                         type="button"
