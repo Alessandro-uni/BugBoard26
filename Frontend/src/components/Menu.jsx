@@ -1,25 +1,36 @@
 import React from "react";
 import {Home, List, PlusCircle, UserPlus, ClipboardList, Key, LogOut, CircleAlert, X} from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import {motion, AnimatePresence} from 'framer-motion';
 
-function Menu({ currentPage, onNavigate, isOpen, onClose }) {
+function Menu({currentPage, onNavigate, isOpen, onClose, role = 'LURKER'}) {
+    // Lista ruoli possibili
+    const ALL_ROLES = ['USER', 'ADMIN', 'LURKER'];
 
     // Configurazione del menu
     const menuSections = [
         {
-            title: 'Menu Principale',
+            title: 'Principale',
+            allowedRoles: ALL_ROLES,
             items: [
-                { icon: Home, label: 'Home' },
-                { icon: List, label: 'Le mie Issue' },
-                { icon: List, label: 'Visualizza tutte le Issue' },
-                { icon: PlusCircle, label: 'Crea Issue' },
+                { icon: List, label: 'Visualizza tutte le Issue', allowedRoles: ALL_ROLES },
+                { icon: List, label: 'Le mie Issue assegnate', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: List, label: 'Le mie Issue segnalate', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: PlusCircle, label: 'Segnala Issue', allowedRoles: ['USER', 'ADMIN'] },
             ]
         },
-
+        {
+            title: 'Gestione',
+            allowedRoles: 'ADMIN',
+            items: [
+                { icon: UserPlus, label: 'Aggiungi nuovo utente' },
+                { icon: ClipboardList, label: 'Assegna Issue' },
+            ]
+        },
         {
             title: 'Account',
+            allowedRoles: ALL_ROLES,
             items: [
-                { icon: Key, label: 'Cambia Password' },
+                { icon: Key, label: 'Cambia password' },
                 { icon: LogOut, label: 'Esci' },
             ]
         }
