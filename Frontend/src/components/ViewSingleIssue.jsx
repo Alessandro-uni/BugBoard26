@@ -55,7 +55,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // Caricamento iniziale dettagli della issue
     useEffect(() => {
         if (issueId) {
-           fetchIssueDetails();
+            fetchIssueDetails();
         }
     }, [issueId]);
 
@@ -260,7 +260,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                 {/* Pagina di errore visualizzazione issue */}
                 {issueError && (
                     <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                        <p className="text-red-700">{issuError}</p>
+                        <p className="text-red-700">{issueError}</p>
                     </div>
                 )}
 
