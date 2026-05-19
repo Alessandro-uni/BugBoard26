@@ -2,12 +2,10 @@ import {useState} from "react";
 //import {User} from 'lucide-react';
 
 function LoginPage({onLogin}) {
-
-    //creiamo le variabili
     const [username,setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    //funzione: quando premi il tasto accedi si crea un oggetto che contiene tutte le info su quel click
+    // Gestione invio modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -20,23 +18,19 @@ function LoginPage({onLogin}) {
                 body: JSON.stringify({mail: username, rawPassword: password }),
             });
 
-            if(response.ok){
+            if (response.ok) {
                 const token = await response.json();
                 localStorage.setItem("authentication_token", token);
-                console.log("Login riuscito");
-
 
                 onLogin(token);
-            }else{
-                const errorJson = await response.json();
+            } else {
                 alert("Errore: Mail o password errati");
             }
-        } catch (error){
-            console.error("Errore di connessione:", error);
-            alert("il server non risponde");
+
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:", error);
+            alert('Errore: ' + error.message);
         }
-
-
     };
 
     return (
@@ -50,7 +44,7 @@ function LoginPage({onLogin}) {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                    {/*inserimeto username*/}
+                    {/* Inserimento username */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Mail</label>
                         <div className="relative">
@@ -65,7 +59,7 @@ function LoginPage({onLogin}) {
                         </div>
                     </div>
 
-                    {/*inserimento pw*/}
+                    {/* Inserimento pw */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <div className="relative">
@@ -86,7 +80,6 @@ function LoginPage({onLogin}) {
             </div>
         </div>
     );
-
 }
 
 export default LoginPage;
