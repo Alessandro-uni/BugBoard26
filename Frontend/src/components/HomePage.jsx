@@ -44,7 +44,7 @@ function IssueSection({title, issues, onViewIssue}) {
     );
 }
 
-function HomePage({onViewIssue, currentUserId, userName}){
+function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
     const [allIssues, setAllIssues] = useState([]);
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
@@ -111,16 +111,22 @@ function HomePage({onViewIssue, currentUserId, userName}){
                         issues={allIssues}
                         onViewIssue={onViewIssue}
                     />
-                    <IssueSection
-                        title="Issue assegnate"
-                        issues={assignedIssues}
-                        onViewIssue={onViewIssue}
-                    />
-                    <IssueSection
-                        title="Issue segnalate"
-                        issues={reportedIssues}
-                        onViewIssue={onViewIssue}
-                    />
+
+                    {['USER', 'ADMIN'].includes(userRole) && (
+                        <>
+                            <IssueSection
+                                title="Issue assegnate"
+                                issues={assignedIssues}
+                                onViewIssue={onViewIssue}
+                            />
+                            <IssueSection
+                                title="Issue segnalate"
+                                issues={reportedIssues}
+                                onViewIssue={onViewIssue}
+                            />
+                        </>
+                    )}
+
                 </div>
             </div>
         </div>
