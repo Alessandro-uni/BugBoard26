@@ -2,7 +2,7 @@ import React from "react";
 import {Home, List, PlusCircle, UserPlus, ClipboardList, Key, LogOut, CircleAlert, X} from 'lucide-react';
 import {motion, AnimatePresence} from 'framer-motion';
 
-function Menu({currentPage, onNavigate, isOpen, onClose, role = 'LURKER'}) {
+function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
     // Lista ruoli possibili
     const ALL_ROLES = ['USER', 'ADMIN', 'LURKER'];
 
@@ -20,21 +20,36 @@ function Menu({currentPage, onNavigate, isOpen, onClose, role = 'LURKER'}) {
         },
         {
             title: 'Gestione',
-            allowedRoles: 'ADMIN',
+            allowedRoles: ['ADMIN'],
             items: [
-                { icon: UserPlus, label: 'Aggiungi nuovo utente' },
-                { icon: ClipboardList, label: 'Assegna Issue' },
+                { icon: UserPlus, label: 'Aggiungi nuovo utente', allowedRoles: ['ADMIN'] },
+                { icon: ClipboardList, label: 'Assegna Issue', allowedRoles: ['ADMIN'] },
             ]
         },
         {
             title: 'Account',
             allowedRoles: ALL_ROLES,
             items: [
-                { icon: Key, label: 'Cambia password' },
-                { icon: LogOut, label: 'Esci' },
+                { icon: Key, label: 'Cambia password', allowedRoles: ALL_ROLES },
+                { icon: LogOut, label: 'Esci', allowedRoles: ALL_ROLES },
             ]
         }
     ];
+
+    // Filtraggio menu
+    const filteredMenu = menuSections
+        .filter(section => {
+            const sectionRoles = section.allowedRoles || ALL_ROLES;
+            return sectionRoles.includes(userRole);
+        })
+        .map(section => ({
+            ...section,
+            items: section.items.filter(item => {
+                const itemRoles = item.allowedRoles || ALL_ROLES;
+                return itemRoles.includes(userRole);
+            })
+        }))
+        .filter(section => section.items.length > 0);
 
     const handleNavigate = (page) => {
         onNavigate(page);
@@ -68,7 +83,6 @@ function Menu({currentPage, onNavigate, isOpen, onClose, role = 'LURKER'}) {
                         className="fixed left-0 top-0 h-full w-72 bg-white shadow-2xl z-40 flex flex-col"
                     >
 
-
                         {/* Logo o Titolo */}
                         <div className="p-6 pt-20">
                             <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Chiudi Menu">
@@ -76,12 +90,12 @@ function Menu({currentPage, onNavigate, isOpen, onClose, role = 'LURKER'}) {
                             </button>
 
                             <h1 className="text-2xl font-bold text-gray-900">Menu</h1>
-                            <p className="text-xs text-blue-900 mt-1">User</p>
+                            <p className="text-xs text-blue-900 mt-1">{userRole}</p>
                         </div>
 
                         {/* Navigazione */}
                         <nav className="flex-1 px-4 overflow-y-auto">
-                            {menuSections.map((section, sectionIndex) => (
+                            {filteredMenu.map((section, sectionIndex) => (
                                 <div key={section.title} className={sectionIndex > 0 ? 'mt-6' : ''}>
                                     <h3 className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                                         {section.title}
