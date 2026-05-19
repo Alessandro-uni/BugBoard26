@@ -1,10 +1,11 @@
 import React from "react";
 import { X, Filter } from 'lucide-react';
 
-
 function FilterPopUp({isOpen,onClose}){
 
-    if(!isOpen) return null;
+    if (!isOpen) {
+        return null;
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -13,13 +14,10 @@ function FilterPopUp({isOpen,onClose}){
         onClose();
     };
 
-
     return (
-
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Overlay*/}
             <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-
 
             <div className="relative bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 p-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
 
@@ -74,13 +72,13 @@ function FilterPopUp({isOpen,onClose}){
                             </select>
                         </div>
 
-                        {/* Utente Segnalatore */}
+                        {/* Utente segnalatore */}
                         <div>
-                            <label htmlFor="reportUser" className="block text-sm font-medium text-gray-700 mb-2">
-                                Creato da
+                            <label htmlFor="reportingUser" className="block text-sm font-medium text-gray-700 mb-2">
+                                Segnalata da
                             </label>
                             <select
-                                id="reportUser"
+                                id="reportingUser"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                             >
                                 <option value="">Nessun utente selezionato</option>
@@ -93,7 +91,7 @@ function FilterPopUp({isOpen,onClose}){
                         {/* Utente Assegnato */}
                         <div>
                             <label htmlFor="assignedUser" className="block text-sm font-medium text-gray-700 mb-2">
-                                Assegnato a
+                                Assegnata a
                             </label>
                             <select
                                 id="assignedUser"
@@ -139,7 +137,7 @@ function FilterPopUp({isOpen,onClose}){
                         </div>
                     </div>
 
-                    {/* Sezione Date: Creazione */}
+                    {/* Sezione date: Creazione */}
                     <div className="border-t border-gray-200 pt-6">
                         <h3 className="text-sm font-semibold text-gray-900 mb-4">Data Creazione</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,7 +164,7 @@ function FilterPopUp({isOpen,onClose}){
                         </div>
                     </div>
 
-                    {/* Sezione Date: Modifica */}
+                    {/* Sezione date: Modifica */}
                     <div className="border-t border-gray-200 pt-6">
                         <h3 className="text-sm font-semibold text-gray-900 mb-4">Ultima Modifica</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -213,12 +211,7 @@ function FilterPopUp({isOpen,onClose}){
                 </form>
             </div>
         </div>
-
-
-
     );
-
-
 }
 
 export default FilterPopUp;
