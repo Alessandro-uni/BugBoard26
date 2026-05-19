@@ -15,6 +15,7 @@ import org.swe.bugboard.model.User;
 import org.swe.bugboard.model.UserRole;
 import org.swe.bugboard.repository.UserRepository;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,18 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    // Ruoli di utenti a cui è possibile assegnare issue
+    private static final List<UserRole> ASSIGNABLE_ROLES = Arrays.stream(UserRole.values())
+            .filter(UserRole::canBeAssignedToIssue).toList();
+
+    // Ruoli di utenti che possono segnalare issue
+    private static final List<UserRole> REPORTING_ROLES = Arrays.stream(UserRole.values())
+            .filter(UserRole::canReportIssue).toList();
+
+    // Stati di issue che vengono considerati come "carico di lavoro"
+    private static final List<IssueStatus> WORKALOAD_STATUS = Arrays.stream(IssueStatus.values())
+            .filter(IssueStatus::isWorkload).toList();
 
     @Transactional
     public UserResponse createUser(SignUpUserRequest user) {
@@ -113,18 +126,20 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponse> getAllUser() {
-        List<User> users = userRepository.findAllByUsernameExistsOrderByUsernameAsc(); // todo: decidere se mettere solo User e Admin o escludeere Lurker
+    public List<UserResponse> getAssignableUsers() {
+        List<User> users = userRepository.findByRoleInOrderByUsernameAsc(ASSIGNABLE_ROLES);
+        return users.stream().map(this::convertModelToResponse).toList();
+    }
 
+    @Transactional(readOnly = true)
+    public List<UserResponse> getReportingUsers() {
+        List<User> users = userRepository.findByRoleInOrderByUsernameAsc(REPORTING_ROLES);
         return users.stream().map(this::convertModelToResponse).toList();
     }
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUserByAvailabilityAsc() {
-        List<IssueStatus> activatedStatus = List.of(IssueStatus.TODO, IssueStatus.INPROGRESS);  // Stati considerati come "carico di lavoro"
-        List<UserRole> assignableRole = List.of(UserRole.USER, UserRole.ADMIN); // Ruoli di utenti a cui è possibile assegnare issue
-        List<User> users = userRepository.findByAvailabilityAsc(activatedStatus, assignableRole);
-
+        List<User> users = userRepository.findByAvailabilityAsc(WORKALOAD_STATUS, ASSIGNABLE_ROLES);
         return users.stream().map(this::convertModelToResponse).toList();
     }
 
