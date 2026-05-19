@@ -35,7 +35,7 @@ public class UserService {
             .filter(UserRole::canReportIssue).toList();
 
     // Stati di issue che vengono considerati come "carico di lavoro"
-    private static final List<IssueStatus> WORKALOAD_STATUS = Arrays.stream(IssueStatus.values())
+    private static final List<IssueStatus> WORKLOAD_STATUS = Arrays.stream(IssueStatus.values())
             .filter(IssueStatus::isWorkload).toList();
 
     @Transactional
@@ -139,7 +139,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<UserResponse> getUserByAvailabilityAsc() {
-        List<User> users = userRepository.findByAvailabilityAsc(WORKALOAD_STATUS, ASSIGNABLE_ROLES);
+        List<User> users = userRepository.findByAvailabilityAsc(WORKLOAD_STATUS, ASSIGNABLE_ROLES);
         return users.stream().map(this::convertModelToResponse).toList();
     }
 
