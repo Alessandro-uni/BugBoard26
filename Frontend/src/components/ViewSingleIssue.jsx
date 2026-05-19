@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle} from "lucide-react";
 
 function ViewSingleIssue({issueId, userRole, userId, onBack}) {
-
     // DOMINIO ISSUE
 
     const [issueData, setIssueData] = useState(null);
@@ -239,7 +238,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
                 <div className="text-gray-500 font-medium animate-pulse">Caricamento dettagli issue...</div>
             </div>
-        )
+        );
     }
 
     // Verifica esistenza della issue
@@ -309,7 +308,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     </div>
 
                     {/* Tasto Assegna */}
-                    {userRole === 'admin' && issueData.status !== "CLOSED" && !issueData?.assignedUserId && (
+                    {userRole === 'ADMIN' && issueData.status !== "CLOSED" && !issueData?.assignedUserId && (
                         <button
                             onClick={() => setShowAssignPopup(true)}
                             className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
@@ -336,7 +335,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     )}
 
                     {/* Nessun utente assegnato */}
-                    {!(userRole === 'admin' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
+                    {!(userRole === 'ADMIN' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
                         <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                             Nessun utente assegnato
                         </span>
@@ -394,7 +393,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
 
                                 {/* Tasto Chiudi Issue */}
-                                {userRole === 'admin' && issueData?.status !== 'CLOSED' && (
+                                {userRole === 'ADMIN' && issueData?.status !== 'CLOSED' && (
                                     <button
                                         onClick={() => setShowClosePopup(true)}
                                         className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
@@ -402,7 +401,6 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                         Chiudi Issue
                                     </button>
                                 )}
-
                             </div>
                         </div>
                     </div>
