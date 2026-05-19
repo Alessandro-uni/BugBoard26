@@ -57,14 +57,21 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserResponse>> viewAllUsers() {
-        List<UserResponse> response = userService.getAllUser();
+    @GetMapping("/reporting")
+    public ResponseEntity<List<UserResponse>> viewReportingUsers() {
+        List<UserResponse> response = userService.getReportingUsers();
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("available")
+    @GetMapping("/assignable")
+    public ResponseEntity<List<UserResponse>> viewAssignableUsers() {
+        List<UserResponse> response = userService.getAssignableUsers();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/available")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
         List<UserResponse> response = userService.getUserByAvailabilityAsc();
