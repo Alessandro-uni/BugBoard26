@@ -6,7 +6,7 @@ import FilterPopUp from './FilterPopUp';
 import ExportPopUp from './ExportPopUp';
 import {Badge} from "./Badge.jsx";
 
-function ViewIssueList({onViewIssue, bodyParams}) {
+function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     //stati per i popup
     const [isSortPopUpOpen, setIsSortPopUplOpen] = useState(false);
     const [isExportPopUpOpen, setIsExportPopUpOpen] = useState(false);
@@ -50,7 +50,7 @@ function ViewIssueList({onViewIssue, bodyParams}) {
             <div className="max-w-7xl mx-auto">
                 {/* Intestazione */}
                 <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">Tutte le Issue</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">{pageName}</h2>
                     <p className="text-gray-600">Filtra e ordina le Issue</p>
                 </div>
 
