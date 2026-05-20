@@ -5,9 +5,17 @@ function LoginPage({onLogin}) {
     const [username,setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    const errorMessage = document.getElementById("error-message");
     // Gestione invio modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
+        errorMessage.textContent = "";
+
+        // Verifica che l'utente sia connesso alla rete
+        if (!navigator.onLine) {
+            errorMessage.textContent = "Sei offline. Controlla la tua connessione ad internete e riprova";
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:8080/api/auth/login', {
@@ -15,7 +23,7 @@ function LoginPage({onLogin}) {
                 headers: {
                     'Content-Type' : 'application/json',
                 },
-                body: JSON.stringify({mail: username, rawPassword: password }),
+                body: JSON.stringify({mail: username, rawPassword: password}),
             });
 
             if (response.ok) {
@@ -24,12 +32,12 @@ function LoginPage({onLogin}) {
 
                 onLogin(token);
             } else {
-                alert("Errore: Mail o password errati");
+                errorMessage.textContent = "Errore: Mail o password errati";
             }
 
         } catch (error) {
             console.error("Errore nella chiamata al backend:", error);
-            alert('Errore: ' + error.message);
+            errorMessage.textContent = "Connessione fallita. Il server potrebbe essere spento";
         }
     };
 
@@ -75,6 +83,9 @@ function LoginPage({onLogin}) {
                     </div>
 
                     <button type="submit" className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">Accedi</button>
+
+                    {/* Paragrafo di errore */}
+                    <p id="error-message" className="text-red-500"></p>
 
                 </form>
             </div>
