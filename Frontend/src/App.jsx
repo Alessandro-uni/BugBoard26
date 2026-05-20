@@ -125,13 +125,13 @@ function App() {
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
             case 'Visualizza tutte le Issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{}}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{}} pageName={currentPage}/>;
 
             case 'Le mie Issue assegnate':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: userId}}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
 
             case 'Le mie Issue segnalate':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{reportedUserId: userId}}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{reportedUserId: userId}} pageName={currentPage}/>;
 
             case 'Segnala Issue':
                 return <CreateIssue
@@ -143,7 +143,7 @@ function App() {
                 return selectIssueId ? (
                     <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
                 ) : (
-                    <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: null}}/> // todo: capire perché non funziona
+                    <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: -1}} pageName={currentPage}/>
                 );
 
             case 'Aggiungi nuovo utente':
