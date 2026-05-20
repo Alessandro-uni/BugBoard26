@@ -1,40 +1,62 @@
-import {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Filter, ArrowUpDown, Download } from 'lucide-react';
 
 import SortPopUp from './SortPopUp';
 import FilterPopUp from './FilterPopUp';
 import ExportPopUp from './ExportPopUp';
+import {Badge} from "./Badge.jsx";
 
-
-function ViewIssueList({ onViewIssue }) {
+function ViewIssueList({onViewIssue, bodyParams}) {
     //stati per i popup
     const [isSortPopUpOpen, setIsSortPopUplOpen] = useState(false);
     const [isExportPopUpOpen, setIsExportPopUpOpen] = useState(false);
     const [isFilterPopUpOpen, setIsFilterPopUpOpen] = useState(false);
 
-    //dati di esempio
-    const issues = [
-        { id: 1, title: 'Bug nel sistema di login', description: 'Gli utenti non riescono ad accedere', priority: 'Alta', status: 'Aperto', assignee: 'Marco Rossi', date: '2026-03-28' },
-        { id: 2, title: 'Miglioramento UI Dashboard', description: 'Aggiornare il design della dashboard', priority: 'Media', status: 'In Progress', assignee: 'Laura Bianchi', date: '2026-03-27' },
-        { id: 3, title: 'Errore nel caricamento dati', description: 'I dati non vengono caricati correttamente', priority: 'Alta', status: 'Aperto', assignee: 'Giuseppe Verdi', date: '2026-03-26' },
-        { id: 4, title: 'Aggiungere esportazione PDF', description: 'Permettere export dei report in PDF', priority: 'Bassa', status: 'Chiuso', assignee: 'Anna Ferrari', date: '2026-03-25' },
-        { id: 5, title: 'Ottimizzazione performance', description: 'Migliorare la velocità di caricamento', priority: 'Media', status: 'In Progress', assignee: 'Paolo Russo', date: '2026-03-24' },
-    ];
+    const [filteredIssues, setFilteredIssues] = useState([]);
 
+    useEffect(() => {
+        const fetchIssues = async (bodyParams) => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/issues/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(bodyParams)
+                });
+
+                if (response.ok) {
+                    const issueData = await response.json();
+                    setFilteredIssues(issueData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchIssues(bodyParams);
+    }, [JSON.stringify(bodyParams)]);
 
     return (
         <div className="p-6">
             <div className="max-w-7xl mx-auto">
                 {/* Intestazione */}
                 <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">Tutte le Issues</h2>
-                    <p className="text-gray-600">Visualizza e gestisci tutte le Issues</p>
+                    <h2 className="text-2xl font-bold text-gray-900">Tutte le Issue</h2>
+                    <p className="text-gray-600">Filtra e ordina le Issue</p>
                 </div>
 
-                {/* Barra degli Strumenti (Buttons : Filtri/Ordina/Esporta) */}
+                {/* Barra degli strumenti (Buttons : Filtri/Ordina/Esporta) */}
                 <div className="p-4 border-b border-gray-200">
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-
 
                         <button
                             onClick={() => setIsFilterPopUpOpen(true)}
@@ -43,7 +65,6 @@ function ViewIssueList({ onViewIssue }) {
                             <Filter size={20} />
                             Filtra
                         </button>
-
 
                         <button
                             onClick={() => setIsSortPopUplOpen(true)}
@@ -64,39 +85,45 @@ function ViewIssueList({ onViewIssue }) {
                     </div>
                 </div>
 
-
-
                 {/* Contenitore Tabella */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200">
                     {/* Elenco Issue  */}
-                    <div className="divide-y divide-gray-200">
-                        {issues.map((issue) => (
-                            <div
-                                key={issue.id}
-                                onClick={() => onViewIssue(issue.id)}
-                                className="p-6 hover:bg-gray-50 transition-colors cursor-pointer"
-                            >
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-start gap-4 flex-1">
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-gray-900 mb-1 hover:text-blue-600 transition-colors">
-                                                {issue.title}
-                                            </h3>
-
-                                            <div className="flex items-center gap-4 text-sm text-gray-500">
-                                                <span>Assegnato a: <span className="font-medium text-gray-700">{issue.assignee}</span></span>
-                                                <span>•</span>
-                                                <span>{issue.date}</span>
+                    {filteredIssues.length === 0 ? (
+                        <p className="text-gray-500 text-sm">Nessuna issue in questa sezione</p>
+                    ) : (
+                        <div className="divide-y divide-gray-200">
+                            {filteredIssues.map((issue) => (
+                                <div
+                                    key={issue.id}
+                                    onClick={() => onViewIssue(issue.id)}
+                                    className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                                >
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-start gap-3 flex-1">
+                                            <div className="flex-1">
+                                                <h4 className="font-medium text-gray-900 mb-1 hover:text-blue-600 transition-colors">
+                                                    {issue.title}
+                                                </h4>
                                             </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            <Badge variant={issue.status}>
+                                                {issue.status}
+                                            </Badge>
+                                            {issue.priority && (
+                                                <Badge variant="priority">
+                                                    Priorità
+                                                </Badge>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
-
 
             <SortPopUp isOpen={isSortPopUpOpen} onClose={() => setIsSortPopUplOpen(false)} />
             <ExportPopUp isOpen={isExportPopUpOpen} onClose={() => setIsExportPopUpOpen(false)} />
