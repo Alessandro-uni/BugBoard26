@@ -125,9 +125,13 @@ function App() {
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
             case 'Visualizza tutte le Issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{}}/>;
 
-            // todo: aggiungere case di mie issue segnalate e mie issue assegnate
+            case 'Le mie Issue assegnate':
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: userId}}/>;
+
+            case 'Le mie Issue segnalate':
+                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{reportedUserId: userId}}/>;
 
             case 'Segnala Issue':
                 return <CreateIssue
@@ -137,9 +141,9 @@ function App() {
 
             case 'Assegna Issue':
                 return selectIssueId ? (
-                  <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
+                    <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
                 ) : (
-                  <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>
+                    <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: null}}/> // todo: capire perché non funziona
                 );
 
             case 'Aggiungi nuovo utente':
@@ -149,7 +153,7 @@ function App() {
                 return <ChangePassword onChangePassword={handleNavigation}/>;
 
             default:
-                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName}/>;
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
         }
     };
 
