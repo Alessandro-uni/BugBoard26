@@ -101,7 +101,8 @@ Content-Type: application/json
 {
   "title": "MiaIssue1",
   "description": "Risolvete la prima issue",
-  "image": "No",
+  "imageName": "Ciaone.txt",
+  "rawImage": "DkHwDA==",
   "priority": false,
   "type": "BUG"
 }
@@ -115,6 +116,7 @@ Content-Type: application/json
   "title": "Mia bella Issue2",
   "description": "Risolvete la seconda issue",
   "priority": true,
+  "imageName": "Ciaone",
   "tags": ["Graphics", "Frontend"],
   "type": "FEATURE"
 }
@@ -128,6 +130,8 @@ Content-Type: application/json
   "title": "Mia bella Issue3",
   "description": "Risolvete la terza issue",
   "priority": true,
+  "imageName": "Ciaone",
+  "rawImage": ["12"],
   "tags": ["Backend"],
   "type": "FEATURE"
 }
@@ -237,7 +241,15 @@ Content-Type: application/json
   "tags": ["Frontend"]
 }
 
-### 10j. Filtra issue: prendi tutte le issue
+### 10j. Filtra issue: prendi issue specifica
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "hasImage": false
+}
+
+### 10k. Filtra issue: prendi tutte le issue
 POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 

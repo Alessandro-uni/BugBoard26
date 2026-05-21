@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.Issue;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

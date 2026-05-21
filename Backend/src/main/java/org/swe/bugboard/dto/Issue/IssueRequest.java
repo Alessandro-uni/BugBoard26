@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.Issue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,4 +24,5 @@ public class IssueRequest {
     private LocalDateTime endLastModifiedDate;
     private Long reportingUserId;
     private Long assignedUserId;
+    private Boolean hasImage;
 }

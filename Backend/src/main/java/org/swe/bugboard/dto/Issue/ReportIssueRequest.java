@@ -1,5 +1,6 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.Issue;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,5 +28,8 @@ public class ReportIssueRequest {
     private Boolean priority;
 
     private Set<String> tags;
-    private String image;
+
+    //todo: rimuovere se usiamo multipartfile
+    private String imageName;
+    private byte[] rawImage;
 }

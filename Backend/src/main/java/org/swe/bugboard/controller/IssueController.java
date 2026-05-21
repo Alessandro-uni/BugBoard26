@@ -2,12 +2,16 @@ package org.swe.bugboard.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-import org.swe.bugboard.dto.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.swe.bugboard.dto.History.HistoryResponse;
+import org.swe.bugboard.dto.Issue.*;
+import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.service.HistoryService;
 import org.swe.bugboard.service.IssueService;
 
@@ -23,14 +27,15 @@ public class IssueController {
 
     private static final String USER_ID_CLAIM = "userId";
 
-    @PostMapping
+    @PostMapping//(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<IssueResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
                                                      @Valid @RequestBody ReportIssueRequest reportIssueRequest) {
+                                                     //@RequestParam(value = "file", required = false) MultipartFile file) {
         Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserRequest userRequest = UserRequest.builder().id(userId).build();
 
-        IssueResponse response = issueService.createIssue(reportIssueRequest, userRequest);
+        IssueResponse response = issueService.createIssue(reportIssueRequest, userRequest);//, file);
 
         return ResponseEntity.ok(response);
     }

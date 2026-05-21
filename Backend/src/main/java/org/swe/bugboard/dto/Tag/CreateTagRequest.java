@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.Tag;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

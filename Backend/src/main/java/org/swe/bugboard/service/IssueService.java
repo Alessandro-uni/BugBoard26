@@ -6,7 +6,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.swe.bugboard.dto.*;
+import org.swe.bugboard.specification.IssueSpecification;
+import org.swe.bugboard.dto.History.HistoryRequest;
+import org.swe.bugboard.dto.Issue.IssueRequest;
+import org.swe.bugboard.dto.Issue.IssueResponse;
+import org.swe.bugboard.dto.Issue.ReportIssueRequest;
+import org.swe.bugboard.dto.Issue.UpdateIssueRequest;
+import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
@@ -24,12 +30,36 @@ public class IssueService {
     private final TagRepository tagRepository;
     private final HistoryService historyService;
 
-    @Transactional
-    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest) {
+    @Transactional //todo:rimuovere MultipartFile se non lo usi
+    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest){//, MultipartFile file) {
         User reportingUser = findUserOrThrow(userRequest.getId());
 
         Set<Tag> tags = tagRepository.findByNameIn(reportIssueRequest.getTags());
 
+        IssueImage image = null;
+
+        /*Se capisci come fare RequestParam e metterlo in json
+        if(file != null && !file.isEmpty()){
+            String extension = file.getName().substring(file.getName().lastIndexOf('.'));
+            String storedName = UUID.randomUUID() + extension;
+
+            image = IssueImage.builder()
+                    .rawImage(reportIssueRequest.getRawImage())
+                    .name(storedName).build();
+        }*/
+        if(reportIssueRequest.getImageName() != null && reportIssueRequest.getRawImage() != null){
+            //todo: gestisci il caso in cui il file non contiene '.'
+
+            String extension = reportIssueRequest.getImageName().substring(reportIssueRequest.getImageName().lastIndexOf('.'));
+            String storedName = UUID.randomUUID() + extension;
+
+            image = IssueImage.builder()
+                    .rawImage(reportIssueRequest.getRawImage())
+                    .name(storedName).build();
+        }
+
+
+        System.out.println("Received" + reportIssueRequest.getImageName() + " " + Arrays.toString(reportIssueRequest.getRawImage()));
         Issue issue = Issue.builder()
                 .title(reportIssueRequest.getTitle())
                 .description(reportIssueRequest.getDescription())
@@ -37,7 +67,7 @@ public class IssueService {
                 .status(IssueStatus.TODO)
                 .priority(reportIssueRequest.getPriority())
                 .tags(tags)
-                .image(reportIssueRequest.getImage())
+                .image(image)
                 .creationDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .reportingUser(reportingUser)
@@ -196,6 +226,10 @@ public class IssueService {
             }
         }
 
+        if(request.getHasImage() != null){
+            specification = specification.and(IssueSpecification.hasImage(request.getHasImage()));
+        }
+
         return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();
     }
 
@@ -231,7 +265,8 @@ public class IssueService {
                                 .map(Tag::getName)
                                 .collect(Collectors.toSet())
                 )
-                .image(issue.getImage())
+                .imageName(issue.getImage() == null ? null : issue.getImage().getName())
+                .rawImage(issue.getImage() == null ? null : issue.getImage().getRawImage())
                 .creationDate(issue.getCreationDate())
                 .lastModifiedDate(issue.getLastModifiedDate())
                 .reportingUserId(issue.getReportingUser().getId())

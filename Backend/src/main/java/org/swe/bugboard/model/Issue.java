@@ -50,7 +50,10 @@ public class Issue {
     )
     private Set<Tag> tags;
 
-    private String image; //todo: come mettere l'immagine? link? percorso?
+    //Even though it can be null, the relationship is on this size to allow FetchType.LAZY, because it has a large object (@lob) which we want to avoid loading if possible
+    @OneToOne(fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private IssueImage image;
 
     @CreationTimestamp
     @Column(updatable = false)
