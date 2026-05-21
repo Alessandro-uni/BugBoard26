@@ -30,8 +30,8 @@ public class IssueController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<IssueResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
-                                                     @Valid @RequestPart("reportIssueRequest") ReportIssueRequest reportIssueRequest,
-                                                     @RequestPart(value = "file") MultipartFile file) {
+                                                     @Valid @RequestPart("data") ReportIssueRequest reportIssueRequest,
+                                                     @RequestPart(value = "file", required = false) MultipartFile file) {
         Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserRequest userRequest = UserRequest.builder().id(userId).build();
 

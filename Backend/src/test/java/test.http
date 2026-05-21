@@ -98,8 +98,8 @@ POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
 Content-Type: multipart/form-data; boundary=boundary;
 
---boundary123
-Content-Disposition: form-data; name="reportIssueRequest"
+--boundary
+Content-Disposition: form-data; name="data"
 Content-Type: application/json
 
 {

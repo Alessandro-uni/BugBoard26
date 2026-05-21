@@ -260,7 +260,6 @@ public class IssueService {
                                 .collect(Collectors.toSet())
                 )
                 .imageName(issue.getImage() == null ? null : issue.getImage().getName())
-                .rawImage(issue.getImage() == null ? null : issue.getImage().getRawImage())
                 .creationDate(issue.getCreationDate())
                 .lastModifiedDate(issue.getLastModifiedDate())
                 .reportingUserId(issue.getReportingUser().getId())
