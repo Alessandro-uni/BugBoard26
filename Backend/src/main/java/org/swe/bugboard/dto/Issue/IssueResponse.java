@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.Issue;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +20,8 @@ public class IssueResponse {
     private String status;
     private Boolean priority;
     private Set<String> tags;
-    private String image;
+    private String imageName;
+    private byte[] rawImage;
     private LocalDateTime creationDate;
     private LocalDateTime lastModifiedDate;
     private Long reportingUserId;

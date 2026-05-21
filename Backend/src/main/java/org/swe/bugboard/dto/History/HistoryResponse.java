@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.History;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

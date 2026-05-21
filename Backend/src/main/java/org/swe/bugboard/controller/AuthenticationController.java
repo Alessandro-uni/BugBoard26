@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.swe.bugboard.service.AuthenticationService;
-import org.swe.bugboard.dto.AuthenticationRequest;
-import org.swe.bugboard.dto.AuthenticationResponse;
+import org.swe.bugboard.dto.User.AuthenticationRequest;
+import org.swe.bugboard.dto.User.AuthenticationResponse;
 
 @RestController
 @RequestMapping("/api/auth")

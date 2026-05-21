@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto;
+package org.swe.bugboard.dto.User;
 
 import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;

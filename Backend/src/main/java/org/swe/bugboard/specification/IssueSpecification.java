@@ -1,4 +1,4 @@
-package org.swe.bugboard.service;
+package org.swe.bugboard.specification;
 
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,7 +26,7 @@ public class IssueSpecification {
                 criteriaBuilder.equal(root.get("assignedUser").get("id"), Id);
     }
 
-    public static Specification<Issue> hasPriority(Boolean priority){
+    public static Specification<Issue> hasPriority(boolean priority){
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("priority"), priority);
     }
@@ -76,4 +76,14 @@ public class IssueSpecification {
             return criteriaBuilder.isEmpty(root.get("tags"));
         };
     }
+
+    public static Specification<Issue> hasImage(boolean hasImage){
+        if(hasImage){
+            return (root, query, criteriaBuilder) ->
+                    criteriaBuilder.isNotNull(root.get("image"));
+        }
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.isNull(root.get("image"));
+    }
+
 }
