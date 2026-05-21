@@ -21,7 +21,7 @@ public class IssueResponse {
     private Boolean priority;
     private Set<String> tags;
     private String imageName;
-    private byte[] rawImage;
+
     private LocalDateTime creationDate;
     private LocalDateTime lastModifiedDate;
     private Long reportingUserId;

@@ -28,8 +28,4 @@ public class ReportIssueRequest {
     private Boolean priority;
 
     private Set<String> tags;
-
-    //todo: rimuovere se usiamo multipartfile
-    private String imageName;
-    private byte[] rawImage;
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.swe.bugboard.specification.IssueSpecification;
 import org.swe.bugboard.dto.History.HistoryRequest;
 import org.swe.bugboard.dto.Issue.IssueRequest;
@@ -18,6 +19,7 @@ import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
 import org.swe.bugboard.repository.UserRepository;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,8 +32,8 @@ public class IssueService {
     private final TagRepository tagRepository;
     private final HistoryService historyService;
 
-    @Transactional //todo:rimuovere MultipartFile se non lo usi
-    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest){//, MultipartFile file) {
+    @Transactional
+    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest, MultipartFile file) {
         User reportingUser = findUserOrThrow(userRequest.getId());
 
         Set<Tag> tags = tagRepository.findByNameIn(reportIssueRequest.getTags());
@@ -39,27 +41,19 @@ public class IssueService {
         IssueImage image = null;
 
         /*Se capisci come fare RequestParam e metterlo in json
-        if(file != null && !file.isEmpty()){
-            String extension = file.getName().substring(file.getName().lastIndexOf('.'));
-            String storedName = UUID.randomUUID() + extension;
+        */if(file != null && !file.isEmpty()){
+            String extension = Objects.requireNonNull(file.getContentType()).substring(file.getContentType().lastIndexOf('/') + 1);
+            String storedName = UUID.randomUUID() + "." + extension;
 
-            image = IssueImage.builder()
-                    .rawImage(reportIssueRequest.getRawImage())
-                    .name(storedName).build();
-        }*/
-        if(reportIssueRequest.getImageName() != null && reportIssueRequest.getRawImage() != null){
-            //todo: gestisci il caso in cui il file non contiene '.'
-
-            String extension = reportIssueRequest.getImageName().substring(reportIssueRequest.getImageName().lastIndexOf('.'));
-            String storedName = UUID.randomUUID() + extension;
-
-            image = IssueImage.builder()
-                    .rawImage(reportIssueRequest.getRawImage())
-                    .name(storedName).build();
+            try{
+                image = IssueImage.builder()
+                        .rawImage(file.getBytes())
+                        .name(storedName).build();
+            } catch (IOException e) {
+                throw new RuntimeException("Could not save file");
+            }
         }
 
-
-        System.out.println("Received" + reportIssueRequest.getImageName() + " " + Arrays.toString(reportIssueRequest.getRawImage()));
         Issue issue = Issue.builder()
                 .title(reportIssueRequest.getTitle())
                 .description(reportIssueRequest.getDescription())

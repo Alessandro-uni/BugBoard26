@@ -93,19 +93,29 @@ Content-Type: application/json
 GET http://localhost:8080/api/tags
 Authorization: Bearer {{auth_token}}
 
-### 7. Crea issue 1
+### 7. Crea issue 1 ??????
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{auth_token}}
+Content-Type: multipart/form-data; boundary=boundary;
+
+--boundary123
+Content-Disposition: form-data; name="reportIssueRequest"
 Content-Type: application/json
 
 {
-  "title": "MiaIssue1",
-  "description": "Risolvete la prima issue",
-  "imageName": "Ciaone.txt",
-  "rawImage": "DkHwDA==",
-  "priority": false,
-  "type": "BUG"
+  "title": "Mia bella Issue2",
+  "description": "Risolvete la seconda issue",
+  "priority": true,
+  "tags": ["Graphics", "Frontend"],
+  "type": "FEATURE"
 }
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="ciao.png"
+Content-Type: image/png
+
+< C:\Users\aless\Desktop\ciao.png
+--boundary--
 
 ### 7b. Crea issue 2
 POST http://localhost:8080/api/issues
@@ -116,7 +126,6 @@ Content-Type: application/json
   "title": "Mia bella Issue2",
   "description": "Risolvete la seconda issue",
   "priority": true,
-  "imageName": "Ciaone",
   "tags": ["Graphics", "Frontend"],
   "type": "FEATURE"
 }
