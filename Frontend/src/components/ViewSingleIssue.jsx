@@ -251,6 +251,11 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         );
     }
 
+    // Controlli dei permessi
+    const canAssign = userRole === 'ADMIN' && issueData.status !== "CLOSED" && !issueData?.assignedUserId;
+    const canChange = userId === issueData?.assignedUserId && issueData?.status !== 'CLOSED' && issueData?.status !== 'RESOLVED';
+    const canClose = userRole === 'ADMIN' && issueData?.status !== 'CLOSED';
+
     // RENDERIZZAZIONE
 
     return (
@@ -272,75 +277,105 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     <span className="text-xl leading-none">&larr;</span> Torna alla lista
                 </button>
 
-                {/* Proprietà issue */}
-                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <div className="space-y-4">
+                <div className="flex flex-col md:flex-row gap-6">
+                    {/* Proprietà issue */}
+                    <div className="flex-1 bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Proprietà</h3>
+
                         <div className="flex flex-wrap gap-3">
                             {/* Stato */}
                             <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(issueData?.status)}`}>
                                 {issueData?.status || 'Stato non definito'}
                             </span>
+
                             {/* Tipo */}
                             <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
                                 {issueData?.type || 'Tipo non definito'}
                             </span>
+
                             {/* Priorità */}
                             {issueData?.priority && (
-                                    <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
-                                        Priorità
-                                    </span>
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700 border border-yellow-200">
+                                    Priorità
+                                </span>
+                            )}
+
+                            {/* Utente assegnato */}
+                            {issueData?.assignedUserId && (
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
+                                    {isUserLoading ? (
+                                        "Caricamento utente..."
+                                    ) : userError ? (
+                                        `Errore: ${userError}`
+                                    ) : assignedUser ? (
+                                        `Assegnato a: ${assignedUser.username}`
+                                    ) : (
+                                        "Utente non disponibile"
+                                    )}
+                                </span>
+                            )}
+
+                            {/* Nessun utente assegnato */}
+                            {!(userRole === 'ADMIN' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
+                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
+                                    Nessun utente assegnato
+                                </span>
                             )}
                         </div>
 
                         {/* Tag */}
                         {issueData?.tags && issueData.tags.length > 0 && (
                             <div className="flex items-center gap-2 text-gray-500">
-                                <Tag size={16} />
-                                <div className="flex gap-2">
+                                <Tag size={16}/>
+                                <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto w-full pr-2">
                                     {issueData.tags.map(tag => (
                                         <span key={tag} className="text-sm bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
-                                            #{tag}
-                                        </span>
+                                    #{tag}
+                                </span>
                                     ))}
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Tasto Assegna */}
-                    {userRole === 'ADMIN' && issueData.status !== "CLOSED" && !issueData?.assignedUserId && (
-                        <button
-                            onClick={() => setShowAssignPopup(true)}
-                            className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
-                        >
-                            <UserPlus size={18} />
-                            Assegna Issue
-                        </button>
+                    {/* Azioni */}
+                    {(canAssign || canChange || canClose) && (
+                        <div className="w-full md:w-80 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4">
+                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Azioni</h3>
 
-                    )}
-
-                    {/* Utente assegnato */}
-                    {issueData?.assignedUserId && (
-                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
-                            {isUserLoading ? (
-                                "Caricamento utente..."
-                            ) : userError ? (
-                                `Errore: ${userError}`
-                            ) : assignedUser ? (
-                                `Assegnato a: ${assignedUser.username}`
-                            ) : (
-                                "Utente non disponibile"
+                            {/* Tasto Assegna */}
+                            {canAssign && (
+                                <button
+                                    onClick={() => setShowAssignPopup(true)}
+                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
+                                >
+                                    <UserPlus size={18} />
+                                    Assegna Issue
+                                </button>
                             )}
-                        </span>
-                    )}
 
-                    {/* Nessun utente assegnato */}
-                    {!(userRole === 'ADMIN' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
-                        <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
-                            Nessun utente assegnato
-                        </span>
-                    )}
+                            {/* Tasto Cambia stato issue */}
+                            {canChange && (
+                                <button
+                                    onClick={() => setShowStatusPopup(true)}
+                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
+                                >
+                                    Cambia stato in {nextStatus}
+                                </button>
+                            )}
 
+                            {/* Tasto Chiudi Issue */}
+                            {canClose    && (
+                                <button
+                                    onClick={() => setShowClosePopup(true)}
+                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
+                                >
+                                    Chiudi Issue
+                                </button>
+                            )}
+
+                        </div>
+                    )}
                 </div>
 
                 {/* Dettagli issue */}
@@ -348,16 +383,6 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     <div className="p-8 space-y-6">
                         <div className="flex justify-between items-center border-b pb-4">
                             <h3 className="text-xl font-bold text-gray-900">Dettagli Issue</h3>
-
-                            {/* Tasto Cambia stato issue */}
-                            {userId === issueData?.assignedUserId && issueData?.status !== 'CLOSED' && issueData?.status !== 'RESOLVED' && (
-                                <button
-                                    onClick={() => setShowStatusPopup(true)}
-                                    className="ml-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
-                                >
-                                    Cambia stato in {nextStatus}
-                                </button>
-                            )}
                         </div>
 
                         <div className="space-y-6">
@@ -381,26 +406,30 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
                             </div>
 
+                            {/* Allegato */}
                             <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
-                                {/* Allegati */}
-                                <div className="flex items-center gap-2 text-sm font-medium text-blue-600 cursor-pointer hover:underline">
-                                    <Paperclip size={16} />
-                                    <span>
-                                        {issueData?.attachments && issueData.attachments.length > 0
-                                            ? `Visualizza allegati (${issueData.attachments.length} file)`
-                                            : "Nessun allegato"}
-                                    </span>
+                                <div className="mt-4">
+                                    {issueData?.image?.rawImage ? (
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
+                                                <Paperclip size={16} />
+                                                <span>Immagine allegata:</span>
+                                            </div>
+                                            <div className="border rounded-lg overflow-hidden max-w-md mt-2">
+                                                <img
+                                                    src={`data:image/jpeg; base64, ${issueData.image.rawImage}`}
+                                                    alt="Allegato issue"
+                                                    className="w-full h-auto object-contain"
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2 text-sm font-medium text-blue-600 cursor-pointer hover:underline">
+                                            <Paperclip size={16} />
+                                            <span>Nessun allegato</span>
+                                        </div>
+                                    )}
                                 </div>
-
-                                {/* Tasto Chiudi Issue */}
-                                {userRole === 'ADMIN' && issueData?.status !== 'CLOSED' && (
-                                    <button
-                                        onClick={() => setShowClosePopup(true)}
-                                        className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
-                                    >
-                                        Chiudi Issue
-                                    </button>
-                                )}
                             </div>
                         </div>
                     </div>
