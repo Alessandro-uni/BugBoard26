@@ -7,12 +7,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.swe.bugboard.dto.Issue.*;
 import org.swe.bugboard.specification.IssueSpecification;
 import org.swe.bugboard.dto.History.HistoryRequest;
-import org.swe.bugboard.dto.Issue.IssueRequest;
-import org.swe.bugboard.dto.Issue.IssueResponse;
-import org.swe.bugboard.dto.Issue.ReportIssueRequest;
-import org.swe.bugboard.dto.Issue.UpdateIssueRequest;
 import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
@@ -40,8 +37,7 @@ public class IssueService {
 
         IssueImage image = null;
 
-        /*Se capisci come fare RequestParam e metterlo in json
-        */if(file != null && !file.isEmpty()){
+        if(file != null && !file.isEmpty()){
             String extension = Objects.requireNonNull(file.getContentType()).substring(file.getContentType().lastIndexOf('/') + 1);
             String storedName = UUID.randomUUID() + "." + extension;
 
@@ -246,6 +242,14 @@ public class IssueService {
     }
 
     private IssueResponse convertModelToResponse(Issue issue) {
+        IssueImageResponse imageResponse = null;
+
+        if (issue.getImage() != null) {
+            imageResponse = IssueImageResponse.builder()
+                    .name(issue.getImage().getName())
+                    .rawImage(issue.getImage().getRawImage()).build();
+        }
+
         return IssueResponse.builder().id(issue.getId())
                 .title(issue.getTitle())
                 .description(issue.getDescription())
@@ -259,7 +263,7 @@ public class IssueService {
                                 .map(Tag::getName)
                                 .collect(Collectors.toSet())
                 )
-                .imageName(issue.getImage() == null ? null : issue.getImage().getName())
+                .image(imageResponse)
                 .creationDate(issue.getCreationDate())
                 .lastModifiedDate(issue.getLastModifiedDate())
                 .reportingUserId(issue.getReportingUser().getId())
