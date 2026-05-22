@@ -20,7 +20,7 @@ public class IssueResponse {
     private String status;
     private Boolean priority;
     private Set<String> tags;
-    private String imageName;
+    private IssueImageResponse image;
 
     private LocalDateTime creationDate;
     private LocalDateTime lastModifiedDate;
