@@ -3,7 +3,7 @@ import { Paperclip, X, Tag, Plus } from 'lucide-react';
 
 function CreateIssue({onCancel, onIssueCreated}){
     const [selectedTags, setSelectedTags] = useState([]);
-    const [attachments, setAttachments] = useState([]);
+    const [attachment, setAttachment] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
@@ -102,60 +102,83 @@ function CreateIssue({onCancel, onIssueCreated}){
         }
     };
 
-    // Gestisce l'aggiunta dei nomi dei file
+    // Gestisce l'aggiunta del file
     const handleFileUpload = (e) => {
         const files = e.target.files;
-        if (files) {
-            // Trasforma la FileList in un array e prende solo i nomi
-            const newAttachments = Array.from(files).map(file => file.name);
-            setAttachments([...attachments, ...newAttachments]);
+        if (files && files.length > 0) {
+            const file = files[0];
+
+            if (file.type.startsWith('image/')) {
+                setAttachment([file]);
+            } else {
+                alert("File caricato non valido. Carica solo file di tipo immagine (JPG, PNG, etc...)");
+            }
+
+            e.target.value = '';
         }
     };
 
     // Rimuove un allegato specifico tramite indice
     const removeAttachment = (index) => {
-        setAttachments(attachments.filter((_, i) => i !== index));
+        setAttachment(attachment.filter((_, i) => i !== index));
     };
 
     // Gestione invio modulo
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+        const handleSubmit = async (e) => {
+            e.preventDefault();
 
-        const token = localStorage.getItem('token');
+            const token = localStorage.getItem('token');
 
-        try {
-            const response = await fetch('http://localhost:8080/api/issues',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({title: title, description: description, type: type, priority: priority, tags: selectedTags})
-            });
+            const formData = new FormData();
 
-            if(response.ok){
-                const issueData = await response.json();
-                console.log("Issue creata con successo:", issueData);
+            const requestData = {
+                title: title,
+                description: description,
+                type: type,
+                priority: priority,
+                tags: selectedTags
+            };
 
-                setCreatedIssueId(issueData.id);
-                setShowSuccess(true);
+            formData.append("data", new Blob([JSON.stringify(requestData)], {
+                type: "application/json"
+            }));
 
-                setTitle('');
-                setType('');
-                setDescription('');
-                setAttachments([]);
-                setPriority(false);
-                setSelectedTags([]);
-            }else{
-                const errorJson = await response.json();
-                alert("Errore: " + errorJson.message);
+            if (attachment && attachment.length > 0) {
+                formData.append("file", attachment[0]);
             }
 
-        }catch (error){
-            console.error("Errore nella chiamata al backend:", error);
-            alert('Errore: ' + error.message);
-        }
-    };
+            try {
+                const response = await fetch('http://localhost:8080/api/issues',{
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if(response.ok){
+                    const issueData = await response.json();
+                    console.log("Issue creata con successo:", issueData);
+
+                    setCreatedIssueId(issueData.id);
+                    setShowSuccess(true);
+
+                    setTitle('');
+                    setType('');
+                    setDescription('');
+                    setAttachment([]);
+                    setPriority(false);
+                    setSelectedTags([]);
+                }else{
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            }catch (error){
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
 
     return (
         <div className="p-6">
@@ -221,15 +244,14 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                             {/* Allega file */}
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Allega
+                                Allega immagine
                             </label>
                             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                                 <input
                                     type="file"
                                     id="file-upload"
                                     className="hidden"
-                                    multiple
-                                    accept="image/*,.pdf,.doc,.docx"
+                                    accept="image/*"
                                     onChange={handleFileUpload}
                                 />
                                 <label
@@ -237,29 +259,27 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     className="cursor-pointer flex flex-col items-center"
                                 >
                                     <Paperclip className="w-10 h-10 text-gray-400 mb-2" />
-                                    <span className="text-sm font-medium text-gray-700">Clicca per caricare file</span>
-                                    <span className="text-xs text-gray-500 mt-1">PNG, JPG, PDF (max 10MB)</span>
+                                    <span className="text-sm font-medium text-gray-700">Clicca per caricare un'immagine</span>
+                                    <span className="text-xs text-gray-500 mt-1">JPG, PNG, GIF, WebP</span>
                                 </label>
                             </div>
 
-                            {/* Lista allegati selezionati */}
-                            {attachments.length > 0 && (
+                            {/* Allegato selezionato */}
+                            {attachment.length > 0 && (
                                 <div className="mt-4 space-y-2">
-                                    {attachments.map((file, index) => (
-                                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                            <div className="flex items-center gap-3">
-                                                <Paperclip className="w-4 h-4 text-gray-500" />
-                                                <span className="text-sm text-gray-700">{file}</span>
-                                            </div>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeAttachment(index)}
-                                                className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-                                            >
-                                                <X size={16} />
-                                            </button>
+                                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                        <div className="flex items-center gap-3">
+                                            <Paperclip className="w-4 h-4 text-gray-500" />
+                                            <span className="text-sm text-gray-700">Immagine allegata: {attachment[0].name}</span>
                                         </div>
-                                    ))}
+                                        <button
+                                            type="button"
+                                            className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                                            onClick={() => setAttachment([])}
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             )}
                         </div>
