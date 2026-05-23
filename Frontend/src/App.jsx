@@ -124,13 +124,13 @@ function App() {
             case 'HomePage':
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
-            case 'Visualizza tutte le Issue':
+            case 'Tutte le issue':
                 return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{}} pageName={currentPage}/>;
 
-            case 'Le mie Issue assegnate':
+            case 'Issue assegnate':
                 return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
 
-            case 'Le mie Issue segnalate':
+            case 'Issue segnalate':
                 return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{reportedUserId: userId}} pageName={currentPage}/>;
 
             case 'Segnala Issue':

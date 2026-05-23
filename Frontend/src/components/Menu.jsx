@@ -12,9 +12,9 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
             title: 'Principale',
             allowedRoles: ALL_ROLES,
             items: [
-                { icon: List, label: 'Visualizza tutte le Issue', allowedRoles: ALL_ROLES },
-                { icon: List, label: 'Le mie Issue assegnate', allowedRoles: ['USER', 'ADMIN'] },
-                { icon: List, label: 'Le mie Issue segnalate', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: List, label: 'Tutte le issue', allowedRoles: ALL_ROLES },
+                { icon: List, label: 'Issue assegnate', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: List, label: 'Issue segnalate', allowedRoles: ['USER', 'ADMIN'] },
                 { icon: PlusCircle, label: 'Segnala Issue', allowedRoles: ['USER', 'ADMIN'] },
             ]
         },
