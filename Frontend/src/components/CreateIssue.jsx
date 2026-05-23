@@ -31,6 +31,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                     const errorJson = await response.json();
                     alert("Errore: " + errorJson.message);
                 }
+
             } catch (error) {
                 console.error("Errore nella chiamata al backend:", error);
                 alert('Errore: ' + error.message);
@@ -218,7 +219,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Segnala issue</h3>
 
                 {/* Card del Form*/}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -247,10 +248,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     id="type"
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+                                    className="w-full px-4 py-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
                                     required
                                 >
-                                    {/*todo: prelevare dal db*/}
                                     <option value="" disabled hidden>Seleziona tipo</option>
                                     {availableTypes.map((type) => (
                                         <option key={type} value={type}>
@@ -277,10 +277,11 @@ function CreateIssue({onCancel, onIssueCreated}){
                             />
 
                             {/* Allega file */}
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm pt-3 font-medium text-gray-700 mb-2">
                                 Allega immagine
                             </label>
-                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                            {attachment.length < 1 && (
+                            <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                                 <input
                                     type="file"
                                     id="file-upload"
@@ -297,10 +298,11 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     <span className="text-xs text-gray-500 mt-1">JPG, PNG, GIF, WebP</span>
                                 </label>
                             </div>
+                            )}
 
                             {/* Allegato selezionato */}
                             {attachment.length > 0 && (
-                                <div className="mt-4 space-y-2">
+                                <div className="mt-2 space-y-2">
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center gap-3">
                                             <Paperclip className="w-4 h-4 text-gray-500" />
@@ -380,7 +382,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </div>
 
                             {/* Priorità */}
-                            <div className="w-full md:w-25 h-35 bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-4">
+                            <div className="w-full md:w-25 h-25 bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900">
                                         Priorità
@@ -417,13 +419,13 @@ function CreateIssue({onCancel, onIssueCreated}){
                             >
                                 Conferma
                             </button>
-                            <button
+                            <buttonattachment
                                 type="button"
                                 onClick={onCancel}
                                 className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                             >
                                 Annulla
-                            </button>
+                            </buttonattachment>
                         </div>
                     </form>
                 </div>
