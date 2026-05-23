@@ -12,9 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.swe.bugboard.dto.History.HistoryResponse;
 import org.swe.bugboard.dto.Issue.*;
 import org.swe.bugboard.dto.User.UserRequest;
+import org.swe.bugboard.model.IssueType;
 import org.swe.bugboard.service.HistoryService;
 import org.swe.bugboard.service.IssueService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -94,6 +96,15 @@ public class IssueController {
     @GetMapping("/history")
     public ResponseEntity<List<HistoryResponse>> getIssueHistory(@Valid @RequestBody IssueRequest getHistoryIssueRequest) {
         List<HistoryResponse> response = historyService.getHistory(getHistoryIssueRequest);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<List<String>> getAllTypes() {
+        List<String> response = Arrays.stream(IssueType.values())
+                                        .map(Enum::name)
+                                        .toList();
 
         return ResponseEntity.ok(response);
     }

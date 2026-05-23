@@ -6,9 +6,46 @@ function CreateIssue({onCancel, onIssueCreated}){
     const [attachment, setAttachment] = useState([]);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [type, setType] = useState('');
     const [priority, setPriority] = useState(false);
+    const [type, setType] = useState('');
+    const [availableTypes, setAvailableTypes] = useState([]);
+
+    // Fetch types
+    useEffect(() => {
+        const fetchTypes = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/issues/types', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const tagData = await response.json();
+                    console.log("Dati dal backend:", tagData);
+                    setAvailableTypes(tagData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchTypes();
+    }, []);
+
     const [availableTags, setAvailableTags] = useState([]);
+
+    // Funzione per modificare le STRINGHE in Stringhe
+    const formatLabel = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
 
     // Fetch tags
     useEffect(() => {
@@ -215,10 +252,11 @@ function CreateIssue({onCancel, onIssueCreated}){
                                 >
                                     {/*todo: prelevare dal db*/}
                                     <option value="" disabled hidden>Seleziona tipo</option>
-                                    <option value="BUG">Bug</option>
-                                    <option value="QUESTION">Question</option>
-                                    <option value="FEATURE">Feature</option>
-                                    <option value="DOCUMENTATION">Documentation</option>
+                                    {availableTypes.map((type) => (
+                                        <option key={type} value={type}>
+                                            {formatLabel(type)}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -342,7 +380,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </div>
 
                             {/* Priorità */}
-                            <div className="w-full md:w-25 h-30 bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-4">
+                            <div className="w-full md:w-25 h-35 bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900">
                                         Priorità
