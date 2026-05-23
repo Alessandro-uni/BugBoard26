@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Paperclip, X, Tag, Plus } from 'lucide-react';
 
 function CreateIssue({onCancel, onIssueCreated}){
@@ -118,74 +118,70 @@ function CreateIssue({onCancel, onIssueCreated}){
         }
     };
 
-    // Rimuove un allegato specifico tramite indice
-    const removeAttachment = (index) => {
-        setAttachment(attachment.filter((_, i) => i !== index));
-    };
-
     // Gestione invio modulo
-        const handleSubmit = async (e) => {
-            e.preventDefault();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-            const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
 
-            const formData = new FormData();
+        const formData = new FormData();
 
-            const requestData = {
-                title: title,
-                description: description,
-                type: type,
-                priority: priority,
-                tags: selectedTags
-            };
-
-            formData.append("data", new Blob([JSON.stringify(requestData)], {
-                type: "application/json"
-            }));
-
-            if (attachment && attachment.length > 0) {
-                formData.append("file", attachment[0]);
-            }
-
-            try {
-                const response = await fetch('http://localhost:8080/api/issues',{
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formData
-                });
-
-                if(response.ok){
-                    const issueData = await response.json();
-                    console.log("Issue creata con successo:", issueData);
-
-                    setCreatedIssueId(issueData.id);
-                    setShowSuccess(true);
-
-                    setTitle('');
-                    setType('');
-                    setDescription('');
-                    setAttachment([]);
-                    setPriority(false);
-                    setSelectedTags([]);
-                }else{
-                    const errorJson = await response.json();
-                    alert("Errore: " + errorJson.message);
-                }
-
-            }catch (error){
-                console.error("Errore nella chiamata al backend:", error);
-                alert('Errore: ' + error.message);
-            }
+        const requestData = {
+            title: title,
+            description: description,
+            type: type,
+            priority: priority,
+            tags: selectedTags
         };
+
+        formData.append("data", new Blob([JSON.stringify(requestData)], {
+            type: "application/json"
+        }));
+
+        if (attachment && attachment.length > 0) {
+            formData.append("file", attachment[0]);
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/api/issues',{
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if(response.ok){
+                const issueData = await response.json();
+                console.log("Issue creata con successo:", issueData);
+
+                setCreatedIssueId(issueData.id);
+                setShowSuccess(true);
+
+                setTitle('');
+                setType('');
+                setDescription('');
+                setAttachment([]);
+                setPriority(false);
+                setSelectedTags([]);
+            }else{
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
+            }
+
+        }catch (error){
+            console.error("Errore nella chiamata al backend:", error);
+            alert('Errore: ' + error.message);
+        }
+    };
 
     return (
         <div className="p-6">
             <div className="max-w-4xl mx-auto">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Segnala issue</h3>
 
                 {/* Card del Form*/}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -199,7 +195,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
                                     placeholder="Inserisci il titolo della issue"
                                     required
                                 />
@@ -214,11 +210,11 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     id="type"
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
                                     required
                                 >
                                     {/*todo: prelevare dal db*/}
-                                    <option value="">Seleziona tipo</option>
+                                    <option value="" disabled hidden>Seleziona tipo</option>
                                     <option value="BUG">Bug</option>
                                     <option value="QUESTION">Question</option>
                                     <option value="FEATURE">Feature</option>
@@ -227,8 +223,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </div>
                         </div>
 
-                        {/* Descrizione */}
-                        <div className="p-4 border border-b-black-300 rounded-lg">
+                        <div className="p-4 border border-b-black-300 rounded-lg shadow-sm">
+                            {/* Descrizione */}
                             <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
                                 Descrizione
                             </label>
@@ -284,95 +280,94 @@ function CreateIssue({onCancel, onIssueCreated}){
                             )}
                         </div>
 
-                        {/* Priorità */}
-                        <div className="flex items-center justify-between p-4 border border-gray-300 rounded-lg bg-white">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-900">
-                                    Priorità alta
-                                </label>
-                                <p className="text-xs text-gray-500 mt-1">
-                                    Contrassegna questa issue come urgente
-                                </p>
-                            </div>
+                        <div className="flex flex-col md:flex-row gap-6">
+                            {/* Sezione tag */}
+                            <div className="flex-1 bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
 
-                            {/* Switch button todo: rivedere il funzionamento! */}
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                {/* Checkbox */}
-                                <input
-                                    type="checkbox"
-                                    className="sr-only peer"
-                                    checked={priority}
-                                    onChange={(e) => setPriority(e.target.checked)}
-                                />
-                                {/* Switch sovrapposto */}
-                                <div className="w-11 h-6 bg-gray-200 rounded-full peer
-                                    peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300
-                                    peer-checked:bg-red-600
-                                    peer-checked:after:translate-x-full peer-checked:after:border-white
-                                    after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                                    after:bg-white after:border-gray-300 after:border after:rounded-full
-                                    after:h-5 after:w-5 after:transition-all">
-                                </div>
-                            </label>
-                        </div>
-
-                        {/* Sezione tag */}
-                        <div className="p-4 border border-b-black-300 rounded-lg">
-                            <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
-
-                            {/* Input per la ricerca/creazione dei tag */}
-                            <div className="mb-4">
-                                <input
-                                    type="text"
-                                    value={inputTagValue}
-                                    onChange={(e) => setInputTagValue(e.target.value)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            if (inputTagValue.trim() && !existTag) {
-                                                handleAddTag();
+                                {/* Input per la ricerca/creazione dei tag */}
+                                <div className="mb-4">
+                                    <input
+                                        type="text"
+                                        value={inputTagValue}
+                                        onChange={(e) => setInputTagValue(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                if (inputTagValue.trim() && !existTag) {
+                                                    handleAddTag();
+                                                }
                                             }
-                                        }
-                                    }}
-                                    className="w-full px-4 py-2 bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                                    placeholder="Cerca o crea un tag..."
-                                />
-                            </div>
+                                        }}
+                                        className="w-full px-4 py-2 bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                        placeholder="Cerca o crea un tag..."
+                                    />
+                                </div>
 
-                            {/* Risultati e creazione tag */}
-                            <div className="flex flex-wrap gap-2 items-center">
-                                {/* Pulsante Crea (appare solo se il tag non esiste) */}
-                                {inputTagValue.trim() !== '' && !existTag && (
-                                    <button
-                                        type="button"
-                                        onClick={handleAddTag}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1"
-                                    >
-                                        <Plus size={16} />
-                                        Crea "{inputTagValue.trim()}"
-                                    </button>
-                                )}
-
-                                {/* Lista tag esistenti filtrati */}
-                                {filteredTags.length > 0 && (
-                                    filteredTags.map((tag) => (
+                                {/* Risultati e creazione tag */}
+                                <div className="flex flex-wrap max-h-24 overflow-y-auto gap-2 items-start pr-2">
+                                    {/* Pulsante Crea (appare solo se il tag non esiste) */}
+                                    {inputTagValue.trim() !== '' && !existTag && (
                                         <button
-                                            key={tag}
                                             type="button"
-                                            onClick={() => handleTagToggle(tag)}
-                                            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                                                selectedTags.includes(tag)
-                                                    ? 'bg-blue-600 text-white'
-                                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                            }`}
+                                            onClick={handleAddTag}
+                                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1"
                                         >
+                                            <Plus size={16} />
+                                            Crea "{inputTagValue.trim()}"
+                                        </button>
+                                    )}
+
+                                    {/* Lista tag esistenti filtrati */}
+                                    {filteredTags.length > 0 && (
+                                        filteredTags.map((tag) => (
+                                            <button
+                                                key={tag}
+                                                type="button"
+                                                onClick={() => handleTagToggle(tag)}
+                                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                                    selectedTags.includes(tag)
+                                                        ? 'bg-blue-600 text-white'
+                                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                                }`}
+                                            >
                                             <span className="flex items-center gap-2">
                                                 <Tag size={14} />
                                                 {tag}
                                             </span>
-                                        </button>
-                                    ))
-                                )}
+                                            </button>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Priorità */}
+                            <div className="w-full md:w-25 h-30 bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-900">
+                                        Priorità
+                                    </label>
+                                </div>
+
+                                {/* Switch button todo: rivedere il funzionamento! */}
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    {/* Checkbox */}
+                                    <input
+                                        type="checkbox"
+                                        className="sr-only peer"
+                                        checked={priority}
+                                        onChange={(e) => setPriority(e.target.checked)}
+                                    />
+                                    {/* Switch sovrapposto */}
+                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer
+                                        peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300
+                                        peer-checked:bg-orange-400
+                                        peer-checked:after:translate-x-full peer-checked:after:border-white
+                                        after:content-[''] after:absolute after:top-0.5 after:left-0.5
+                                        after:bg-white after:border-gray-300 after:border after:rounded-full
+                                        after:h-5 after:w-5 after:transition-all">
+                                    </div>
+                                </label>
                             </div>
                         </div>
 
@@ -399,7 +394,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             {/*POPUP DI SUCCESSO CREAZIONE*/}
             {showSuccess && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="relative bg-white rounded-xl shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
+                    <div className="relative bg-white rounded-lg shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
                         {/* Pulsante X di chiusura popup */}
                         <button
                             onClick={() => setShowSuccess(false)}
