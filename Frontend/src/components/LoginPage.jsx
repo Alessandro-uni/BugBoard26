@@ -6,6 +6,7 @@ function LoginPage({onLogin}) {
     const [password, setPassword] = useState('');
 
     const errorMessage = document.getElementById("error-message");
+
     // Gestione invio modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -13,7 +14,7 @@ function LoginPage({onLogin}) {
 
         // Verifica che l'utente sia connesso alla rete
         if (!navigator.onLine) {
-            errorMessage.textContent = "Sei offline. Controlla la tua connessione ad internete e riprova";
+            errorMessage.textContent = "Sei offline. Controlla la tua connessione Internet e riprova";
             return;
         }
 
@@ -21,7 +22,7 @@ function LoginPage({onLogin}) {
             const response = await fetch('http://localhost:8080/api/auth/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json',
+                    'Content-Type' : 'application/json'
                 },
                 body: JSON.stringify({mail: username, rawPassword: password}),
             });
@@ -42,7 +43,7 @@ function LoginPage({onLogin}) {
     };
 
     return (
-        <div className="size-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="size-full flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100">
 
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
