@@ -13,7 +13,7 @@ import org.swe.bugboard.validation.ValidPassword;
 @Builder
 public class ChangePasswordUserRequest {
     @ValidPassword
-    private CharSequence oldRawPassword;
+    private CharSequence currentRawPassword;
 
     @ValidPassword
     private CharSequence newRawPassword;

@@ -56,8 +56,8 @@ public class UserService {
         User oldUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
 
-        if (!passwordEncoder.matches(userPasswords.getOldRawPassword(), oldUser.getHashedPassword())) {
-            throw new IllegalArgumentException("La vecchia password non è corretta");
+        if (!passwordEncoder.matches(userPasswords.getCurrentRawPassword(), oldUser.getHashedPassword())) {
+            throw new IllegalArgumentException("La password corrente non è corretta");
         }
 
         oldUser.setHashedPassword(passwordEncoder.encode(userPasswords.getNewRawPassword()));
