@@ -147,7 +147,7 @@ function CreateUser({onCreateUser}) {
                                 onClick={changePasswordVisibility}
                                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                             >
-                                {showPassword ? <EyeOff size={20}/> : <Eye size={20}/> }
+                                {showPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
                             </button>
                         </div>
 
@@ -186,7 +186,7 @@ function CreateUser({onCreateUser}) {
                                 onClick={changeRepeatPasswordVisibility}
                                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                             >
-                                {showRepeatPassword ? <EyeOff size={20}/> : <Eye size={20}/> }
+                                {showRepeatPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
                             </button>
                         </div>
 
@@ -219,7 +219,7 @@ function CreateUser({onCreateUser}) {
                                     setRole(e.target.value);
                                     clearError('role');
                                 }}
-                                className={`block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                className={`block w-full px-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                                     errors.role ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
                                 }`}
                                 required
