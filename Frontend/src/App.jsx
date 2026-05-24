@@ -20,6 +20,9 @@ function App() {
     // Verifico quale pagina è attualmente visibile nell'app
     const [currentPage, setCurrentPage] = useState('HomePage');
 
+    // Conservo la pagina precedente
+    const [previousPage, setPreviousPage] = useState('HomePage');
+
     const [selectIssueId, setSelectIssueId] = useState(null);
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -73,40 +76,35 @@ function App() {
         setIsMenuOpen(false);
 
         //controlli
-        if (page == 'Esci') {
+        if (page === 'Esci') {
             setIsLoggedIn(false);
             setUserRole(null);
-            setCurrentPage('HomePage');
             setSelectIssueId(null);
             setUserId(null);
             setUserName(null);
-        } else if (page == 'Aggiungi nuovo utente') {
-            setCurrentPage('Aggiungi nuovo utente');
-            setSelectIssueId(null);
-        } else if (page == 'Cambia password') {
-            setCurrentPage('Cambia password');
-            setSelectIssueId(null);
+            setCurrentPage('HomePage');
         } else {
-            setCurrentPage(page);
             setSelectIssueId(null);
+            setCurrentPage(page);
         }
     };
 
-    // Funziona che porta l'utente dalla  pagina generale  ViewIssue a quella specifica di un singolo issue
+    // Funziona che porta l'utente dalla pagina generale ViewIssueList a quella specifica di una singola issue
     const handleViewIssue = (issueId) => {
         setSelectIssueId(issueId);
-        setCurrentPage('Assegna Issue'); //aggiorna la pagina
+        setPreviousPage(currentPage);
+        setCurrentPage('Issue selezionata');
     };
 
     // Funzione di torna indietro
-    const handleBackToList = () => {
+    const handleBack = () => {
         setSelectIssueId(null);
-        setCurrentPage('Visualizza tutte le Issues');
+        setCurrentPage(previousPage);
     };
 
     const handleHomeClick = () => {
-        setCurrentPage('HomePage');
         setSelectIssueId(null);
+        setCurrentPage('HomePage');
     };
 
     //CONTROLLO = se l'utente non accede, mostra solo la pagina di login
@@ -125,32 +123,28 @@ function App() {
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
             case 'Tutte le issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{}} pageName={currentPage}/>;
 
             case 'Issue assegnate':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
 
             case 'Issue segnalate':
-                return <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{reportedUserId: userId}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{reportedUserId: userId}} pageName={currentPage}/>;
 
             case 'Segnala Issue':
-                return <CreateIssue
-                        onCancel={() => handleNavigation('HomePage')}
-                        onIssueCreated={handleViewIssue}
-                      />;
+                return <CreateIssue onCancel={() => handleNavigation('HomePage')} onIssueCreated={handleViewIssue}/>;
 
             case 'Assegna Issue':
-                return selectIssueId ? (
-                    <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId = {userId} onBack={handleBackToList}/>
-                ) : (
-                    <ViewIssueList onViewIssue={handleViewIssue} currentUserId={userId} bodyParams={{assignedUserId: -1}} pageName={currentPage}/>
-                );
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: -1}} pageName={currentPage}/>;
 
             case 'Aggiungi nuovo utente':
                 return <CreateUser onCreateUser={handleNavigation}/>;
 
             case 'Cambia password':
                 return <ChangePassword onChangePassword={handleNavigation}/>;
+
+            case 'Issue selezionata':
+                return <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId={userId} onBack={handleBack}/>;
 
             default:
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
