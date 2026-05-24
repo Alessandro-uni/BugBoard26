@@ -269,12 +269,12 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     </div>
                 )}
 
-                {/* Pulsante torna alla lista issue */}
+                {/* Pulsante torna alla pagina precedente */}
                 <button
                     onClick={onBack}
                     className="flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium transition-colors mb-2"
                 >
-                    <span className="text-xl leading-none">&larr;</span> Torna alla lista
+                    <span className="text-xl leading-none">&larr;</span> Torna indietro
                 </button>
 
                 <div className="flex flex-col md:flex-row gap-6">
@@ -308,7 +308,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     ) : userError ? (
                                         `Errore: ${userError}`
                                     ) : assignedUser ? (
-                                        `Assegnato a: ${assignedUser.username}`
+                                        `Assegnata a: ${assignedUser.username}`
                                     ) : (
                                         "Utente non disponibile"
                                     )}
