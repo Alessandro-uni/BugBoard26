@@ -8,7 +8,7 @@ import {Badge} from "./Badge.jsx";
 
 function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     //stati per i popup
-    const [isSortPopUpOpen, setIsSortPopUplOpen] = useState(false);
+    const [isSortPopUpOpen, setIsSortPopUpOpen] = useState(false);
     const [isExportPopUpOpen, setIsExportPopUpOpen] = useState(false);
     const [isFilterPopUpOpen, setIsFilterPopUpOpen] = useState(false);
 
@@ -67,7 +67,7 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
                         </button>
 
                         <button
-                            onClick={() => setIsSortPopUplOpen(true)}
+                            onClick={() => setIsSortPopUpOpen(true)}
                             className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                         >
                             <ArrowUpDown size={20} />
@@ -125,7 +125,7 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
                 </div>
             </div>
 
-            <SortPopUp isOpen={isSortPopUpOpen} onClose={() => setIsSortPopUplOpen(false)} />
+            <SortPopUp isOpen={isSortPopUpOpen} onClose={() => setIsSortPopUpOpen(false)} />
             <ExportPopUp isOpen={isExportPopUpOpen} onClose={() => setIsExportPopUpOpen(false)} />
             <FilterPopUp isOpen={isFilterPopUpOpen} onClose={() => setIsFilterPopUpOpen(false)} />
         </div>
