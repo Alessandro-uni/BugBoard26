@@ -27,11 +27,20 @@ function CreateUser({onCreateUser}) {
         setGenericError('');
     };
 
+    const [isLoading, setIsLoading] = useState(false);
+
     // Gestione invio modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (passwordsDontMatch) {
+            setErrors({repeatPasswordMatch: "Le password non coincidono"});
+            return;
+        }
+
         setErrors({});
         setGenericError("");
+        setIsLoading(true);
 
         const token = localStorage.getItem('token');
 
@@ -61,6 +70,8 @@ function CreateUser({onCreateUser}) {
         } catch (error) {
             console.error("Errore nella chiamata al backend:", error);
             setGenericError("Errore: " + error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -69,10 +80,11 @@ function CreateUser({onCreateUser}) {
 
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
-                    <p className="text-gray-600"> Crea un nuovo utente</p>
+                    <p className="text-gray-600">Crea un nuovo utente</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+
                     {/* Inserimento username */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -85,7 +97,7 @@ function CreateUser({onCreateUser}) {
                                        setUsername(e.target.value);
                                        clearError('username');
                                    }}
-                                   className={`block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                                        errors.username ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
                                    }`}
                                    placeholder="Inserisci l'username"
@@ -100,18 +112,17 @@ function CreateUser({onCreateUser}) {
 
                     {/* Inserimento mail */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Mail</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Mail
+                        </label>
                         <div className="relative">
-                            <div>
-
-                            </div>
-                            <input type="text"
+                            <input type="email"
                                    value={mail}
                                    onChange={(e) => {
-                                       setMail(e.target.value);
+                                       setMail((e.target.value).trim());
                                        clearError('mail');
                                    }}
-                                   className={`block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                                        errors.mail ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
                                    }`}
                                    placeholder="Inserisci la mail"
@@ -126,7 +137,9 @@ function CreateUser({onCreateUser}) {
 
                     {/* Inserimento pw */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Password
+                        </label>
                         <div className="relative">
                             <input type={showPassword ? "text" : "password"}
                                    value={rawPassword}
@@ -134,7 +147,7 @@ function CreateUser({onCreateUser}) {
                                        setRawPassword(e.target.value);
                                        clearError('rawPassword');
                                    }}
-                                   className={`block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                                        errors.rawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
                                    }`}
                                    placeholder="Inserisci la password"
@@ -158,7 +171,9 @@ function CreateUser({onCreateUser}) {
 
                     {/* Inserimento ripeti pw */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Ripeti password</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Ripeti password
+                        </label>
                         <div className="relative">
                             <input type={showRepeatPassword ? "text" : "password"}
                                    value={repeatRawPassword}
@@ -167,7 +182,7 @@ function CreateUser({onCreateUser}) {
                                        clearError('repeatRawPassword');
                                        clearError('repeatPasswordMatch');
                                    }}
-                                   className={`block w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 ${
+                                   className={`block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 ${
                                        (errors.repeatRawPassword || errors.repeatPasswordMatch)
                                            ? 'border-red-500 focus:ring-red-500'
                                            : repeatRawPassword.length > 0
@@ -219,7 +234,7 @@ function CreateUser({onCreateUser}) {
                                     setRole(e.target.value);
                                     clearError('role');
                                 }}
-                                className={`block w-full px-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
                                     errors.role ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
                                 }`}
                                 required
@@ -237,8 +252,13 @@ function CreateUser({onCreateUser}) {
                     </div>
 
                     {/* Pulsante di conferma */}
-                    <button type="submit" className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
-                        Crea utente
+                    <button type="submit"
+                            disabled={isLoading || passwordsDontMatch}
+                            className={`w-full px-4 py-3 text-white font-medium rounded-lg transition-colors ${
+                                (isLoading || passwordsDontMatch) ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700' }
+                            }`}
+                    >
+                        {isLoading ? 'Creazione in corso...' : 'Crea utente'}
                     </button>
 
                     {/* Eventuali errori generici */}
