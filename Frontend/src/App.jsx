@@ -129,7 +129,7 @@ function App() {
                 return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
 
             case 'Issue segnalate':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{reportedUserId: userId}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{reportingUserId: userId}} pageName={currentPage}/>;
 
             case 'Segnala Issue':
                 return <CreateIssue onCancel={() => handleNavigation('HomePage')} onIssueCreated={handleViewIssue}/>;

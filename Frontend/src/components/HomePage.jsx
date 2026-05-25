@@ -80,7 +80,7 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
                 const [allData, assignedData, reportedData] = await Promise.all([
                     fetchIssueGroup({}),
                     fetchIssueGroup({assignedUserId: currentUserId}),
-                    fetchIssueGroup({reportedUserId: currentUserId})
+                    fetchIssueGroup({reportingUserId: currentUserId})
                 ]);
 
                 setAllIssues(allData);
