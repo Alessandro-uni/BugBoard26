@@ -1,9 +1,12 @@
-import {useState} from "react";
-//import {User} from 'lucide-react';
+import React, {useState} from "react";
+import {Eye, EyeOff} from "lucide-react";
 
 function LoginPage({onLogin}) {
     const [username,setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    const [showPassword, setShowPassword] = useState(false);
+    const changePasswordVisibility = () => setShowPassword(!showPassword);
 
     const errorMessage = document.getElementById("error-message");
 
@@ -47,9 +50,10 @@ function LoginPage({onLogin}) {
 
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
-
-                        <h1 className="text-3xl font-bold text-gray-900 mb-2"> Benvenuto</h1>
-                        <p className="text-gray-600"> Accedi al tuo account</p>
+                        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                            Benvenuto
+                        </h1>
+                        <p className="text-gray-600">Accedi al tuo account</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -61,7 +65,7 @@ function LoginPage({onLogin}) {
 
                             </div>
                             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
+                                className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
                                    placeholder="Inserisci la tua mail"
                                    required
                             />
@@ -75,11 +79,22 @@ function LoginPage({onLogin}) {
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
 
                             </div>
-                            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg"
+                            <input type={showPassword ? "text" : "password"}
+                                   value={password}
+                                   onChange={(e) => setPassword(e.target.value)}
+                                   className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
                                    placeholder="Inserisci la tua password"
                                    required
                             />
+
+                            {/* Pulsante occhio */}
+                            <button
+                                type="button"
+                                onClick={changePasswordVisibility}
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
+                            >
+                                {showPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
+                            </button>
                         </div>
                     </div>
 
