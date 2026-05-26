@@ -15,8 +15,8 @@ import java.util.Set;
 public class IssuePageRequest {
 
     //Page information
-    int pageNumber;
-    int size; //todo: chiedi se è meglio avere default e sovrascrivere nel caso, solo default, solo richiesto
+    private Integer pageNumber;
+    private Integer size;
 
     //Filtering information: if null, means user has not filtered for it
     private String type;
