@@ -25,7 +25,6 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                 if (response.ok) {
                     const tagData = await response.json();
-                    console.log("Dati dal backend:", tagData);
                     setAvailableTypes(tagData);
                 } else {
                     const errorJson = await response.json();
@@ -191,7 +190,6 @@ function CreateIssue({onCancel, onIssueCreated}){
 
             if(response.ok){
                 const issueData = await response.json();
-                console.log("Issue creata con successo:", issueData);
 
                 setCreatedIssueId(issueData.id);
                 setShowSuccess(true);
@@ -218,7 +216,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             <div className="max-w-4xl mx-auto">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Segnala issue</h3>
 
-                {/* Card del Form*/}
+                {/* Card del Form */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
 
@@ -439,7 +437,6 @@ function CreateIssue({onCancel, onIssueCreated}){
                         <button
                             onClick={() => setShowSuccess(false)}
                             className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 rounded-full p-1"
-                            aria-label="Chiudi"
                         >
                             <X size={20} />
                         </button>

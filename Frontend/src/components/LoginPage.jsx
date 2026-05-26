@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Eye, EyeOff} from "lucide-react";
+import {Eye, EyeClosed} from "lucide-react";
 
 function LoginPage({onLogin}) {
     const [username,setUsername] = useState('');
@@ -51,7 +51,7 @@ function LoginPage({onLogin}) {
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                            Benvenuto
+                            Benvenutə
                         </h1>
                         <p className="text-gray-600">Accedi al tuo account</p>
                 </div>
@@ -61,9 +61,6 @@ function LoginPage({onLogin}) {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Mail</label>
                         <div className="relative">
-                            <div>
-
-                            </div>
                             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
                                 className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
                                    placeholder="Inserisci la tua mail"
@@ -76,9 +73,6 @@ function LoginPage({onLogin}) {
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
                         <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-
-                            </div>
                             <input type={showPassword ? "text" : "password"}
                                    value={password}
                                    onChange={(e) => setPassword(e.target.value)}
@@ -93,7 +87,7 @@ function LoginPage({onLogin}) {
                                 onClick={changePasswordVisibility}
                                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                             >
-                                {showPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
+                                {showPassword ? <Eye size={20}/> : <EyeClosed size={20}/>}
                             </button>
                         </div>
                     </div>
