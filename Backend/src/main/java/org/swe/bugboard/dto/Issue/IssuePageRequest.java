@@ -15,8 +15,8 @@ import java.util.Set;
 public class IssuePageRequest {
 
     //Page information
-    private Integer pageNumber;
-    private Integer size;
+    private Integer pageNumber = 0;
+    private Integer size = 25;
 
     //Filtering information: if null, means user has not filtered for it
     private String type;
@@ -35,5 +35,5 @@ public class IssuePageRequest {
     private LocalDateTime endLastModifiedDate;
 
     //Sorting information
-    private IssueSortType sortType;
+    private IssueSortType sortType = IssueSortType.CREATION_DATE_DESCENDING;
 }
