@@ -21,18 +21,13 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/api/issues/search', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({id: issueId})
+            const response = await fetch(`http://localhost:8080/api/issues/${issueId}`, {
+                headers: {'Authorization': `Bearer ${token}`}
             });
 
             if (response.ok) {
                 const data = await response.json();
-                setIssueData(data && data.length > 0 ? data[0] : null);
+                setIssueData(data);
             } else {
                 const errorText = await response.text();
                 let errorMessage = "Errore durante il caricamento della issue";
