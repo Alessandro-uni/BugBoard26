@@ -87,8 +87,8 @@ public class IssueController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Page<IssuePreviewResponse>> searchIssues(@Valid @RequestBody IssuePageRequest searchIssuePageRequest) {
-        Page<IssuePreviewResponse> response = issueService.getFilteredIssues(searchIssuePageRequest);
+    public ResponseEntity<Page<IssuePreviewResponse>> filterAndSortIssues(@Valid @RequestBody IssuePageRequest filterRequest) {
+        Page<IssuePreviewResponse> response = issueService.getFilteredIssues(filterRequest);
 
         return ResponseEntity.ok(response);
     }
@@ -103,7 +103,7 @@ public class IssueController {
     }
 
     @GetMapping("/types")
-    public ResponseEntity<List<String>> getAllTypes() {
+    public ResponseEntity<List<String>> getAllIssueTypes() {
         List<String> response = Arrays.stream(IssueType.values())
                                         .map(Enum::name)
                                         .toList();
