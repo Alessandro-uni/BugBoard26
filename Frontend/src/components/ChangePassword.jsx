@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Eye, EyeOff} from "lucide-react";
+import {Eye, EyeClosed} from "lucide-react";
 
 function ChangePassword({onChangePassword}) {
     const [currentRawPassword, setCurrentRawPassword] = useState('');
@@ -112,7 +112,7 @@ function ChangePassword({onChangePassword}) {
                                     onClick={changeCurrentPasswordVisibility}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                                 >
-                                    {showCurrentPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
+                                    {showCurrentPassword ? <Eye size={20}/> : <EyeClosed size={20}/>}
                                 </button>
                             </div>
 
@@ -146,7 +146,7 @@ function ChangePassword({onChangePassword}) {
                                     onClick={changeNewPasswordVisibility}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                                 >
-                                    {showNewPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
+                                    {showNewPassword ? <Eye size={20}/> : <EyeClosed size={20}/>}
                                 </button>
                             </div>
 
@@ -187,7 +187,7 @@ function ChangePassword({onChangePassword}) {
                                     onClick={changeRepeatNewPasswordVisibility}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
                                 >
-                                    {showRepeatNewPassword ? <Eye size={20}/> : <EyeOff size={20}/>}
+                                    {showRepeatNewPassword ? <Eye size={20}/> : <EyeClosed size={20}/>}
                                 </button>
                             </div>
 
