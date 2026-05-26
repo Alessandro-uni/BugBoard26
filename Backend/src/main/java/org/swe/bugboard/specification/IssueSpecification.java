@@ -16,7 +16,12 @@ public class IssueSpecification {
                 criteriaBuilder.equal(root.get("reportingUser").get("id"), Id));
     }
 
-    public static Specification<Issue> hasNoAssignedUser(){
+    public static Specification<Issue> hasAssignedUser(Boolean isAssigned){
+
+        if(isAssigned){
+            return (root, query, criteriaBuilder) ->
+                    criteriaBuilder.isNotNull(root.get("assignedUser"));
+        }
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.isNull(root.get("assignedUser"));
     }

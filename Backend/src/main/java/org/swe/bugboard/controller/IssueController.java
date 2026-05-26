@@ -2,6 +2,7 @@ package org.swe.bugboard.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -79,15 +80,8 @@ public class IssueController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<List<IssueResponse>> searchIssue(@Valid @RequestBody IssueRequest searchIssueRequest) {
-        List<IssueResponse> response = issueService.getFilteredIssues(searchIssueRequest);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<IssueResponse>> viewAllIssues() {
-        List<IssueResponse> response = issueService.getAllIssue();
+    public ResponseEntity<Page<IssueResponse>> searchIssue(@Valid @RequestBody IssuePageRequest searchIssueRequest) {
+        Page<IssueResponse> response = issueService.getFilteredIssues(searchIssueRequest);
 
         return ResponseEntity.ok(response);
     }
@@ -105,6 +99,14 @@ public class IssueController {
         List<String> response = Arrays.stream(IssueType.values())
                                         .map(Enum::name)
                                         .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
+    //Debugging
+    @GetMapping
+    public ResponseEntity<List<IssueResponse>> viewAllIssues() {
+        List<IssueResponse> response = issueService.getAllIssue();
 
         return ResponseEntity.ok(response);
     }

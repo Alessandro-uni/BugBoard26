@@ -1,5 +1,7 @@
 package org.swe.bugboard.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.swe.bugboard.model.Issue;
 import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.IssueType;
+import org.swe.bugboard.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +18,9 @@ import java.util.List;
 
 @Repository
 public interface IssueRepository extends JpaRepository<Issue, Long>, JpaSpecificationExecutor<Issue> {
+
+    Page<Issue> getIssuesByAssignedUser(User assignedUser, Pageable pageable);
+
     List<Issue> getIssueByPriority(Boolean priority);
 
     List<Issue> getIssueByReportingUserId(Long id);

@@ -2,6 +2,9 @@ package org.swe.bugboard.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -151,31 +154,25 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    public List<IssueResponse> getAllIssue() {
-        List<Issue> issues = issueRepository.findAll();
-
-        return issues.stream().map(this::convertModelToResponse).toList();
-    }
-
-    @Transactional(readOnly = true)
-    public List<IssueResponse> getFilteredIssues(IssueRequest request){
+    public Page<IssueResponse> getFilteredIssues(IssuePageRequest request){
 
         /* A null value represents the fact that the filter for that value is not requested
          * If the filter for the absence of a value can exist it is specified by a comment
          */
 
+        /*todo: fai questo con GET id e non DTO
         if(request.getId() != null){
             return issueRepository.findById(request.getId()).stream().map(this::convertModelToResponse).toList(); //skip the filters
         }
+        */
 
         Specification<Issue> specification = Specification.unrestricted(); //Makes it possible to fetch all issues with an empty filter request
 
+
         if(request.getAssignedUserId() != null) {
-            if(request.getAssignedUserId() == -1){ //Filtered for issues without an assigned user todo: do it like this in frontend
-                specification = specification.and(IssueSpecification.hasNoAssignedUser());
-            }else{
-                specification = specification.and(IssueSpecification.hasAssignedUser(request.getAssignedUserId()));
-            }
+            specification = specification.and(IssueSpecification.hasAssignedUser(request.getAssignedUserId()));
+        } else if(request.getIsAssigned() != null){
+            specification = specification.and(IssueSpecification.hasAssignedUser(request.getIsAssigned()));
         }
 
         if(request.getReportingUserId() != null){
@@ -220,7 +217,17 @@ public class IssueService {
             specification = specification.and(IssueSpecification.hasImage(request.getHasImage()));
         }
 
-        return issueRepository.findAll(specification).stream().map(this::convertModelToResponse).toList();
+        Sort sortingType;
+        switch (request.getSortType()){
+            case CREATION_DATE_ASCENDING -> sortingType = Sort.by("creationDate").ascending();
+            case LAST_MODIFIED_DATE_ASCENDING -> sortingType = Sort.by("lastModifiedDate").ascending();
+            case LAST_MODIFIED_DATE_DESCENDING -> sortingType = Sort.by("lastModifiedDate").descending();
+            default -> sortingType = Sort.by("creationDate").descending(); //CREATION_DATE_DESCENDING
+        }
+
+        //todo: converti a issuePreviewResponse
+        return issueRepository.findAll(specification,
+                PageRequest.of(request.getPageNumber(), request.getSize(), sortingType)).map(this::convertModelToResponse);
     }
 
     private Issue findIssueOrThrow(Long issueId) {
@@ -277,5 +284,13 @@ public class IssueService {
                                 .map(User::getUsername)
                                 .orElse(null))
                 .build();
+    }
+
+    //Debugging
+    @Transactional(readOnly = true)
+    public List<IssueResponse> getAllIssue() {
+        List<Issue> issues = issueRepository.findAll();
+
+        return issues.stream().map(this::convertModelToResponse).toList();
     }
 }

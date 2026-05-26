@@ -1,0 +1,8 @@
+package org.swe.bugboard.dto.Issue;
+
+public enum IssueSortType {
+    CREATION_DATE_ASCENDING,
+    CREATION_DATE_DESCENDING,
+    LAST_MODIFIED_DATE_ASCENDING,
+    LAST_MODIFIED_DATE_DESCENDING
+}
