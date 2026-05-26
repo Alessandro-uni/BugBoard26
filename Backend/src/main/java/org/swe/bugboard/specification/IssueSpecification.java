@@ -66,7 +66,7 @@ public class IssueSpecification {
                 criteriaBuilder.lessThanOrEqualTo(root.get("lastModifiedDate"), end);
     }
 
-    public static Specification<Issue> hasTags(Set<String> tagNames){
+    public static Specification<Issue> containsTags(Set<String> tagNames){
         return (root, query, criteriaBuilder) -> {
             Join<Issue, Tag> tags = root.join("tags");
             query.groupBy(root.get("id"));
@@ -76,10 +76,13 @@ public class IssueSpecification {
         };
     }
 
-    public static Specification<Issue> hasNoTags(){
-        return (root, query, criteriaBuilder) -> {
-            return criteriaBuilder.isEmpty(root.get("tags"));
-        };
+    public static Specification<Issue> hasTags(boolean hasTags){
+        if(hasTags){
+            return (root, query, criteriaBuilder) ->
+                    criteriaBuilder.isNotEmpty(root.get("tags"));
+        }
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.isEmpty(root.get("tags"));
     }
 
     public static Specification<Issue> hasImage(boolean hasImage){

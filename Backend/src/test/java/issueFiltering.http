@@ -74,6 +74,7 @@ Content-Type: application/json
 }
 
 ### F7: Filter by presence of tags
+# This filter is not compatible with F8
 POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
@@ -82,6 +83,7 @@ Content-Type: application/json
 }
 
 ### F8: Filter by set of tags
+# This filter is not compatible with F7
 POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 

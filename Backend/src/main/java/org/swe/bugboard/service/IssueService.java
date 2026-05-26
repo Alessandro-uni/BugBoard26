@@ -203,12 +203,10 @@ public class IssueService {
             specification = specification.and(IssueSpecification.hasLastModifiedDateBefore(request.getEndLastModifiedDate()));
         }
 
-        if(request.getTags() != null){
-            if(!request.getTags().isEmpty()) //Filtered for issues without tags
-                specification = specification.and(IssueSpecification.hasTags(request.getTags()));
-            else{
-                specification = specification.and(IssueSpecification.hasNoTags());
-            }
+        if(request.getHasTags() != null){
+            specification = specification.and(IssueSpecification.hasTags(request.getHasTags()));
+        }else if(request.getTags() != null){
+            specification = specification.and(IssueSpecification.containsTags(request.getTags()));
         }
 
         if(request.getHasImage() != null){
@@ -228,7 +226,7 @@ public class IssueService {
         }
 
         return issueRepository.findAll(specification,
-                PageRequest.of(request.getPageNumber(), request.getSize(), sortingType)).map(this::convertModelToIssuePreviewResponse);
+                PageRequest.of(request.getPageNumber(), request.getPageSize(), sortingType)).map(this::convertModelToIssuePreviewResponse);
     }
 
     private Issue findIssueOrThrow(Long issueId) {

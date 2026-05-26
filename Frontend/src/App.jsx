@@ -123,7 +123,7 @@ function App() {
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
             case 'Tutte le issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{}} pageName={currentPage}/>;
 
             case 'Issue assegnate':
                 return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;

@@ -1,5 +1,6 @@
 package org.swe.bugboard.dto.Issue;
 
+import jakarta.validation.constraints.AssertTrue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class IssuePageRequest {
 
     //Page information
     private Integer pageNumber = 0;
-    private Integer size = 25;
+    private Integer pageSize = 25;
 
     //Filtering information: if null, means user has not filtered for it
     private String type;
@@ -36,4 +37,24 @@ public class IssuePageRequest {
 
     //Sorting information
     private IssueSortType sortType = IssueSortType.CREATION_DATE_DESCENDING;
+
+    @AssertTrue(message = "La data iniziale deve essere precedente a quella finale")
+    private boolean isCreationRangeValid() {
+        return startCreationDate == null || endCreationDate == null || startCreationDate.isBefore(endCreationDate);
+    }
+
+    @AssertTrue(message = "La data iniziale deve essere precedente a quella finale")
+    private boolean isLastModifiedRangeValid() {
+        return startLastModifiedDate == null || endLastModifiedDate == null || startLastModifiedDate.isBefore(endLastModifiedDate);
+    }
+
+    @AssertTrue(message = "Filtri incompatibili")
+    private boolean isAssignedUserFilteringValid() {
+        return hasTags == null || tags == null;
+    }
+
+    @AssertTrue(message = "Filtri incompatibili")
+    private boolean isTagFilteringValid() {
+        return isAssigned == null || assignedUserId == null;
+    }
 }
