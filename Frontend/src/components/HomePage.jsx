@@ -81,9 +81,9 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
         const fetchAllData = async () => {
             try {
                 const [allData, assignedData, reportedData] = await Promise.all([
-                    fetchIssueGroup({pageNumber: 0, size: 3}),
-                    fetchIssueGroup({pageNumber: 0, size: 3, assignedUserId: currentUserId}),
-                    fetchIssueGroup({pageNumber: 0, size: 3, reportingUserId: currentUserId})
+                    fetchIssueGroup({pageNumber: 0, pageSize: 3}),
+                    fetchIssueGroup({pageNumber: 0, pageSize: 3, assignedUserId: currentUserId}),
+                    fetchIssueGroup({pageNumber: 0, pageSize: 3, reportingUserId: currentUserId})
                 ]);
 
                 setAllIssues(allData);

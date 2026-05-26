@@ -30,7 +30,7 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
             const payload = {
                 ...bodyParams,
                 pageNumber: currentPage - 1,
-                size: 10
+                pageSize: 10
             };
 
             try {
