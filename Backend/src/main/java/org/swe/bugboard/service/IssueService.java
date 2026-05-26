@@ -71,7 +71,7 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Segnalata issue");
         historyService.createHistory(historyRequest, userRequest);
 
-        return convertModelToResponse(savedIssue);
+        return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional
@@ -109,7 +109,7 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Stato aggiornato in: " + savedIssue.getStatus());
         historyService.createHistory(historyRequest, userRequest);
 
-        return convertModelToResponse(savedIssue);
+        return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional
@@ -127,7 +127,7 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "La issue è stata chiusa poiché ritenuta duplicata ");
         historyService.createHistory(historyRequest, userRequest);
 
-        return convertModelToResponse(savedIssue);
+        return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional
@@ -150,24 +150,22 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Issue assegnata all'utente: " + savedIssue.getAssignedUser().getUsername());
         historyService.createHistory(historyRequest, userRequest);
 
-        return convertModelToResponse(savedIssue);
+        return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional(readOnly = true)
-    public Page<IssueResponse> getFilteredIssues(IssuePageRequest request){
+    public IssueResponse getIssueById(Long issueId) {
+        return convertModelToIssueResponse(findIssueOrThrow(issueId));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<IssuePreviewResponse> getFilteredIssues(IssuePageRequest request){
 
         /* A null value represents the fact that the filter for that value is not requested
          * If the filter for the absence of a value can exist it is specified by a comment
          */
 
-        /*todo: fai questo con GET id e non DTO
-        if(request.getId() != null){
-            return issueRepository.findById(request.getId()).stream().map(this::convertModelToResponse).toList(); //skip the filters
-        }
-        */
-
         Specification<Issue> specification = Specification.unrestricted(); //Makes it possible to fetch all issues with an empty filter request
-
 
         if(request.getAssignedUserId() != null) {
             specification = specification.and(IssueSpecification.hasAssignedUser(request.getAssignedUserId()));
@@ -218,16 +216,19 @@ public class IssueService {
         }
 
         Sort sortingType;
-        switch (request.getSortType()){
+
+        // Verifica che il sort type sia stato inserito (non è null), altrimenti usa CREATION_DATE_DESCENDING come default
+        IssueSortType type = request.getSortType() != null ? request.getSortType() : IssueSortType.CREATION_DATE_DESCENDING;
+
+        switch (type) {
             case CREATION_DATE_ASCENDING -> sortingType = Sort.by("creationDate").ascending();
             case LAST_MODIFIED_DATE_ASCENDING -> sortingType = Sort.by("lastModifiedDate").ascending();
             case LAST_MODIFIED_DATE_DESCENDING -> sortingType = Sort.by("lastModifiedDate").descending();
             default -> sortingType = Sort.by("creationDate").descending(); //CREATION_DATE_DESCENDING
         }
 
-        //todo: converti a issuePreviewResponse
         return issueRepository.findAll(specification,
-                PageRequest.of(request.getPageNumber(), request.getSize(), sortingType)).map(this::convertModelToResponse);
+                PageRequest.of(request.getPageNumber(), request.getSize(), sortingType)).map(this::convertModelToIssuePreviewResponse);
     }
 
     private Issue findIssueOrThrow(Long issueId) {
@@ -248,7 +249,7 @@ public class IssueService {
         }
     }
 
-    private IssueResponse convertModelToResponse(Issue issue) {
+    private IssueResponse convertModelToIssueResponse(Issue issue) {
         IssueImageResponse imageResponse = null;
 
         if (issue.getImage() != null) {
@@ -286,11 +287,22 @@ public class IssueService {
                 .build();
     }
 
-    //Debugging
+    private IssuePreviewResponse convertModelToIssuePreviewResponse(Issue issue) {
+
+        return IssuePreviewResponse.builder().id(issue.getId())
+                .title(issue.getTitle())
+                .description(issue.getDescription())
+                .type(issue.getType().name())
+                .status(issue.getStatus().name())
+                .priority(issue.getPriority())
+                .build();
+    }
+
+    // Debugging
     @Transactional(readOnly = true)
     public List<IssueResponse> getAllIssue() {
         List<Issue> issues = issueRepository.findAll();
 
-        return issues.stream().map(this::convertModelToResponse).toList();
+        return issues.stream().map(this::convertModelToIssueResponse).toList();
     }
 }

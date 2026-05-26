@@ -43,6 +43,13 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<IssueResponse> findIssueById(@PathVariable Long id) {
+        IssueResponse response = issueService.getIssueById(id);
+
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/status")
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<IssueResponse> updateIssueStatus(@AuthenticationPrincipal Jwt jwt,
@@ -80,13 +87,14 @@ public class IssueController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Page<IssueResponse>> searchIssue(@Valid @RequestBody IssuePageRequest searchIssueRequest) {
-        Page<IssueResponse> response = issueService.getFilteredIssues(searchIssueRequest);
+    public ResponseEntity<Page<IssuePreviewResponse>> searchIssues(@Valid @RequestBody IssuePageRequest searchIssuePageRequest) {
+        Page<IssuePreviewResponse> response = issueService.getFilteredIssues(searchIssuePageRequest);
 
         return ResponseEntity.ok(response);
     }
 
     // todo: decidere se usare una POST oppure passare l'id per parametro
+    // todo: capire se metterlo in HistoryController
     @GetMapping("/history")
     public ResponseEntity<List<HistoryResponse>> getIssueHistory(@Valid @RequestBody IssueRequest getHistoryIssueRequest) {
         List<HistoryResponse> response = historyService.getHistory(getHistoryIssueRequest);

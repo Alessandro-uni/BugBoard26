@@ -123,7 +123,7 @@ function App() {
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
 
             case 'Tutte le issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={} pageName={currentPage}/>;
 
             case 'Issue assegnate':
                 return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
@@ -135,7 +135,7 @@ function App() {
                 return <CreateIssue onCancel={() => handleNavigation('HomePage')} onIssueCreated={handleViewIssue}/>;
 
             case 'Assegna Issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: -1}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{isAssigned: false}} pageName={currentPage}/>;
 
             case 'Aggiungi nuovo utente':
                 return <CreateUser onCreateUser={handleNavigation}/>;

@@ -67,7 +67,10 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
             }
 
             const data = await response.json();
-            return data.map(item => ({
+
+            const issuesArray = data.content || [];
+
+            return issuesArray.map(item => ({
                 id: item.id,
                 title: item.title,
                 status: item.status,
@@ -78,9 +81,9 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
         const fetchAllData = async () => {
             try {
                 const [allData, assignedData, reportedData] = await Promise.all([
-                    fetchIssueGroup({}),
-                    fetchIssueGroup({assignedUserId: currentUserId}),
-                    fetchIssueGroup({reportingUserId: currentUserId})
+                    fetchIssueGroup({pageNumber: 0, size: 3}),
+                    fetchIssueGroup({pageNumber: 0, size: 3, assignedUserId: currentUserId}),
+                    fetchIssueGroup({pageNumber: 0, size: 3, reportingUserId: currentUserId})
                 ]);
 
                 setAllIssues(allData);
