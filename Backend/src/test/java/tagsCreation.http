@@ -1,0 +1,35 @@
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Backend"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Frontend"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Graphics"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "OutOfBoundsGlitch"
+}

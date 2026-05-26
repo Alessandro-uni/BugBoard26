@@ -1,0 +1,78 @@
+###
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: multipart/form-data; boundary=boundary;
+
+--boundary
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "title": "Mia bella Issue1",
+  "description": "Risolvete la prima issue",
+  "priority": true,
+  "type": "BUG"
+}
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="ciao.png"
+Content-Type: image/png
+
+< C:\Users\aless\Desktop\ciao.png
+--boundary--
+
+### 7b. Crea issue 2
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: multipart/form-data; boundary=boundary;
+
+--boundary
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "title": "Mia bella Issue2",
+  "description": "Risolvete la seconda issue",
+  "priority": true,
+  "tags": ["Graphics", "Frontend"],
+  "type": "FEATURE"
+}
+--boundary--
+
+### 7c. Crea issue 3
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: multipart/form-data; boundary=boundary;
+
+--boundary
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "title": "Mia bella Issue3",
+  "description": "Risolvete la terza issue",
+  "priority": true,
+  "imageName": "Ciaone",
+  "rawImage": ["12"],
+  "tags": ["Backend"],
+  "type": "DOCUMENTATION"
+}
+--boundary--
+
+### 7d. Crea issue 4
+POST http://localhost:8080/api/issues
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: multipart/form-data; boundary=boundary;
+
+--boundary
+Content-Disposition: form-data; name="data"
+Content-Type: application/json
+
+{
+  "title": "Mia bella Issue4",
+  "description": "Risolvete la quarta issue",
+  "priority": true,
+  "tags": ["OutOfBoundsGlitch", "Frontend"],
+  "type": "BUG"
+}
+--boundary--

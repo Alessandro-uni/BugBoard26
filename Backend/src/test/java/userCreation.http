@@ -1,0 +1,46 @@
+### Admin creation
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "mail": "admin@unina.it",
+  "username": "admin",
+  "rawPassword": "Admin01!",
+  "repeatRawPassword": "Admin01!",
+  "role": "ADMIN"
+}
+
+### Login with admin to create next users
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "admin@unina.it",
+  "rawPassword": "Admin01!"
+}
+
+> {% client.global.set("admin_auth_token", response.body.token) %}
+
+### Create user
+POST http://localhost:8080/api/users
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "mail": "Pippo@unina.it",
+  "username": "Pippo",
+  "rawPassword": "PWperfetta?1",
+  "repeatRawPassword": "PWperfetta?1",
+  "role": "USER"
+}
+
+### Login with user
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "mail": "Pippo@unina.it",
+  "rawPassword": "PWperfetta?1"
+}
+
+> {% client.global.set("user_auth_token", response.body.token) %}

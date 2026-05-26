@@ -1,0 +1,137 @@
+#This file contains individual examples and tests of filtering criteria
+#Unless specified otherwise, it's possible to mix and match the different filters to obtain a more complicated query
+#The filtering queries return a list of issue previews, these previews do not contain all of the information of an issue
+
+### Get specific Issue in its entirety
+@id = 1
+GET http://localhost:8080/api/issues/{{id}}
+
+###
+#Useful variables for filters
+@pageNumber = "0"
+@pageSize = "10"
+@sortType = "CREATION_DATE_ASCENDING"
+
+### F1: Filter by type
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "pageNumber": {{pageNumber}},
+  "pageSize": {{pageSize}},
+  "sortType": {{sortType}},
+  "type": "BUG"
+}
+
+### F2: Filter by status
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "status": "INPROGRESS"
+}
+
+### F3: Filter by priority
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "priority": false
+}
+
+### F3: Filter by reporting user
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "reportingUserId": 1
+}
+
+### F4: Filter by assigning status (i.e. is the issue assigned to a user or not)
+# This filter is incompatible with F5
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "isAssigned": false
+}
+
+### F5: Filter by assigned user
+# This filter is incompatible with F4
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "assignedUserId": 1
+}
+
+### F6: Filter by presence of an image
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "hasImage": false
+}
+
+### F7: Filter by presence of tags
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "hasTags": false
+}
+
+### F8: Filter by set of tags
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "tags": ["Graphics", "Frontend"]
+}
+
+### F9: Filter by creation date start
+#Use with F10 to create a creation date range: end date should be after start date
+#Use T00:00:00 for the start date to include entire day
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "startCreationDate": "2026-05-12T00:00:00"
+}
+
+### F10: Filter by creation date end
+#Use with F9 to create a creation date range: end date should be after start date
+#Use T23:59:59 for the end date to include entire day
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "endCreationDate": "2026-05-12T23:59:59"
+}
+
+### F11: Filter by last modified date start
+#Use with F12 to create a last modified date range: end date should be after start date
+#Use T00:00:00 for the start date to include entire day
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "startLastModifiedDate": "2026-05-12T00:00:00"
+}
+
+### F12: Filter by last modified date end
+#Use with F11 to create a last modified date range: end date should be after start date
+#Use T23:59:59 for the end date to include entire day
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "endLastModifiedDate": "2026-05-12T23:59:59"
+}
+
+### F13: No filters applied
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+}
