@@ -22,11 +22,9 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         Long userId = jwt.getClaim("userId");
-        SearchUserRequest request = SearchUserRequest.builder().id(userId).build();
+        UserResponse response = userService.getUserById(userId);
 
-        List<UserResponse> response = userService.getUser(request);
-
-        return ResponseEntity.ok(response.getFirst());
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/me/password")
@@ -34,9 +32,7 @@ public class UserController {
             @Valid @RequestBody ChangePasswordUserRequest changePasswordUserRequest) {
 
         Long userId = jwt.getClaim("userId");
-        UserRequest userRequest = UserRequest.builder().id(userId).build();
-
-        UserResponse response = userService.changeUserPassword(userRequest, changePasswordUserRequest);
+        UserResponse response = userService.changeUserPassword(userId, changePasswordUserRequest);
 
         return ResponseEntity.ok(response);
     }
@@ -51,8 +47,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> findUserById(@PathVariable Long id) {
-        SearchUserRequest searchUserRequest = SearchUserRequest.builder().id(id).build();
-        UserResponse response = userService.getUser(searchUserRequest).getFirst();
+        UserResponse response = userService.getUserById(id);
 
         return ResponseEntity.ok(response);
     }
