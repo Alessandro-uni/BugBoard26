@@ -1,5 +1,5 @@
 import React from "react";
-import {Home, List, PlusCircle, UserPlus, ClipboardList, Key, LogOut, CircleAlert, X} from 'lucide-react';
+import {List, PlusCircle, UserPlus, ClipboardList, Key, LogOut, X} from 'lucide-react';
 import {motion, AnimatePresence} from 'framer-motion';
 
 function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
@@ -83,9 +83,9 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
                         className="fixed left-0 top-0 h-full w-72 bg-white shadow-2xl z-40 flex flex-col"
                     >
 
-                        {/* Logo o Titolo */}
+                        {/* Pulsante X che chiude il menu */}
                         <div className="p-6 pt-20">
-                            <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors" aria-label="Chiudi Menu">
+                            <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors">
                                 <X size={24} className="text-gray-900" />
                             </button>
 
