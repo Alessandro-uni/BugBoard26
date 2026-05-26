@@ -52,9 +52,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse changeUserPassword(UserRequest user, ChangePasswordUserRequest userPasswords) {
-        User oldUser = userRepository.findById(user.getId())
-                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
+    public UserResponse changeUserPassword(Long userId, ChangePasswordUserRequest userPasswords) {
+        User oldUser = findUserOrThrow(userId);
 
         if (!passwordEncoder.matches(userPasswords.getCurrentRawPassword(), oldUser.getHashedPassword())) {
             throw new IllegalArgumentException("La password corrente non è corretta");
@@ -68,12 +67,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserResponse> getUser(SearchUserRequest user) {
-        if (user.getId() != null) {
-            UserResponse userResponse = getUserById(user.getId());
-            return Collections.singletonList(userResponse);
-        }
+    public UserResponse getUserById(Long userId) {
+        return convertModelToResponse(findUserOrThrow(userId));
+    }
 
+    @Transactional(readOnly = true)
+    public List<UserResponse> getUser(SearchUserRequest user) {
         if (user.getMail() != null) {
             UserResponse userResponse = getUserByMail(user.getMail());
             return Collections.singletonList(userResponse);
@@ -92,13 +91,6 @@ public class UserService {
         }
 
         throw new IllegalArgumentException("Nessun utente trovato con almeno uno dei parametri di ricerca forniti");
-    }
-
-    private UserResponse getUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        return user.map(this::convertModelToResponse).
-                orElseThrow(() -> new RuntimeException("Nessun utente trovato con id: " + id));
     }
 
     private UserResponse getUserByMail(String mail) {
@@ -141,6 +133,11 @@ public class UserService {
     public List<UserResponse> getUserByAvailabilityAsc() {
         List<User> users = userRepository.findByAvailabilityAsc(WORKLOAD_STATUS, ASSIGNABLE_ROLES);
         return users.stream().map(this::convertModelToResponse).toList();
+    }
+
+    private User findUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("Utente non trovato"));
     }
 
     private UserResponse convertModelToResponse(User user) {
