@@ -7,7 +7,8 @@ export function Badge({children, variant = 'default', className = ''}) {
         INPROGRESS: "border border-blue-200 bg-blue-100 text-blue-700",
         RESOLVED: "border border-green-200 bg-green-100 text-green-700",
         CLOSED: "border border-red-200 bg-red-100 text-red-700",
-        priority: "border border-yellow-200 bg-yellow-100 text-yellow-700"
+        priority: "border border-yellow-200 bg-yellow-100 text-yellow-700",
+        type: "border border-purple-200 bg-purple-100 text-purple-700"
     };
 
     const combinedClasses = `${baseClasses} ${variants[variant] || variants.default} ${className}`;
