@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UpdateIssueRequest {
     @NotNull(message = "Id assente")
-    private Long id;
+    private Long issueId;
 
     private String newStatus;
 }

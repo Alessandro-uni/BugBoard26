@@ -1,8 +1,9 @@
 package org.swe.bugboard.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.swe.bugboard.dto.History.HistoryResponse;
 import org.swe.bugboard.dto.Issue.*;
-import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.model.IssueType;
 import org.swe.bugboard.service.HistoryService;
 import org.swe.bugboard.service.IssueService;
@@ -35,10 +35,9 @@ public class IssueController {
     public ResponseEntity<IssueResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
                                                      @Valid @RequestPart("data") ReportIssueRequest reportIssueRequest,
                                                      @RequestPart(value = "file", required = false) MultipartFile file) {
-        Long userId = jwt.getClaim(USER_ID_CLAIM);
-        UserRequest userRequest = UserRequest.builder().id(userId).build();
+        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
-        IssueResponse response = issueService.createIssue(reportIssueRequest, userRequest, file);
+        IssueResponse response = issueService.createIssue(reportIssueRequest, currentUserId, file);
 
         return ResponseEntity.ok(response);
     }
@@ -54,10 +53,9 @@ public class IssueController {
     @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<IssueResponse> updateIssueStatus(@AuthenticationPrincipal Jwt jwt,
                                                            @Valid @RequestBody UpdateIssueRequest updateIssueRequest) {
-        Long userId = jwt.getClaim(USER_ID_CLAIM);
-        UserRequest userRequest = UserRequest.builder().id(userId).build();
+        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
-        IssueResponse response = issueService.updateIssueStatus(updateIssueRequest, userRequest);
+        IssueResponse response = issueService.updateIssueStatus(updateIssueRequest, currentUserId);
 
         return ResponseEntity.ok(response);
     }
@@ -66,10 +64,9 @@ public class IssueController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IssueResponse> closeIssue(@AuthenticationPrincipal Jwt jwt,
                                                     @Valid @RequestBody UpdateIssueRequest updateIssueRequest) {
-        Long userId = jwt.getClaim(USER_ID_CLAIM);
-        UserRequest userRequest = UserRequest.builder().id(userId).build();
+        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
-        IssueResponse response = issueService.closeIssue(updateIssueRequest, userRequest);
+        IssueResponse response = issueService.closeIssue(updateIssueRequest, currentUserId);
 
         return ResponseEntity.ok(response);
     }
@@ -78,26 +75,26 @@ public class IssueController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<IssueResponse> assignIssue(@AuthenticationPrincipal Jwt jwt,
                                                      @Valid @RequestBody AssignIssueToUserRequest issueAndUserRequest) {
-        Long userId = jwt.getClaim(USER_ID_CLAIM);
-        UserRequest userRequest = UserRequest.builder().id(userId).build();
+        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
-        IssueResponse response = issueService.assignUserToIssue(issueAndUserRequest.getIssue(), issueAndUserRequest.getUser(), userRequest);
+        IssueResponse response = issueService.assignUserToIssue(issueAndUserRequest.getIssueId(), issueAndUserRequest.getUserId(), currentUserId);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/search")
-    public ResponseEntity<Page<IssuePreviewResponse>> filterAndSortIssues(@Valid @RequestBody IssuePageRequest filterRequest) {
-        Page<IssuePreviewResponse> response = issueService.getFilteredIssues(filterRequest);
+    public PagedModel<?> filterAndSortIssues(@Valid @RequestBody IssuePageRequest pageRequest) {
 
-        return ResponseEntity.ok(response);
+        return new PagedModel<>(issueService.getIssuePage(pageRequest));
     }
 
-    // todo: decidere se usare una POST oppure passare l'id per parametro
+    }
+
+
     // todo: capire se metterlo in HistoryController
     @GetMapping("/history")
-    public ResponseEntity<List<HistoryResponse>> getIssueHistory(@Valid @RequestBody IssueRequest getHistoryIssueRequest) {
-        List<HistoryResponse> response = historyService.getHistory(getHistoryIssueRequest);
+    public ResponseEntity<List<HistoryResponse>> getIssueHistory(@PathVariable Long issueId) {
+        List<HistoryResponse> response = historyService.getHistory(issueId);
 
         return ResponseEntity.ok(response);
     }

@@ -27,12 +27,8 @@ Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
-  "issue": {
-    "id": 3
-  },
-  "user": {
-    "id": 1
-  }
+  "issueId": 3,
+  "userId": 1
 }
 
 ### View all issues

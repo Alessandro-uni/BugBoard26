@@ -11,8 +11,8 @@ import org.swe.bugboard.dto.User.UserRequest;
 @AllArgsConstructor
 public class AssignIssueToUserRequest {
     @Valid
-    private UpdateIssueRequest issue;
+    private Long issueId;
 
     @Valid
-    private UserRequest user;
+    private Long userId;
 }

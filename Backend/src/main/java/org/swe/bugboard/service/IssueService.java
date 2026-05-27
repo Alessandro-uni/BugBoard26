@@ -36,8 +36,8 @@ public class IssueService {
     private final HistoryService historyService;
 
     @Transactional
-    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, UserRequest userRequest, MultipartFile file) {
-        User reportingUser = findUserOrThrow(userRequest.getId());
+    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, Long currentUserId, MultipartFile file) {
+        User reportingUser = findUserOrThrow(currentUserId);
 
         Set<Tag> tags = tagRepository.findByNameIn(reportIssueRequest.getTags());
 
@@ -72,15 +72,15 @@ public class IssueService {
         Issue savedIssue = issueRepository.save(issue);
 
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Segnalata issue");
-        historyService.createHistory(historyRequest, userRequest);
+        historyService.createHistory(historyRequest, currentUserId);
 
         return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional
-    public IssueResponse updateIssueStatus(UpdateIssueRequest updateIssueRequest, UserRequest userRequest) {
-        User assignedUser = findUserOrThrow(userRequest.getId());
-        Issue issue = findIssueOrThrow(updateIssueRequest.getId());
+    public IssueResponse updateIssueStatus(UpdateIssueRequest updateIssueRequest, Long userId) {
+        User assignedUser = findUserOrThrow(userId);
+        Issue issue = findIssueOrThrow(updateIssueRequest.getIssueId());
 
         if (issue.getAssignedUser() == null) {
             throw new AccessDeniedException("Nessun utente assegnato a questa issue");
@@ -110,14 +110,14 @@ public class IssueService {
         Issue savedIssue = issueRepository.save(issue);
 
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Stato aggiornato in: " + savedIssue.getStatus());
-        historyService.createHistory(historyRequest, userRequest);
+        historyService.createHistory(historyRequest, userId);
 
         return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional
-    public IssueResponse closeIssue(UpdateIssueRequest closeIssueRequest, UserRequest userRequest) {
-        Issue issue = findIssueOrThrow(closeIssueRequest.getId());
+    public IssueResponse closeIssue(UpdateIssueRequest closeIssueRequest, Long userId) {
+        Issue issue = findIssueOrThrow(closeIssueRequest.getIssueId());
 
         if (issue.getStatus().equals(IssueStatus.CLOSED)) {
             throw new IllegalStateException("La issue si trova già nello stato: " + issue.getStatus().name());
@@ -128,14 +128,14 @@ public class IssueService {
         Issue savedIssue = issueRepository.save(issue);
 
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "La issue è stata chiusa poiché ritenuta duplicata ");
-        historyService.createHistory(historyRequest, userRequest);
+        historyService.createHistory(historyRequest, userId);
 
         return convertModelToIssueResponse(savedIssue);
     }
 
     @Transactional
-    public IssueResponse assignUserToIssue(UpdateIssueRequest issueRequest, UserRequest userToAssign, UserRequest userRequest) {
-        Issue issue = findIssueOrThrow(issueRequest.getId());
+    public IssueResponse assignUserToIssue(Long issueId, Long userId, Long currentUserId) {
+        Issue issue = findIssueOrThrow(issueId);
 
         if (issue.getAssignedUser() != null) {
             throw new IllegalStateException("Issue già assegnata all'utente: " + issue.getAssignedUser().getUsername());
@@ -145,13 +145,13 @@ public class IssueService {
             throw new IllegalStateException("Impossibile assegnare questa issue, si trova già nello stato: " + issue.getStatus().name());
         }
 
-        User assignedUser = findUserOrThrow(userToAssign.getId());
+        User assignedUser = findUserOrThrow(userId);
         issue.setAssignedUser(assignedUser);
 
         Issue savedIssue = issueRepository.save(issue);
 
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Issue assegnata all'utente: " + savedIssue.getAssignedUser().getUsername());
-        historyService.createHistory(historyRequest, userRequest);
+        historyService.createHistory(historyRequest, currentUserId);
 
         return convertModelToIssueResponse(savedIssue);
     }
