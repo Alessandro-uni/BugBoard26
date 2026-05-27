@@ -608,7 +608,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             <>
                                 {/* Schermata di successo */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
+                                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
                                         <Check size={18} className="text-green-600"/>
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900">Issue chiusa</h2>
