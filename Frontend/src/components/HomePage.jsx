@@ -1,42 +1,34 @@
 import React, {useEffect, useState} from "react";
-import {Badge} from "./Badge.jsx";
+import {IssueCard} from "./IssueCard.jsx";
 
-function IssueSection({title, issues, onViewIssue}) {
+function IssueSection({title, issues, onViewIssue, onViewAll}) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col h-full">
+
+            {/* Intestazione sezione */}
+            <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+
+                <button
+                    onClick={onViewAll}
+                    className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                >
+                    Vedi tutte &rarr;
+                </button>
+            </div>
 
             {issues.length === 0 ? (
                 <p className="text-gray-500 text-sm">Nessuna issue in questa sezione</p>
             ) : (
-                <div className="space-y-3">
+                <div className="flex flex-row gap-5 overflow-x-auto">
                     {issues.map((issue) => (
-                        <div
+                        <IssueCard
                             key={issue.id}
+                            issue={issue}
                             onClick={() => onViewIssue(issue.id)}
-                            className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+                            className="shrink-0 w-21.25 sm:w-110 my-2"
                         >
-                            <div className="flex items-start justify-between">
-                                <div className="flex items-start gap-3 flex-1">
-                                    <div className="flex-1">
-                                        <h4 className="font-medium text-gray-900 mb-1 hover:text-blue-600 transition-colors">
-                                            {issue.title}
-                                        </h4>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-3">
-                                    <Badge variant={issue.status}>
-                                        {issue.status}
-                                    </Badge>
-                                    {issue.priority && (
-                                        <Badge variant="priority">
-                                            Priorità
-                                        </Badge>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
+                        </IssueCard>
                     ))}
                 </div>
             )}
@@ -44,10 +36,12 @@ function IssueSection({title, issues, onViewIssue}) {
     );
 }
 
-function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
+function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', onNavigation}){
     const [allIssues, setAllIssues] = useState([]);
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
+
+    const MAX_HOME_ISSUES = 3;
 
     useEffect(() => {
         const fetchIssueGroup = async (bodyParams) => {
@@ -72,7 +66,9 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
             return issuesArray.map(item => ({
                 id: item.id,
                 title: item.title,
+                description: item.description,
                 status: item.status,
+                type: item.type,
                 priority: item.priority
             }));
         };
@@ -80,9 +76,9 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
         const fetchAllData = async () => {
             try {
                 const [allData, assignedData, reportedData] = await Promise.all([
-                    fetchIssueGroup({pageNumber: 0, pageSize: 3}),
-                    fetchIssueGroup({pageNumber: 0, pageSize: 3, assignedUserId: currentUserId}),
-                    fetchIssueGroup({pageNumber: 0, pageSize: 3, reportingUserId: currentUserId})
+                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES}),
+                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES, filters: {assignedUserId: currentUserId}}),
+                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES, filters: {reportingUserId: currentUserId}})
                 ]);
 
                 setAllIssues(allData);
@@ -100,36 +96,36 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
     }, [currentUserId]);
 
     return (
-        <div className="p-6">
-            <div className="max-w-7xl mx-auto">
-                <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900">Home</h2>
-                    <p className="text-gray-600">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
-                </div>
+        <div className="w-full mx-auto">
+            <div className="mb-4">
+                <h2 className="text-2xl font-bold text-gray-900">Home</h2>
+                <p className="text-gray-600">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
+            </div>
 
-                <div className="space-y-6">
-                    <IssueSection
-                        title="Tutte le issue"
-                        issues={allIssues}
-                        onViewIssue={onViewIssue}
-                    />
+            <div className="space-y-6 mx-auto">
+                <IssueSection
+                    title="Tutte le issue"
+                    issues={allIssues}
+                    onViewIssue={onViewIssue}
+                    onViewAll={() => onNavigation('Tutte le issue')}
+                />
 
-                    {['USER', 'ADMIN'].includes(userRole) && (
-                        <>
-                            <IssueSection
-                                title="Issue assegnate"
-                                issues={assignedIssues}
-                                onViewIssue={onViewIssue}
-                            />
-                            <IssueSection
-                                title="Issue segnalate"
-                                issues={reportedIssues}
-                                onViewIssue={onViewIssue}
-                            />
-                        </>
-                    )}
-
-                </div>
+                {['USER', 'ADMIN'].includes(userRole) && (
+                    <>
+                        <IssueSection
+                            title="Issue assegnate"
+                            issues={assignedIssues}
+                            onViewIssue={onViewIssue}
+                            onViewAll={() => onNavigation('Issue assegnate')}
+                        />
+                        <IssueSection
+                            title="Issue segnalate"
+                            issues={reportedIssues}
+                            onViewIssue={onViewIssue}
+                            onViewAll={() => onNavigation('Issue segnalate')}
+                        />
+                    </>
+                )}
             </div>
         </div>
     );
