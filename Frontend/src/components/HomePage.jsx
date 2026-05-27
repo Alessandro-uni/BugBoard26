@@ -49,7 +49,6 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER'}){
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
 
-    // Fetch issue todo: fare la ricerca limitata ai primi 3 risultati
     useEffect(() => {
         const fetchIssueGroup = async (bodyParams) => {
             const token = localStorage.getItem('token');
