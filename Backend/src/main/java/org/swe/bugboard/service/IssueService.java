@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.swe.bugboard.dto.Issue.*;
 import org.swe.bugboard.specification.IssueSpecification;
 import org.swe.bugboard.dto.History.HistoryRequest;
-import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;

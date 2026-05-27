@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.User.ChangePasswordUserRequest;
 import org.swe.bugboard.dto.User.SearchUserRequest;
 import org.swe.bugboard.dto.User.SignUpUserRequest;
-import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.dto.User.UserResponse;
 import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.User;

@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.History.HistoryRequest;
 import org.swe.bugboard.dto.History.HistoryResponse;
-import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.model.History;
 import org.swe.bugboard.model.Issue;
 import org.swe.bugboard.model.User;
