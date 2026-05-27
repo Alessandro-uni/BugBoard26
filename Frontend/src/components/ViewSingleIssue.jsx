@@ -93,7 +93,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({issue: {id: issueData?.id}, user: {id: selectedUser.id}}),
+                body: JSON.stringify({issueId: issueData?.id, userId: selectedUser.id}),
             });
 
             if (response.ok) {
@@ -172,7 +172,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({id: issueData?.id, newStatus: nextStatus}),
+                body: JSON.stringify({issueId: issueData?.id, newStatus: nextStatus}),
             });
 
             if (response.ok) {
@@ -201,7 +201,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({id: issueData?.id}),
+                body: JSON.stringify({issueId: issueData?.id}),
             });
 
             if (response.ok) {
