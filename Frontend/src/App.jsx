@@ -9,7 +9,6 @@ import CreateUser from "./components/CreateUser.jsx";
 import ChangePassword from "./components/ChangePassword.jsx";
 import ViewSingleIssue from "./components/ViewSingleIssue.jsx";
 
-//import './App.css'
 import { jwtDecode } from 'jwt-decode'; // Libreria per la decodifica di JWT (Json Web Token)
 
 function App() {
@@ -120,7 +119,7 @@ function App() {
     const renderPage = () => {
         switch (currentPage) {
             case 'HomePage':
-                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole} onNavigation={handleNavigation}/>;
 
             case 'Tutte le issue':
                 return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{}} pageName={currentPage}/>;
@@ -147,26 +146,36 @@ function App() {
                 return <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId={userId} onBack={handleBack}/>;
 
             default:
-                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole}/>;
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole} onNavigation={handleNavigation}/>;
         }
     };
 
     // Struttura visiva principale dell'app
     return (
-      <div className="min-h-screen w-full flex flex-col md:flex-row bg-gray-50">
-        {/* Menu */}
-        <Menu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} currentPage={currentPage} onNavigate={handleNavigation} userRole={userRole}/>
+        <div className="h-screen overflow-hidden w-full flex flex-col md:flex-row bg-gray-50">
+            {/* Menu */}
+            <Menu
+                isOpen={isMenuOpen}
+                onClose={() => setIsMenuOpen(false)}
+                currentPage={currentPage}
+                onNavigate={handleNavigation}
+                userRole={userRole}
+            />
 
-        <div className="flex-1 flex flex-col min-w-0">
-          <Header isMenuOpen={isMenuOpen} onToggleMenu={() => setIsMenuOpen(!isMenuOpen)} onHomeClick={() => setCurrentPage('HomePage')}/>
-          <main className="p-4 md:p-8 lg:p-12 overflow-y-auto">
-            <div className="max-w-7xl mx-auto w-full">
-              {renderPage()}
+            <div className="flex-1 flex flex-col min-w-0 min-h-0">
+                <Header
+                    isMenuOpen={isMenuOpen}
+                    onToggleMenu={() => setIsMenuOpen(!isMenuOpen)}
+                    onHomeClick={() => setCurrentPage('HomePage')}
+                />
+
+                <main className="flex-1 py-4 md:py-4 overflow-y-auto [scrollbar-gutter:stable]">
+                    <div className="max-w-screen-2xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+                        {renderPage()}
+                    </div>
+                </main>
             </div>
-          </main>
         </div>
-
-      </div>
     )
 }
 
