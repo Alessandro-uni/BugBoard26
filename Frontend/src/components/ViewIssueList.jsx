@@ -3,8 +3,8 @@ import {SlidersHorizontal, Download, Frown} from 'lucide-react';
 
 import FilterAndSortPopUp from './FilterAndSortPopUp.jsx';
 import ExportPopUp from './ExportPopUp';
-import {Badge} from "./Badge.jsx";
 import {Button} from "./Button.jsx";
+import {IssueCard} from "./IssueCard.jsx";
 
 function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     // Stati per i popup
@@ -16,6 +16,10 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
+    // Variabili per la ricerca/visualizzazione di issue
+    const MAX_VIEW_ISSUES = "15";
+    const DEFAULT_SORT_TYPE = "CREATION_DATE_DESCENDING";
+
     // Reimposta la pagina numero 1 in caso di modifica Filtri
     useEffect(() => {
         setCurrentPage(1);
@@ -26,9 +30,12 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
             const token = localStorage.getItem('token');
 
             const payload = {
-                ...bodyParams,
-                pageNumber: currentPage - 1,
-                pageSize: 10
+                pageNumber: (currentPage - 1).toString(),
+                pageSize: MAX_VIEW_ISSUES,
+                sortType: DEFAULT_SORT_TYPE,
+                filters: {
+                    ...bodyParams
+                }
             };
 
             try {
@@ -47,7 +54,7 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
                     const issuesArray = issueData.content || [];
 
                     setFilteredIssues(issuesArray);
-                    setTotalPages(issueData.totalPages || 1);
+                    setTotalPages(issueData.page.totalPages || 1);
                 } else {
                     const errorJson = await response.json();
                     alert("Errore: " + errorJson.message);
@@ -73,140 +80,119 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     }
 
     return (
-        <div className="p-6">
-            <div className="max-w-7xl mx-auto">
-                {/* Intestazione */}
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">{pageName}</h2>
-                    <p className="text-gray-600">Filtra e ordina le Issue</p>
+        <div className="w-full mx-auto">
+            {/* Intestazione */}
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">{pageName}</h2>
+                <p className="text-gray-600">Filtra e ordina le Issue</p>
+            </div>
+
+            {/* Barra degli strumenti (Buttons : Filtri/Ordina/Esporta) */}
+            <div className="px-4 pb-4 border-gray-200">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+
+                    <Button
+                        onClick={() => setIsFilterAndSortPopUpOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        <SlidersHorizontal size={20} />
+                        Filtra e Ordina
+                    </Button>
+
+                    <Button
+                        onClick={() => setIsExportPopUpOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                        <Download size={20} />
+                        Esporta
+                    </Button>
+
                 </div>
+            </div>
 
-                {/* Barra degli strumenti (Buttons : Filtri/Ordina/Esporta) */}
-                <div className="px-4 pb-4 border-gray-200">
-                    <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-
-                        <Button
-                            onClick={() => setIsFilterAndSortPopUpOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                            <SlidersHorizontal size={20} />
-                            Filtra e Ordina
-                        </Button>
-
-                        <Button
-                            onClick={() => setIsExportPopUpOpen(true)}
-                            className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                        >
-                            <Download size={20} />
-                            Esporta
-                        </Button>
-
+            {/* Contenitore Tabella */}
+            <div className="bg-white rounded-xl shadow-sm p-5">
+                {/* Elenco Issue */}
+                {filteredIssues.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center p-10 text-center bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-200">
+                        <div className="bg-white p-3 rounded-full shadow-sm mb-4">
+                            <Frown size={32} className="text-gray-400"/>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-1">Nessuna issue trovata</h3>
+                        <p className="text-gray-500 max-w-sm">
+                            Non ci sono risultati in questa sezione. Provare a modificare i filtri
+                        </p>
                     </div>
-                </div>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50/50 p-6 rounded-xl border-2 border-dashed border-gray-200">
+                        {filteredIssues.map((issue) => (
+                            <IssueCard
+                                key={issue.id}
+                                issue={issue}
+                                onClick={() => onViewIssue(issue.id)}
+                                className="min-h-35"
+                            >
+                            </IssueCard>
+                        ))}
+                    </div>
+                )}
 
-                {/* Contenitore Tabella */}
-                <div className="bg-white rounded-xl shadow-sm p-5">
-                    {/* Elenco Issue */}
-                    {filteredIssues.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center p-10 text-center bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-200">
-                            <div className="bg-white p-3 rounded-full shadow-sm mb-4">
-                                <Frown size={32} className="text-gray-400"/>
+                {/* Controlli paginazione */}
+                {filteredIssues.length > 0 && (
+                    <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border-gray-200 sm:px-6 rounded-b-xl">
+                        {/* Pulsanti per schermo piccolo (smartphone) */}
+                        <div className="flex justify-between flex-1 sm:hidden">
+
+                            <Button
+                                onClick={handlePrevPage}
+                                disabled={currentPage === 1}
+                                className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Precedente
+                            </Button>
+                            <div>
+                                <p className="text-sm p-2 text-gray-700">
+                                    Pagina <span className="font-medium">{currentPage}</span> di <span className="font-medium">{totalPages}</span>
+                                </p>
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-1">Nessuna issue trovata</h3>
-                            <p className="text-gray-500 max-w-sm">
-                                Non ci sono risultati in questa sezione. Provare a modificare i filtri
-                            </p>
+                            <Button
+                                onClick={handleNextPage}
+                                disabled={currentPage === totalPages}
+                                className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Successiva
+                            </Button>
                         </div>
-                    ) : (
-                        <div className="flex flex-col bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-200">
-                            {filteredIssues.map((issue) => (
-                                <div
-                                    key={issue.id}
-                                    onClick={() => onViewIssue(issue.id)}
-                                    className="group p-5 border border-transparent rounded-xl border-gray-100 hover:bg-gray-200 hover:shadow-md hover:translate-y-0.5 bg-white transition-all duration-200 cursor-pointer"
-                                >
-                                    <div className="flex items-start justify-between">
-                                        <div className="flex items-start gap-3 flex-1">
-                                            <div className="flex-1">
-                                                <h4 className="font-medium text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                                                    {issue.title}
-                                                </h4>
-                                            </div>
-                                        </div>
 
-                                        <div className="flex items-center gap-3">
-                                            <Badge variant={issue.status}>
-                                                {issue.status}
-                                            </Badge>
-                                            {issue.priority && (
-                                                <Badge variant="priority">
-                                                    Priorità
-                                                </Badge>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Controlli paginazione */}
-                    {filteredIssues.length > 0 && (
-                        <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-gray-50 border-gray-200 sm:px-6 rounded-b-xl">
-                            {/* Pulsanti per schermo piccolo (smartphone) */}
-                            <div className="flex justify-between flex-1 sm:hidden">
-
-                                <Button
-                                    onClick={handlePrevPage}
-                                    disabled={currentPage === 1}
-                                    className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Precedente
-                                </Button>
-                                <div>
-                                    <p className="text-sm p-2 text-gray-700">
-                                        Pagina <span className="font-medium">{currentPage}</span> di <span className="font-medium">{totalPages}</span>
-                                    </p>
-                                </div>
-                                <Button
-                                    onClick={handleNextPage}
-                                    disabled={currentPage === totalPages}
-                                    className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Successiva
-                                </Button>
+                        {/* Pulsanti per schermo grande (computer) */}
+                        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p className="text-sm text-gray-700">
+                                    Pagina <span className="font-medium">{currentPage}</span> di <span className="font-medium">{totalPages}</span>
+                                </p>
                             </div>
 
-                            {/* Pulsanti per schermo grande (computer) */}
-                            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-700">
-                                        Pagina <span className="font-medium">{currentPage}</span> di <span className="font-medium">{totalPages}</span>
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <nav className="relative z-0 inline-flex rounded-md space-x-2">
-                                        <Button
-                                            onClick={handlePrevPage}
-                                            disabled={currentPage === 1}
-                                            className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                        >
-                                            Precedente
-                                        </Button>
-                                        <Button
-                                            onClick={handleNextPage}
-                                            disabled={currentPage === totalPages}
-                                            className="relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                        >
-                                            Successiva
-                                        </Button>
-                                    </nav>
-                                </div>
+                            <div>
+                                <nav className="relative z-0 inline-flex rounded-md space-x-2">
+                                    <Button
+                                        onClick={handlePrevPage}
+                                        disabled={currentPage === 1}
+                                        className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Precedente
+                                    </Button>
+                                    <Button
+                                        onClick={handleNextPage}
+                                        disabled={currentPage === totalPages}
+                                        className="relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Successiva
+                                    </Button>
+                                </nav>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             <FilterAndSortPopUp isOpen={isFilterAndSortPopUpOpen} onClose={() => setIsFilterAndSortPopUpOpen(false)}/>
