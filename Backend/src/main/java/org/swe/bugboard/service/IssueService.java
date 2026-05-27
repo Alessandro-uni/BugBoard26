@@ -70,7 +70,7 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Segnalata issue");
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha segnalato la issue");
         historyService.createHistory(historyRequest, currentUserId);
 
         return convertModelToIssueResponse(savedIssue);
@@ -108,7 +108,7 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Stato aggiornato in: " + savedIssue.getStatus());
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha aggiornato lo stato in " + savedIssue.getStatus());
         historyService.createHistory(historyRequest, userId);
 
         return convertModelToIssueResponse(savedIssue);
@@ -126,7 +126,7 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "La issue è stata chiusa poiché ritenuta duplicata ");
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha chiuso questa issue perché ritenuta duplicata.");
         historyService.createHistory(historyRequest, userId);
 
         return convertModelToIssueResponse(savedIssue);
@@ -137,7 +137,7 @@ public class IssueService {
         Issue issue = findIssueOrThrow(issueId);
 
         if (issue.getAssignedUser() != null) {
-            throw new IllegalStateException("Issue già assegnata all'utente: " + issue.getAssignedUser().getUsername());
+            throw new IllegalStateException("Issue già assegnata all'utente " + issue.getAssignedUser().getUsername());
         }
 
         if (!issue.getStatus().equals(IssueStatus.TODO)) {
@@ -149,7 +149,7 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Issue assegnata all'utente: " + savedIssue.getAssignedUser().getUsername());
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Ha assegnato la issue a " + savedIssue.getAssignedUser().getUsername());
         historyService.createHistory(historyRequest, currentUserId);
 
         return convertModelToIssueResponse(savedIssue);
