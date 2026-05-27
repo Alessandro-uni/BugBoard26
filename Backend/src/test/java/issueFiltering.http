@@ -20,7 +20,9 @@ Content-Type: application/json
   "pageNumber": {{pageNumber}},
   "pageSize": {{pageSize}},
   "sortType": {{sortType}},
-  "type": "BUG"
+  "filters": {
+    "type": "BUG"
+  }
 }
 
 ### F2: Filter by status
@@ -28,7 +30,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "status": "INPROGRESS"
+  "filters": {
+    "status": "INPROGRESS"
+  }
 }
 
 ### F3: Filter by priority
@@ -36,7 +40,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "priority": false
+  "filters": {
+    "priority": true
+  }
 }
 
 ### F3: Filter by reporting user
@@ -44,16 +50,20 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "reportingUserId": 1
+  "filters": {
+    "reportingUserId": 1
+  }
 }
 
-### F4: Filter by assigning status (i.e. is the issue assigned to a user or not)
+### F4: Filter by assigned status (i.e. is the issue assigned to a user or not)
 # This filter is incompatible with F5
 POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "isAssigned": false
+  "filters": {
+    "isAssigned": false
+  }
 }
 
 ### F5: Filter by assigned user
@@ -62,7 +72,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "assignedUserId": 1
+  "filters": {
+    "assignedUserId": 1
+  }
 }
 
 ### F6: Filter by presence of an image
@@ -70,7 +82,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "hasImage": false
+  "filters": {
+    "hasImage": false
+  }
 }
 
 ### F7: Filter by presence of tags
@@ -79,7 +93,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "hasTags": false
+  "filters": {
+    "isTagged": false
+  }
 }
 
 ### F8: Filter by set of tags
@@ -88,7 +104,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "tags": ["Graphics", "Frontend"]
+  "filters": {
+    "tags": ["Graphics", "Frontend"]
+  }
 }
 
 ### F9: Filter by creation date start
@@ -98,7 +116,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "startCreationDate": "2026-05-12T00:00:00"
+  "filters": {
+    "startCreationDate": "2026-05-12T00:00:00"
+  }
 }
 
 ### F10: Filter by creation date end
@@ -108,7 +128,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "endCreationDate": "2026-05-12T23:59:59"
+  "filters": {
+    "endCreationDate": "2026-05-12T23:59:59"
+  }
 }
 
 ### F11: Filter by last modified date start
@@ -118,7 +140,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "startLastModifiedDate": "2026-05-12T00:00:00"
+  "filters": {
+    "startLastModifiedDate": "2026-05-12T00:00:00"
+  }
 }
 
 ### F12: Filter by last modified date end
@@ -128,7 +152,9 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "endLastModifiedDate": "2026-05-12T23:59:59"
+  "filters": {
+    "endLastModifiedDate": "2026-05-12T23:59:59"
+  }
 }
 
 ### F13: No filters applied

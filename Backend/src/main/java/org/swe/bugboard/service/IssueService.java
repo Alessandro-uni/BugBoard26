@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class IssueService {
+    private static final int DEFAULT_PAGE_NUMBER = 0;
+    private static final int DEFAULT_PAGE_SIZE = 25;
+    
     private final IssueRepository issueRepository;
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
@@ -40,7 +43,7 @@ public class IssueService {
 
         IssueImage image = null;
 
-        if(file != null && !file.isEmpty()){
+        if (file != null && !file.isEmpty()) {
             String extension = Objects.requireNonNull(file.getContentType()).substring(file.getContentType().lastIndexOf('/') + 1);
             String storedName = UUID.randomUUID() + "." + extension;
 
@@ -159,74 +162,38 @@ public class IssueService {
     }
 
     @Transactional(readOnly = true)
-    public Page<IssuePreviewResponse> getFilteredIssues(IssuePageRequest request){
+    public Page<IssuePreviewResponse> getFilteredIssues(IssuePageRequest request) {
 
-        /* A null value represents the fact that the filter for that value is not requested
-         * If the filter for the absence of a value can exist it is specified by a comment
-         */
+        Specification<Issue> specification = applyFilters(request.getFilters());
+
+        int pageNumber = request.getPageNumber() != null ? request.getPageNumber() : DEFAULT_PAGE_NUMBER;
+        int pageSize = request.getPageSize() != null ? request.getPageSize() : DEFAULT_PAGE_SIZE;
+
+        Sort sortingPolicy = request.getSortType() == null ? IssueSortingPolicy.DEFAULT.getSortingPolicy() : request.getSortType().getSortingPolicy();
+
+        return issueRepository.findAll(specification, PageRequest.of(pageNumber, pageSize, sortingPolicy))
+                .map(this::convertModelToIssuePreviewResponse);
+    }
+
+    private Specification<Issue> applyFilters(IssueFilters filter) {
 
         Specification<Issue> specification = Specification.unrestricted(); //Makes it possible to fetch all issues with an empty filter request
 
-        if(request.getAssignedUserId() != null) {
-            specification = specification.and(IssueSpecification.hasAssignedUser(request.getAssignedUserId()));
-        } else if(request.getIsAssigned() != null){
-            specification = specification.and(IssueSpecification.hasAssignedUser(request.getIsAssigned()));
-        }
+        if (filter == null) return specification; //fail fast
 
-        if(request.getReportingUserId() != null){
-            specification = specification.and(IssueSpecification.hasReportingUser(request.getReportingUserId()));
-        }
-
-        if(request.getPriority() != null){
-            specification = specification.and(IssueSpecification.hasPriority(request.getPriority()));
-        }
-
-        if(request.getStatus() != null){
-            specification = specification.and(IssueSpecification.hasStatus(request.getStatus()));
-        }
-
-        if(request.getType() != null){
-            specification = specification.and(IssueSpecification.hasType(request.getType()));
-        }
-
-        if(request.getStartCreationDate() != null){
-            specification = specification.and(IssueSpecification.hasCreationDateAfter(request.getStartCreationDate()));
-        }
-        if(request.getEndCreationDate() != null){
-            specification = specification.and(IssueSpecification.hasCreationDateBefore(request.getEndCreationDate()));
-        }
-
-        if(request.getStartLastModifiedDate() != null){
-            specification = specification.and(IssueSpecification.hasLastModifiedDateAfter(request.getStartLastModifiedDate()));
-        }
-        if(request.getEndLastModifiedDate() != null){
-            specification = specification.and(IssueSpecification.hasLastModifiedDateBefore(request.getEndLastModifiedDate()));
-        }
-
-        if(request.getHasTags() != null){
-            specification = specification.and(IssueSpecification.hasTags(request.getHasTags()));
-        }else if(request.getTags() != null){
-            specification = specification.and(IssueSpecification.containsTags(request.getTags()));
-        }
-
-        if(request.getHasImage() != null){
-            specification = specification.and(IssueSpecification.hasImage(request.getHasImage()));
-        }
-
-        Sort sortingType;
-
-        // Verifica che il sort type sia stato inserito (non è null), altrimenti usa CREATION_DATE_DESCENDING come default
-        IssueSortType type = request.getSortType() != null ? request.getSortType() : IssueSortType.CREATION_DATE_DESCENDING;
-
-        switch (type) {
-            case CREATION_DATE_ASCENDING -> sortingType = Sort.by("creationDate").ascending();
-            case LAST_MODIFIED_DATE_ASCENDING -> sortingType = Sort.by("lastModifiedDate").ascending();
-            case LAST_MODIFIED_DATE_DESCENDING -> sortingType = Sort.by("lastModifiedDate").descending();
-            default -> sortingType = Sort.by("creationDate").descending(); //CREATION_DATE_DESCENDING
-        }
-
-        return issueRepository.findAll(specification,
-                PageRequest.of(request.getPageNumber(), request.getPageSize(), sortingType)).map(this::convertModelToIssuePreviewResponse);
+        return specification.and(IssueSpecification.hasAssignedUser(filter.getAssignedUserId()))
+                .and(IssueSpecification.isAssigned(filter.getIsAssigned()))
+                .and(IssueSpecification.hasReportingUser(filter.getReportingUserId()))
+                .and(IssueSpecification.hasPriority(filter.getPriority()))
+                .and(IssueSpecification.hasStatus(filter.getStatus()))
+                .and(IssueSpecification.hasType(filter.getType()))
+                .and(IssueSpecification.hasCreationDateAfter(filter.getStartCreationDate()))
+                .and(IssueSpecification.hasCreationDateBefore(filter.getEndCreationDate()))
+                .and(IssueSpecification.hasLastModifiedDateAfter(filter.getStartLastModifiedDate()))
+                .and(IssueSpecification.hasLastModifiedDateBefore(filter.getEndLastModifiedDate()))
+                .and(IssueSpecification.isTagged(filter.getIsTagged()))
+                .and(IssueSpecification.containsTags(filter.getTags()))
+                .and(IssueSpecification.hasImage(filter.getHasImage()));
     }
 
     private Issue findIssueOrThrow(Long issueId) {
