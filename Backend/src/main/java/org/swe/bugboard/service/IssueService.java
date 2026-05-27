@@ -149,7 +149,7 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "Ha assegnato la issue a " + savedIssue.getAssignedUser().getUsername());
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha assegnato la issue a " + savedIssue.getAssignedUser().getUsername());
         historyService.createHistory(historyRequest, currentUserId);
 
         return convertModelToIssueResponse(savedIssue);
