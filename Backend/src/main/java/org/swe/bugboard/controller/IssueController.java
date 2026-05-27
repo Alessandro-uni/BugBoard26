@@ -85,9 +85,7 @@ public class IssueController {
     @PostMapping("/search")
     public PagedModel<?> filterAndSortIssues(@Valid @RequestBody IssuePageRequest pageRequest) {
 
-        return new PagedModel<>(issueService.getIssuePage(pageRequest));
-    }
-
+        return new PagedModel<>(issueService.getFilteredIssues(pageRequest));
     }
 
 

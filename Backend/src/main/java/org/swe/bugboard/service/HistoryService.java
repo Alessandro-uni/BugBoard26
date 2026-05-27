@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.History.HistoryRequest;
 import org.swe.bugboard.dto.History.HistoryResponse;
-import org.swe.bugboard.dto.Issue.IssueRequest;
 import org.swe.bugboard.dto.User.UserRequest;
 import org.swe.bugboard.model.History;
 import org.swe.bugboard.model.Issue;
@@ -26,10 +25,10 @@ public class HistoryService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createHistory(HistoryRequest historyRequest, UserRequest userRequest) {
+    public void createHistory(HistoryRequest historyRequest, Long currentUserId) {
         Issue issue = findIssueOrThrow(historyRequest.getIssueId());
 
-        User user = findUserOrThrow(userRequest.getId());
+        User user = findUserOrThrow(currentUserId);
 
         History newHistory = History.builder()
                 .issue(issue)
@@ -41,8 +40,8 @@ public class HistoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<HistoryResponse> getHistory(IssueRequest issueRequest) {
-        List<History> history = historyRepository.findByIssue_IdOrderByDateDesc(issueRequest.getId());
+    public List<HistoryResponse> getHistory(Long issueId) {
+        List<History> history = historyRepository.findByIssue_IdOrderByDateDesc(issueId);
 
         return history.stream().map(this::convertModelToResponse).toList();
     }
