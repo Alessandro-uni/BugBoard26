@@ -26,7 +26,6 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:5173")
 public class IssueController {
     private final IssueService issueService;
-    private final HistoryService historyService;
 
     private static final String USER_ID_CLAIM = "userId";
 
@@ -42,9 +41,9 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<IssueResponse> findIssueById(@PathVariable Long id) {
-        IssueResponse response = issueService.getIssueById(id);
+    @GetMapping("/{issueId}")
+    public ResponseEntity<IssueResponse> findIssueById(@PathVariable Long issueId) {
+        IssueResponse response = issueService.getIssueById(issueId);
 
         return ResponseEntity.ok(response);
     }
@@ -86,15 +85,6 @@ public class IssueController {
     public PagedModel<?> filterAndSortIssues(@Valid @RequestBody IssuePageRequest pageRequest) {
 
         return new PagedModel<>(issueService.getFilteredIssues(pageRequest));
-    }
-
-
-    // todo: capire se metterlo in HistoryController
-    @GetMapping("/history")
-    public ResponseEntity<List<HistoryResponse>> getIssueHistory(@PathVariable Long issueId) {
-        List<HistoryResponse> response = historyService.getHistory(issueId);
-
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/types")
