@@ -23,8 +23,8 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
             title: 'Gestione',
             allowedRoles: ['ADMIN'],
             items: [
-                { icon: UserPlus, label: 'Aggiungi nuovo utente', allowedRoles: ['ADMIN'] },
                 { icon: ClipboardList, label: 'Assegna Issue', allowedRoles: ['ADMIN'] },
+                { icon: UserPlus, label: 'Aggiungi nuovo utente', allowedRoles: ['ADMIN'] },
             ]
         },
         {
