@@ -77,7 +77,7 @@ function ChangePassword({onChangePassword}) {
     };
 
     return (
-        <div className="p-6 max-w-md mx-auto">
+        <div className="max-w-md mx-auto">
             {/* Intestazione */}
             <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Cambia password</h2>

@@ -210,7 +210,8 @@ function CreateIssue({onCancel, onIssueCreated}){
     };
 
     return (
-        <div className="p-6">
+        <div>
+            {/* FORM */}
             <div className="max-w-4xl mx-auto">
                 {/* Intestazione */}
                 <div className="mb-6">
@@ -430,7 +431,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                 </div>
             </div>
 
-            {/*POPUP DI SUCCESSO CREAZIONE*/}
+            {/* POPUP DI SUCCESSO CREAZIONE */}
             {showSuccess && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="relative bg-white rounded-lg shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
