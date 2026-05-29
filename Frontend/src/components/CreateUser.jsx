@@ -77,16 +77,18 @@ function CreateUser({onCreateUser}) {
     };
 
     return (
-        <div className="size-full flex items-center justify-center bg-linear-to-br">
+        <div className="p-6 max-w-md mx-auto">
+            {/* Intestazione */}
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Crea un nuovo utente</h2>
+                <p className="text-gray-600">Compila i campi e invia il modulo</p>
+            </div>
 
-            <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
-                <div className="text-center mb-8">
-                    <p className="text-gray-600">Crea un nuovo utente</p>
-                </div>
-
+            {/* Card del Form */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-md">
                 <form onSubmit={handleSubmit} className="space-y-6">
 
-                    {/* Inserimento username */}
+                    {/* Username */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Username
@@ -111,7 +113,7 @@ function CreateUser({onCreateUser}) {
 
                     </div>
 
-                    {/* Inserimento mail */}
+                    {/* Mail */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Mail
@@ -136,7 +138,7 @@ function CreateUser({onCreateUser}) {
 
                     </div>
 
-                    {/* Inserimento pw */}
+                    {/* Password */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Password
@@ -170,7 +172,7 @@ function CreateUser({onCreateUser}) {
 
                     </div>
 
-                    {/* Inserimento ripeti pw */}
+                    {/* Ripeti password */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Ripeti password
@@ -222,7 +224,7 @@ function CreateUser({onCreateUser}) {
 
                     </div>
 
-                    {/* Inserimento ruolo */}
+                    {/* Ruolo */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Ruolo

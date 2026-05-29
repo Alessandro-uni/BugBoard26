@@ -212,7 +212,11 @@ function CreateIssue({onCancel, onIssueCreated}){
     return (
         <div className="p-6">
             <div className="max-w-4xl mx-auto">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Segnala issue</h3>
+                {/* Intestazione */}
+                <div className="mb-6">
+                    <h2 className="text-2xl font-bold text-gray-900">Segnala Issue</h2>
+                    <p className="text-gray-600">Compila i campi e invia il modulo</p>
+                </div>
 
                 {/* Card del Form */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -244,7 +248,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     id="type"
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="w-full px-4 py-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
                                     required
                                 >
                                     <option value="" disabled hidden>Seleziona tipo</option>
