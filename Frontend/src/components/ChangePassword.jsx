@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Eye, EyeClosed} from "lucide-react";
+import {CustomButton} from "./CustomButton.jsx";
 
 function ChangePassword({onChangePassword}) {
     const [currentRawPassword, setCurrentRawPassword] = useState('');
@@ -208,14 +209,14 @@ function ChangePassword({onChangePassword}) {
                         </div>
 
                         {/* Pulsante di conferma */}
-                        <button type="submit"
+                        <div className="flex justify-end">
+                            <CustomButton
+                                variant="primary"
                                 disabled={isLoading || passwordsDontMatch}
-                                className={`w-full px-4 py-3 text-white font-medium rounded-lg transition-colors ${
-                                    (isLoading || passwordsDontMatch) ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700' }
-                                }`}
-                        >
-                            {isLoading ? 'Modifica in corso...' : 'Modifica'}
-                        </button>
+                            >
+                                {isLoading ? 'Modifica in corso...' : 'Modifica'}
+                            </CustomButton>
+                        </div>
 
                         {/* Eventuali errori generici */}
                         {genericError && (

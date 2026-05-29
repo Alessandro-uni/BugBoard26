@@ -3,8 +3,8 @@ import {SlidersHorizontal, Download, Frown} from 'lucide-react';
 
 import FilterAndSortPopUp from './FilterAndSortPopUp.jsx';
 import ExportPopUp from './ExportPopUp';
-import {Button} from "./Button.jsx";
 import {IssueCard} from "./IssueCard.jsx";
+import {CustomButton} from "./CustomButton.jsx";
 
 function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     // Stati per i popup
@@ -91,21 +91,21 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
             <div className="px-4 pb-4 border-gray-200">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
 
-                    <Button
+                    <CustomButton
+                        variant="secondary"
                         onClick={() => setIsFilterAndSortPopUpOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        <SlidersHorizontal size={20} />
+                        <SlidersHorizontal size={20}/>
                         Filtra e Ordina
-                    </Button>
+                    </CustomButton>
 
-                    <Button
+                    <CustomButton
+                        variant="secondary"
                         onClick={() => setIsExportPopUpOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                        <Download size={20} />
+                        <Download size={20}/>
                         Esporta
-                    </Button>
+                    </CustomButton>
 
                 </div>
             </div>
@@ -143,25 +143,25 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
                         {/* Pulsanti per schermo piccolo (smartphone) */}
                         <div className="flex justify-between flex-1 sm:hidden">
 
-                            <Button
+                            <CustomButton
+                                variant="secondary"
                                 onClick={handlePrevPage}
                                 disabled={currentPage === 1}
-                                className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Precedente
-                            </Button>
+                            </CustomButton>
                             <div>
                                 <p className="text-sm p-2 text-gray-700">
                                     Pagina <span className="font-medium">{currentPage}</span> di <span className="font-medium">{totalPages}</span>
                                 </p>
                             </div>
-                            <Button
+                            <CustomButton
+                                variant="secondary"
                                 onClick={handleNextPage}
                                 disabled={currentPage === totalPages}
-                                className="relative ml-3 inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Successiva
-                            </Button>
+                            </CustomButton>
                         </div>
 
                         {/* Pulsanti per schermo grande (computer) */}
@@ -174,20 +174,20 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
 
                             <div>
                                 <nav className="relative z-0 inline-flex rounded-md space-x-2">
-                                    <Button
+                                    <CustomButton
+                                        variant="secondary"
                                         onClick={handlePrevPage}
                                         disabled={currentPage === 1}
-                                        className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         Precedente
-                                    </Button>
-                                    <Button
+                                    </CustomButton>
+                                    <CustomButton
+                                        variant="secondary"
                                         onClick={handleNextPage}
                                         disabled={currentPage === totalPages}
-                                        className="relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                     >
                                         Successiva
-                                    </Button>
+                                    </CustomButton>
                                 </nav>
                             </div>
                         </div>

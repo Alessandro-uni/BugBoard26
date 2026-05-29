@@ -1,5 +1,6 @@
-import {useState} from "react";
+import React, {useState} from "react";
 import {Eye, EyeOff} from 'lucide-react';
+import {CustomButton} from "./CustomButton.jsx";
 
 function CreateUser({onCreateUser}) {
     const [mail,setMail] = useState('');
@@ -252,14 +253,14 @@ function CreateUser({onCreateUser}) {
                     </div>
 
                     {/* Pulsante di conferma */}
-                    <button type="submit"
+                    <div className="flex justify-end">
+                        <CustomButton
+                            variant="primary"
                             disabled={isLoading || passwordsDontMatch}
-                            className={`w-full px-4 py-3 text-white font-medium rounded-lg transition-colors ${
-                                (isLoading || passwordsDontMatch) ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700' }
-                            }`}
-                    >
-                        {isLoading ? 'Creazione in corso...' : 'Crea utente'}
-                    </button>
+                        >
+                            {isLoading ? 'Creazione in corso...' : 'Crea utente'}
+                        </CustomButton>
+                    </div>
 
                     {/* Eventuali errori generici */}
                     {genericError && (

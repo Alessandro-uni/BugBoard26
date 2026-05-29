@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import { Paperclip, X, Tag, Plus } from 'lucide-react';
+import {CustomButton} from "./CustomButton.jsx";
 
 function CreateIssue({onCancel, onIssueCreated}){
     const [selectedTags, setSelectedTags] = useState([]);
@@ -122,9 +123,6 @@ function CreateIssue({onCancel, onIssueCreated}){
             });
 
             if (response.ok) {
-                const tagData = await response.json();
-                console.log("Tag creato con successo:", tagData);
-
                 setAvailableTags([...availableTags, tag]);
                 setSelectedTags([...selectedTags, tag]);
                 setInputTagValue('');
@@ -311,7 +309,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                             className="p-1 text-gray-400 hover:text-red-600 transition-colors"
                                             onClick={() => setAttachment([])}
                                         >
-                                            <X size={16} />
+                                            <X size={16}/>
                                         </button>
                                     </div>
                                 </div>
@@ -351,7 +349,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                             onClick={handleAddTag}
                                             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium flex items-center gap-1"
                                         >
-                                            <Plus size={16} />
+                                            <Plus size={16}/>
                                             Crea "{inputTagValue.trim()}"
                                         </button>
                                     )}
@@ -370,7 +368,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                                 }`}
                                             >
                                             <span className="flex items-center gap-2">
-                                                <Tag size={14} />
+                                                <Tag size={14}/>
                                                 {tag}
                                             </span>
                                             </button>
@@ -398,8 +396,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     />
                                     {/* Switch sovrapposto */}
                                     <div className="w-11 h-6 bg-gray-200 rounded-full peer
-                                        peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300
-                                        peer-checked:bg-orange-400
+                                        peer-focus:outline-none
+                                        peer-checked:bg-yellow-300
                                         peer-checked:after:translate-x-full peer-checked:after:border-white
                                         after:content-[''] after:absolute after:top-0.5 after:left-0.5
                                         after:bg-white after:border-gray-300 after:border after:rounded-full
@@ -410,20 +408,19 @@ function CreateIssue({onCancel, onIssueCreated}){
                         </div>
 
                         {/* Riquadro di conferma */}
-                        <div className="flex items-center gap-4 pt-6 border-t border-gray-200">
-                            <button
-                                type="submit"
-                                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                            >
-                                Conferma
-                            </button>
-                            <buttonattachment
-                                type="button"
+                        <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                            <CustomButton
+                                variant="secondary"
                                 onClick={onCancel}
-                                className="px-8 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                             >
                                 Annulla
-                            </buttonattachment>
+                            </CustomButton>
+
+                            <CustomButton
+                                variant="primary"
+                            >
+                                Conferma
+                            </CustomButton>
                         </div>
                     </form>
                 </div>
@@ -434,12 +431,13 @@ function CreateIssue({onCancel, onIssueCreated}){
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
                     <div className="relative bg-white rounded-lg shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
                         {/* Pulsante X di chiusura popup */}
-                        <button
+                        <CustomButton
+                            variant="secondary"
                             onClick={() => setShowSuccess(false)}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 transition-colors bg-gray-50 hover:bg-gray-100 rounded-full p-1"
+                            className="absolute top-4 right-4"
                         >
-                            <X size={20} />
-                        </button>
+                            <X size={20}/>
+                        </CustomButton>
 
                         {/* Icona Successo */}
                         <div className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-2">
@@ -458,12 +456,12 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                         {/* Pulsante per andare alla issue */}
                         <div className="pt-2">
-                            <button
+                            <CustomButton
+                                variant="success"
                                 onClick={() => onIssueCreated(createdIssueId)}
-                                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg transition-colors shadow-md"
                             >
                                 Vai alla issue
-                            </button>
+                            </CustomButton>
                         </div>
                     </div>
                 </div>

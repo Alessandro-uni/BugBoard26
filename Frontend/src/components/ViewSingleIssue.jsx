@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle} from "lucide-react";
+import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX} from "lucide-react";
+import {CustomButton} from "./CustomButton.jsx";
 
 function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // DOMINIO ISSUE
@@ -241,7 +242,13 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
                 <p className="text-red-500 font-medium mb-4">Impossibile trovare l'issue richiesta</p>
-                <button onClick={onBack} className="text-blue-600 hover:underline">&larr; Torna indietro</button>
+
+                <button
+                    onClick={onBack}
+                    className="text-blue-600 hover:underline"
+                >
+                    &larr; Torna indietro
+                </button>
             </div>
         );
     }
@@ -269,7 +276,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     onClick={onBack}
                     className="flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium transition-colors mb-2"
                 >
-                    <span className="text-xl leading-none">&larr;</span> Torna indietro
+                    &larr; Torna indietro
                 </button>
 
                 <div className="flex flex-col md:flex-row gap-6">
@@ -340,33 +347,34 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                             {/* Tasto Assegna */}
                             {canAssign && (
-                                <button
+                                <CustomButton
+                                    variant="primary"
                                     onClick={() => setShowAssignPopup(true)}
-                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
                                 >
-                                    <UserPlus size={18} />
+                                    <UserPlus size={18}/>
                                     Assegna Issue
-                                </button>
+                                </CustomButton>
                             )}
 
                             {/* Tasto Cambia stato issue */}
                             {canChange && (
-                                <button
+                                <CustomButton
+                                    variant="primary"
                                     onClick={() => setShowStatusPopup(true)}
-                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
                                 >
                                     Cambia stato in {nextStatus}
-                                </button>
+                                </CustomButton>
                             )}
 
                             {/* Tasto Chiudi Issue */}
                             {canClose    && (
-                                <button
+                                <CustomButton
+                                    variant="danger"
                                     onClick={() => setShowClosePopup(true)}
-                                    className="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-all shadow-md active:scale-95"
                                 >
+                                    <BookmarkX size={18}/>
                                     Chiudi Issue
-                                </button>
+                                </CustomButton>
                             )}
 
                         </div>
@@ -419,7 +427,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-2 text-sm font-medium text-blue-600 cursor-pointer hover:underline">
+                                        <div className="flex items-center gap-2 text-sm font-medium text-gray-5 00">
                                             <Paperclip size={16} />
                                             <span>Nessun allegato</span>
                                         </div>
@@ -521,20 +529,20 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 )}
 
                                 {/* Riquadro di conferma */}
-                                <div className="flex gap-3 pt-1">
-                                    <button
+                                <div className="flex justify-end gap-3 pt-1">
+                                    <CustomButton
+                                        variant="secondary"
                                         onClick={() => { setShowAssignPopup(false); setSelectedUser(null); setSearchQuery(""); }}
-                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
                                     >
                                         Annulla
-                                    </button>
-                                    <button
+                                    </CustomButton>
+                                    <CustomButton
+                                        variant="primary"
                                         onClick={handleAssignConfirm}
                                         disabled={!selectedUser}
-                                        className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-200 disabled:text-gray-400 text-white font-semibold rounded-lg transition-colors"
                                     >
                                         Assegna
-                                    </button>
+                                    </CustomButton>
                                 </div>
                             </>
                         )}
@@ -580,19 +588,19 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     <h2 className="text-lg font-bold text-gray-900">Cambia stato Issue</h2>
                                 </div>
                                 <p className="text-sm text-gray-600">Clicca il pulsante di conferma per cambiare lo stato in "<strong>{nextStatus}</strong>"</p>
-                                <div className="flex gap-3 pt-1">
-                                    <button
+                                <div className="flex justify-end gap-3 pt-1">
+                                    <CustomButton
+                                        variant="secondary"
                                         onClick={() => setShowStatusPopup(false)}
-                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
                                     >
                                         Annulla
-                                    </button>
-                                    <button
+                                    </CustomButton>
+                                    <CustomButton
+                                        variant="primary"
                                         onClick={handleStatusIssue}
-                                        className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg"
                                     >
                                         Conferma
-                                    </button>
+                                    </CustomButton>
                                 </div>
                             </>
                         )}
@@ -615,16 +623,16 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
                                 <p className="text-sm text-gray-600">La issue è stata chiusa con successo</p>
                                 <div className="flex gap-3 pt-1">
-                                    <button
+                                    <CustomButton
+                                        variant="secondary"
                                         onClick={() => {
                                             setShowClosePopup(false);
                                             setIsClosedSuccess(false);
                                             fetchIssueDetails();
                                         }}
-                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
                                     >
                                         Ok
-                                    </button>
+                                    </CustomButton>
                                 </div>
                             </>
                         ) : (
@@ -637,19 +645,19 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     <h2 className="text-lg font-bold text-gray-900">Chiudi Issue</h2>
                                 </div>
                                 <p className="text-sm text-gray-600">Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "<strong>CLOSED</strong>"</p>
-                                <div className="flex gap-3 pt-1">
-                                    <button
+                                <div className="flex justify-end gap-3 pt-1">
+                                    <CustomButton
+                                        variant="secondary"
                                         onClick={() => setShowClosePopup(false)}
-                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
                                     >
                                         Annulla
-                                    </button>
-                                    <button
+                                    </CustomButton>
+                                    <CustomButton
+                                        variant="danger"
                                         onClick={handleCloseIssue}
-                                        className="flex-1 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg"
                                     >
                                         Conferma
-                                    </button>
+                                    </CustomButton>
                                 </div>
                             </>
                         )}

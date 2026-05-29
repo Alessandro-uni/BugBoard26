@@ -1,6 +1,7 @@
 import React from "react";
-import {List, PlusCircle, UserPlus, ClipboardList, Key, LogOut, X} from 'lucide-react';
+import {List, PlusCircle, UserPlus, ClipboardList, KeyRound, LogOut, X, ListTodo, ListCollapse} from 'lucide-react';
 import {motion, AnimatePresence} from 'framer-motion';
+import {CustomButton} from "./CustomButton.jsx";
 
 function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
     // Lista ruoli possibili
@@ -13,8 +14,8 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
             allowedRoles: ALL_ROLES,
             items: [
                 { icon: List, label: 'Tutte le issue', allowedRoles: ALL_ROLES },
-                { icon: List, label: 'Issue assegnate', allowedRoles: ['USER', 'ADMIN'] },
-                { icon: List, label: 'Issue segnalate', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: ListTodo, label: 'Issue assegnate', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: ListCollapse, label: 'Issue segnalate', allowedRoles: ['USER', 'ADMIN'] },
                 { icon: PlusCircle, label: 'Segnala Issue', allowedRoles: ['USER', 'ADMIN'] },
             ]
         },
@@ -30,7 +31,7 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
             title: 'Account',
             allowedRoles: ALL_ROLES,
             items: [
-                { icon: Key, label: 'Cambia password', allowedRoles: ALL_ROLES },
+                { icon: KeyRound, label: 'Cambia password', allowedRoles: ALL_ROLES },
                 { icon: LogOut, label: 'Esci', allowedRoles: ALL_ROLES },
             ]
         }
@@ -85,9 +86,12 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
 
                         {/* Pulsante X che chiude il menu */}
                         <div className="p-6 pt-20">
-                            <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors">
-                                <X size={24} className="text-gray-900" />
-                            </button>
+                            <CustomButton
+                                variant="secondary"
+                                onClick={onClose}
+                                className="absolute top-4 right-4">
+                                <X size={24}/>
+                            </CustomButton>
 
                             <h1 className="text-2xl font-bold text-gray-900">Menu</h1>
                             <p className="text-xs text-blue-900 mt-1">{userRole}</p>
@@ -117,10 +121,10 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
                                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
                                                     isActive
                                                         ? 'bg-blue-50 text-blue-600'
-                                                        : 'text-gray-600 hover:bg-gray-50'
+                                                        : 'text-gray-600 hover:bg-gray-100 hover:cursor-pointer'
                                                 }`}
                                             >
-                                                <Icon size={20} />
+                                                <Icon size={20}/>
                                                 <span className="text-sm">{item.label}</span>
                                             </motion.button>
                                         );
