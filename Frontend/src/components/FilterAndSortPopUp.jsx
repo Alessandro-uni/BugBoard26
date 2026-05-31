@@ -1,5 +1,6 @@
 import React from "react";
 import {X, Filter, ArrowUpDown} from 'lucide-react';
+import {CustomButton} from "./CustomButton.jsx";
 
 function FilterAndSortPopUp({isOpen,onClose}){
 
@@ -26,12 +27,12 @@ function FilterAndSortPopUp({isOpen,onClose}){
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         Filtra e ordina Issue
                     </h2>
-                    <button
+                    <CustomButton
+                        variant="secondary"
                         onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                     >
-                        <X size={20} />
-                    </button>
+                        <X size={20}/>
+                    </CustomButton>
                 </div>
 
                 <form id="filterForm" onSubmit={handleSubmit} className="flex flex-col gap-8">
@@ -251,20 +252,18 @@ function FilterAndSortPopUp({isOpen,onClose}){
 
                     {/* Pulsanti */}
                     <div className="flex justify-end gap-3 p-6 border-t border-gray-200 sticky bottom-0 bg-white">
-                        <button
-                            type="button"
+                        <CustomButton
+                            variant="secondary"
                             onClick={onClose}
-                            className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
                         >
                             Annulla
-                        </button>
+                        </CustomButton>
 
-                        <button
-                            type="submit"
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                        <CustomButton
+                            variant="primary"
                         >
                             Applica
-                        </button>
+                        </CustomButton>
                     </div>
                 </form>
             </div>

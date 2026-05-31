@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Eye, EyeClosed} from "lucide-react";
+import {CustomButton} from "./CustomButton.jsx";
 
 function LoginPage({onLogin}) {
     const [username,setUsername] = useState('');
@@ -51,7 +52,7 @@ function LoginPage({onLogin}) {
             <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
                 <div className="text-center mb-8">
                         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                            Benvenutə
+                            Benvenutə su BugBoard 26
                         </h1>
                         <p className="text-gray-600">Accedi al tuo account</p>
                 </div>
@@ -92,7 +93,12 @@ function LoginPage({onLogin}) {
                         </div>
                     </div>
 
-                    <button type="submit" className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">Accedi</button>
+                    <CustomButton
+                        variant="primary"
+                        className="w-full py-3 px-3"
+                    >
+                        Accedi
+                    </CustomButton>
 
                     {/* Paragrafo di errore */}
                     <p id="error-message" className="text-red-500"></p>

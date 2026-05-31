@@ -1,24 +1,27 @@
 import React from "react";
 import {Home, Menu} from 'lucide-react';
+import {CustomButton} from "./CustomButton.jsx";
 
-function Header ({onToggleMenu, onHomeClick}){
+function Header ({onToggleMenu, onHomeClick, isHomeOpen}){
     return (
         <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6" >
 
-            {/*hamburger menu*/}
-            <button
+            {/* Hamburger menu */}
+            <CustomButton
+                variant="secondary"
                 onClick={onToggleMenu}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
-                <Menu size={24} className="text-gray-900" />
-            </button>
+                <Menu size={24} className="text-gray-900"/>
+            </CustomButton>
 
-            <button
+            {/* Tasto home */}
+            <CustomButton
+                variant="secondary"
                 onClick={onHomeClick}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isHomeOpen}
             >
-                <Home size={24} className="text-gray-900" />
-            </button>
+                <Home size={24} className="text-gray-900"/>
+            </CustomButton>
 
         </header>
     );

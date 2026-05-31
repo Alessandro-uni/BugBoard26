@@ -164,9 +164,9 @@ function App() {
 
             <div className="flex-1 flex flex-col min-w-0 min-h-0">
                 <Header
-                    isMenuOpen={isMenuOpen}
                     onToggleMenu={() => setIsMenuOpen(!isMenuOpen)}
                     onHomeClick={() => setCurrentPage('HomePage')}
+                    isHomeOpen={currentPage === 'HomePage'}
                 />
 
                 <main className="flex-1 py-4 md:py-4 overflow-y-auto [scrollbar-gutter:stable]">

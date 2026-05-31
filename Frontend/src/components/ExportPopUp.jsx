@@ -1,5 +1,6 @@
 import React from "react";
 import { X, Download, FileText, Table } from 'lucide-react';
+import {CustomButton} from "./CustomButton.jsx";
 
 function ExportPopUp({isOpen, onClose}){
 
@@ -30,12 +31,12 @@ function ExportPopUp({isOpen, onClose}){
                         <Download size={20} />
                         Esporta Issues
                     </h2>
-                    <button
+                    <CustomButton
+                        variant="secondary"
                         onClick={onClose}
-                        className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                     >
-                        <X size={20} />
-                    </button>
+                        <X size={20}/>
+                    </CustomButton>
                 </div>
 
                 {/* Opzioni di Esportazione */}
@@ -48,7 +49,7 @@ function ExportPopUp({isOpen, onClose}){
                         className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors group"
                     >
                         <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                            <FileText className="w-6 h-6 text-red-600" />
+                            <FileText className="w-6 h-6 text-red-600"/>
                         </div>
                         <div className="text-left flex-1">
                             <h3 className="font-semibold text-gray-900">PDF</h3>
@@ -61,7 +62,7 @@ function ExportPopUp({isOpen, onClose}){
                         className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors group"
                     >
                         <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                            <Table className="w-6 h-6 text-green-600" />
+                            <Table className="w-6 h-6 text-green-600"/>
                         </div>
                         <div className="text-left flex-1">
                             <h3 className="font-semibold text-gray-900">CSV</h3>
@@ -74,7 +75,7 @@ function ExportPopUp({isOpen, onClose}){
                         className="w-full flex items-center gap-4 p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors group"
                     >
                         <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                            <Table className="w-6 h-6 text-blue-600" />
+                            <Table className="w-6 h-6 text-blue-600"/>
                         </div>
                         <div className="text-left flex-1">
                             <h3 className="font-semibold text-gray-900">Excel</h3>
@@ -82,17 +83,17 @@ function ExportPopUp({isOpen, onClose}){
                     </button>
                 </div>
 
-                {/* Pulsante */}
-                <button
-                    onClick={onClose}
-                    className="w-full mt-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                    Annulla
-                </button>
+                {/* Pulsante annulla */}
+                <div className="flex justify-end pt-4">
+                    <CustomButton
+                        variant="secondary"
+                        onClick={onClose}
+                    >
+                        Annulla
+                    </CustomButton>
+                </div>
             </div>
         </div>
-
-
     );
 }
 

@@ -11,7 +11,7 @@ export function IssueCard({issue, onClick, className = "", disabled, ...props}) 
             className={`
                 group flex flex-col justify-between p-5 w-full bg-white border border-gray-300 rounded-lg transition-all shadow-sm font-medium
                 ${disabled
-                ? "opacity-50 cursor-not-allowed"
+                ? "opacity-50"
                 : "hover:bg-gray-50 hover:shadow-md hover:-translate-y-1 hover:cursor-pointer active:scale-95"
             } ${className}`}
             {...props}
