@@ -33,3 +33,75 @@ Content-Type: application/json
 {
   "name": "OutOfBoundsGlitch"
 }
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Database"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "UX/UI"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Performance"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Testing"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Security"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Reusability"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "BestPractices"
+}
+
+###
+POST http://localhost:8080/api/tags
+Authorization: Bearer {{admin_auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Java"
+}
