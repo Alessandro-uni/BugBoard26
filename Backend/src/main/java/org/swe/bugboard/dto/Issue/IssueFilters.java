@@ -43,11 +43,11 @@ public class IssueFilters {
 
     @AssertTrue(message = "Filtri incompatibili")
     private boolean isAssignedUserFilteringValid() {
-        return isTagged == null || tags == null;
+        return isAssigned == null || assignedUserId == null;
     }
 
     @AssertTrue(message = "Filtri incompatibili")
     private boolean isTagFilteringValid() {
-        return isAssigned == null || assignedUserId == null;
+        return isTagged == null || tags == null;
     }
 }
