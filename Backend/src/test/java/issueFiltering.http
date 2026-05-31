@@ -20,6 +20,7 @@ Content-Type: application/json
   "pageNumber": {{pageNumber}},
   "pageSize": {{pageSize}},
   "sortType": {{sortType}},
+
   "filters": {
     "type": "BUG"
   }
@@ -62,11 +63,11 @@ Content-Type: application/json
 
 {
   "filters": {
-    "isAssigned": false
+    "isAssigned": true
   }
 }
 
-### F5: Filter by assigned user
+### F5: Filter by specific assigned user
 # This filter is incompatible with F4
 POST http://localhost:8080/api/issues/search
 Content-Type: application/json
@@ -162,4 +163,28 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
+}
+
+### F14: (Almost) All filters applied
+POST http://localhost:8080/api/issues/search
+Content-Type: application/json
+
+{
+  "pageNumber": 1,
+  "pageSize": 10,
+  "sortType": "CREATION_DATE_ASCENDING",
+
+  "filters": {
+    "isTagged": false,
+    "assignedUserId": 1,
+    "hasImage": false,
+    "endLastModifiedDate": "2026-05-12T23:59:59",
+    "startLastModifiedDate": "2026-05-11T00:00:00",
+    "endCreationDate": "2026-05-12T23:59:59",
+    "startCreationDate": "2026-05-11T00:00:00",
+    "priority": false,
+    "status": "INPROGRESS",
+    "reportingUserId": 1,
+    "type": "BUG"
+  }
 }
