@@ -1,5 +1,6 @@
 package org.swe.bugboard.dto.Issue;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class IssuePageRequest {
     private Integer pageSize;
 
     //Filtering information
+    @Valid
     private IssueFilters filters;
 
     //Sorting information
