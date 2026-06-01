@@ -1,19 +1,281 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {X, Filter, ArrowUpDown} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 
-function FilterAndSortPopUp({isOpen,onClose}){
+function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
+    // Stato unico per i filtri
+    const [selectedFilters, setSelectedFilters] = useState({
+        status: "",
+        type: "",
+        reportingUserId: "",
+        isAssigned: null,
+        assignedUserId: "",
+        isTagged: null,
+        tags: [],
+        priority: null,
+        hasImage: null,
+        startCreationDate: "",
+        endCreationDate: "",
+        startLastModifiedDate: "",
+        endLastModifiedDate: "",
+    });
 
-    if (!isOpen) {
-        return null;
+    const [sortBy, setSortBy] = useState('creationDate');
+    const [order, setOrder] = useState('desc');
+
+    const calculateSortingPolicy = (sortPolicy, orderPolicy) => {
+        if (sortPolicy === 'creationDate') {
+            return orderPolicy === 'asc' ? 'CREATION_DATE_ASCENDING' : 'CREATION_DATE_DESCENDING';
+
+        } else if (sortPolicy === 'lastModifiedDate') {
+            return orderPolicy === 'asc' ? 'LAST_MODIFIED_DATE_ASCENDING' : 'LAST_MODIFIED_DATE_DESCENDING';
+
+        } else {
+            return 'DEFAULT';
+        }
+    }
+
+    const [availableStatus, setAvailableStatus] = useState([]);
+
+    // Fetch status
+    useEffect(() => {
+        const fetchStatus = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/issues/status', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const statusData = await response.json();
+                    setAvailableStatus(statusData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchStatus();
+    }, []);
+
+    const [availableTypes, setAvailableTypes] = useState([]);
+
+    // Fetch types
+    useEffect(() => {
+        const fetchTypes = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/issues/types', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const typeData = await response.json();
+                    setAvailableTypes(typeData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchTypes();
+    }, []);
+
+    const [availableTags, setAvailableTags] = useState([]);
+
+    // Fetch tags
+    useEffect(() => {
+        const fetchTags = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/tags', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const tagData = await response.json();
+                    setAvailableTags(tagData.map(tag => tag.name));
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchTags();
+    }, []);
+
+    const [availableReportingUsers, setAvailableReportingUsers] = useState([]);
+
+    // Fetch utenti che possono reportare issue
+    useEffect(() => {
+        const fetchReportingUsers = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/users/reporting', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    setAvailableReportingUsers(userData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchReportingUsers();
+    }, []);
+
+    const [availableAssignableUsers, setAvailableAssignableUsers] = useState([]);
+
+    // Fetch utenti che possono ricevere issue
+    useEffect(() => {
+        const fetchAssignableUsers = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/users/assignable', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    setAvailableAssignableUsers(userData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchAssignableUsers();
+    }, []);
+
+    // GESTIONE
+
+    const handleChange = (e) => {
+        const {id, value, type, checked, selectedOptions, name} = e.target;
+        let newValue;
+
+        if (type === 'checkbox') {
+            newValue = checked;
+
+        } else if (type === 'select-multiple') {
+            newValue = Array.from(selectedOptions).map(option => option.value);
+
+        } else if (name === 'booleanField') {
+            if (value === "true") newValue = true;
+            else if (value === "false") newValue = false;
+            else newValue = null;
+
+        } else if (type === 'date') {
+            if (value) {
+                const lowerId = id.toLowerCase();
+
+                if (lowerId.includes('end')) {
+                    newValue = `${value}T23:59:59`;
+                } else {
+                    newValue = `${value}T00:00:00`
+                }
+            } else {
+                newValue = "";
+            }
+
+        } else {
+            newValue = value;
+        }
+
+        setSelectedFilters(prev => ({
+            ...prev,
+            [id]: newValue
+        }));
+    };
+
+    const handleReset = () => {
+        setSelectedFilters({
+            status: "",
+            type: "",
+            reportingUserId: "",
+            isAssigned: null,
+            assignedUserId: "",
+            isTagged: null,
+            tags: [],
+            priority: null,
+            hasImage: null,
+            startCreationDate: "",
+            endCreationDate: "",
+            startLastModifiedDate: "",
+            endLastModifiedDate: ""
+        });
+
+        setSortBy('creationDate');
+        setOrder('desc');
+
+        onClose();
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // todo: DA FARE!
-        alert('Filtri applicati!');
+        const myFilters = Object.fromEntries(Object.entries(selectedFilters).filter(([_, value]) => value !== "" && value !== null && value.length !== 0));
+        const mySort = calculateSortingPolicy(sortBy, order);
+
+        console.log("1. Modale - Sort calcolato:", mySort);
+
+        onApplyFilters(myFilters, mySort);
         onClose();
+    };
+
+    if (!isOpen) {
+        return null;
+    }
+
+    // Funzione per modificare le STRINGHE in Stringhe
+    const formatLabel = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
     };
 
     return (
@@ -56,85 +318,160 @@ function FilterAndSortPopUp({isOpen,onClose}){
                                     </label>
                                     <select
                                         id="status"
+                                        value={selectedFilters.status}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                     >
                                         <option value="">Nessuno stato selezionato</option>
-                                        <option value="TODO">Da svolgere</option>
-                                        <option value="INPROGRESS">In lavorazione</option>
-                                        <option value="RESOLVED">Risolta</option>
-                                        <option value="CLOSED">Chiusa</option>
+                                        {availableStatus.map((status) => (
+                                            <option key={status} value={status}>
+                                                {formatLabel(status)}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
-                                {/* Tipologia */}
+                                {/* Tipo */}
                                 <div>
                                     <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Tipologia
+                                        Tipo
                                     </label>
                                     <select
                                         id="type"
+                                        value={selectedFilters.type}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                     >
-                                        <option value="">Nessuna tipologia selezionata</option>
-                                        <option value="BUG">Bug</option>
-                                        <option value="QUESTION">Domanda</option>
-                                        <option value="DOCUMENTATION">Documentazione</option>
-                                        <option value="FEATURE">Funzionalità</option>
+                                        <option value="">Nessun tipo selezionato</option>
+                                        {availableTypes.map((type) => (
+                                            <option key={type} value={type}>
+                                                {formatLabel(type)}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
                                 {/* Utente segnalatore */}
                                 <div>
-                                    <label htmlFor="reportingUser" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="reportingUserId" className="block text-sm font-medium text-gray-700 mb-2">
                                         Segnalata da
                                     </label>
                                     <select
-                                        id="reportingUser"
+                                        id="reportingUserId"
+                                        value={selectedFilters.reportingUserId}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                     >
                                         <option value="">Nessun utente selezionato</option>
-                                        <option value="marco">Marco Rossi</option>
-                                        <option value="laura">Laura Bianchi</option>
-                                        <option value="giuseppe">Giuseppe Verdi</option>
+                                        {availableReportingUsers.map((user) => (
+                                            <option key={user.id} value={user.id}>
+                                                {formatLabel(user.username)}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
 
                                 {/* Utente Assegnato */}
                                 <div>
-                                    <label htmlFor="assignedUser" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Assegnata a
-                                    </label>
-                                    <select
-                                        id="assignedUser"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                    >
-                                        <option value="">Nessun utente selezionato</option>
-                                        <option value="marco">Marco Rossi</option>
-                                        <option value="laura">Laura Bianchi</option>
-                                        <option value="giuseppe">Giuseppe Verdi</option>
-                                    </select>
+                                    <div className="flex items-center justify-between">
+                                        <label htmlFor="assignedUserId" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Assegnata a
+                                        </label>
+
+                                        {/* Checkbox (utente non assegnato) */}
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <input
+                                                type="checkbox"
+                                                id="noAssignedUser"
+                                                checked={selectedFilters.isAssigned === false}
+                                                onChange={(e) => {
+                                                    const isChecked = e.target.checked;
+                                                    setSelectedFilters(prev => ({
+                                                        ...prev,
+                                                        isAssigned: isChecked ? false : null,
+                                                        assignedUserId: isChecked ? "" : prev.assignedUserId
+                                                    }));
+                                                }}
+                                                className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded"
+                                            />
+                                            <label htmlFor="noAssignedUser" className="text-sm text-gray-600 cursor-pointer select-none">
+                                                Senza utente
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {/* Se la checkbox non è spuntata, mostrata la select */}
+                                    {selectedFilters.isAssigned === false ? (
+                                        <div className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 italic text-sm">
+                                            Nessun utente
+                                        </div>
+                                    ) : (
+                                        <select
+                                            id="assignedUserId"
+                                            value={selectedFilters.assignedUserId}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        >
+                                            <option value="">Nessun utente selezionato</option>
+                                            {availableAssignableUsers.map((user) => (
+                                                <option key={user.id} value={user.id}>
+                                                    {formatLabel(user.username)}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
+
                                 </div>
 
                                 {/* Tag */}
                                 <div>
-                                    <label htmlFor="tag" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Tag
-                                    </label>
+                                    <div className="flex items-center justify-between">
+                                        <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+                                            Tag
+                                        </label>
 
-                                    {/* todo: fare la selezione multipla */}
-                                    <select
-                                        id="tag"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                                    >
-                                        <option value="">Tutti</option>
-                                        <option value="frontend">Frontend</option>
-                                        <option value="backend">Backend</option>
-                                        <option value="database">Database</option>
-                                        <option value="ui-ux">UI/UX</option>
-                                        <option value="performance">Performance</option>
-                                        <option value="security">Security</option>
-                                        <option value="testing">Testing</option>
-                                    </select>
+                                        {/* Checkbox (nessun tag assegnato) */}
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <input
+                                                type="checkbox"
+                                                id="noTags"
+                                                checked={selectedFilters.isTagged === false}
+                                                onChange={(e) => {
+                                                    const isChecked = e.target.checked;
+                                                    setSelectedFilters(prev => ({
+                                                        ...prev,
+                                                        isTagged: isChecked ? false : null,
+                                                        tags: isChecked ? [] : prev.tags
+                                                    }));
+                                                }}
+                                                className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded"
+                                            />
+                                            <label htmlFor="noTags" className="text-sm text-gray-600 cursor-pointer select-none">
+                                                Senza tag
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {/* Se la checkbox non è spuntata, mostrata la select */}
+                                    {selectedFilters.isTagged === false ? (
+                                        <div className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 italic text-sm">
+                                            Nessun tag
+                                        </div>
+                                    ) : (
+                                        <select
+                                            multiple // todo: renderlo più user friendly
+                                            id="tags"
+                                            value={selectedFilters.tags}
+                                            onChange={handleChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        >
+                                            {availableTags.map((tag) => (
+                                                <option key={tag} value={tag}>
+                                                    {formatLabel(tag)}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    )}
                                 </div>
 
                                 {/* Priorità */}
@@ -142,35 +479,48 @@ function FilterAndSortPopUp({isOpen,onClose}){
                                     <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
                                         Priorità
                                     </label>
-                                    <input
-                                        type="checkbox"
+
+                                    <select
                                         id="priority"
-                                        className="text-sm font-medium text-gray-700 select-none cursor-pointer"
-                                    />
+                                        name="booleanField"
+                                        value={selectedFilters.priority !== null && selectedFilters.priority !== "" ? String(selectedFilters.priority) : ""}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                    >
+                                        <option value="">Nessuna priorità selezionata</option>
+                                        <option value="true">Si</option>
+                                        <option value="false">No</option>
+                                    </select>
                                 </div>
                             </div>
 
                             {/* Sezione date: Creazione */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Data Creazione</h3>
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Data creazione</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="creationDateStart" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="startCreationDate" className="block text-sm font-medium text-gray-700 mb-2">
                                             Da:
                                         </label>
                                         <input
                                             type="date"
-                                            id="creationDateStart"
+                                            max={selectedFilters.endCreationDate ? selectedFilters.endCreationDate.split('T')[0] : undefined}
+                                            id="startCreationDate"
+                                            value={selectedFilters.startCreationDate ? selectedFilters.startCreationDate.split('T')[0] : ""}
+                                            onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="creationDateEnd" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="endCreationDate" className="block text-sm font-medium text-gray-700 mb-2">
                                             A:
                                         </label>
                                         <input
                                             type="date"
-                                            id="creationDateEnd"
+                                            min={selectedFilters.startCreationDate ? selectedFilters.startCreationDate.split('T')[0] : undefined}
+                                            id="endCreationDate"
+                                            value={selectedFilters.endCreationDate ? selectedFilters.endCreationDate.split('T')[0] : ""}
+                                            onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                         />
                                     </div>
@@ -179,25 +529,31 @@ function FilterAndSortPopUp({isOpen,onClose}){
 
                             {/* Sezione date: Modifica */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Ultima Modifica</h3>
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Ultima modifica</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="modifiedDateStart" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="startLastModifiedDate" className="block text-sm font-medium text-gray-700 mb-2">
                                             Da:
                                         </label>
                                         <input
                                             type="date"
-                                            id="modifiedDateStart"
+                                            max={selectedFilters.endLastModifiedDate ? selectedFilters.endLastModifiedDate.split('T')[0] : undefined}
+                                            id="startLastModifiedDate"
+                                            value={selectedFilters.startLastModifiedDate ? selectedFilters.startLastModifiedDate.split('T')[0] : ""}
+                                            onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="modifiedDateEnd" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="endLastModifiedDate" className="block text-sm font-medium text-gray-700 mb-2">
                                             A:
                                         </label>
                                         <input
                                             type="date"
-                                            id="modifiedDateEnd"
+                                            min={selectedFilters.startLastModifiedDate ? selectedFilters.startLastModifiedDate.split('T')[0] : undefined}
+                                            id="endLastModifiedDate"
+                                            value={selectedFilters.endLastModifiedDate ? selectedFilters.endLastModifiedDate.split('T')[0] : ""}
+                                            onChange={handleChange}
                                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                         />
                                     </div>
@@ -225,11 +581,13 @@ function FilterAndSortPopUp({isOpen,onClose}){
                                     </label>
                                     <select
                                         id="sortBy"
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value)}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                         required
                                     >
                                         <option value="creationDate">Data Creazione</option>
-                                        <option value="lastModified">Data Ultima Modifica</option>
+                                        <option value="lastModifiedDate">Data Ultima modifica</option>
                                     </select>
                                 </div>
 
@@ -239,11 +597,13 @@ function FilterAndSortPopUp({isOpen,onClose}){
                                     </label>
                                     <select
                                         id="sortOrder"
+                                        value={order}
+                                        onChange={(e) => setOrder(e.target.value)}
                                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                                         required
                                     >
-                                        <option value="asc">Crescente</option>
                                         <option value="desc">Decrescente</option>
+                                        <option value="asc">Crescente</option>
                                     </select>
                                 </div>
                             </div>
@@ -254,13 +614,14 @@ function FilterAndSortPopUp({isOpen,onClose}){
                     <div className="flex justify-end gap-3 p-6 border-t border-gray-200 sticky bottom-0 bg-white">
                         <CustomButton
                             variant="secondary"
-                            onClick={onClose}
+                            onClick={handleReset}
                         >
                             Annulla
                         </CustomButton>
 
                         <CustomButton
                             variant="primary"
+                            type="submit"
                         >
                             Applica
                         </CustomButton>

@@ -1,12 +1,20 @@
 import React, {useEffect, useState} from "react";
-import {SlidersHorizontal, Download, Frown} from 'lucide-react';
+import {SlidersHorizontal, Download, Frown, Loader2} from 'lucide-react';
 
 import FilterAndSortPopUp from './FilterAndSortPopUp.jsx';
 import ExportPopUp from './ExportPopUp';
 import {IssueCard} from "./IssueCard.jsx";
 import {CustomButton} from "./CustomButton.jsx";
 
-function ViewIssueList({onViewIssue, bodyParams, pageName}) {
+function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
+    // Variabili per la ricerca/visualizzazione di issue
+    const MAX_VIEW_ISSUES = "15";
+    const DEFAULT_SORT_TYPE = "CREATION_DATE_DESCENDING";
+
+    // Stati per i parametri/ordinamento di ricerca
+    const [bodyParams, setBodyParams] = useState(initialBodyParams);
+    const [sortType, setSortType] = useState(DEFAULT_SORT_TYPE);
+
     // Stati per i popup
     const [isFilterAndSortPopUpOpen, setIsFilterAndSortPopUpOpen] = useState(false);
     const [isExportPopUpOpen, setIsExportPopUpOpen] = useState(false);
@@ -15,24 +23,22 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
     const [filteredIssues, setFilteredIssues] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-
-    // Variabili per la ricerca/visualizzazione di issue
-    const MAX_VIEW_ISSUES = "15";
-    const DEFAULT_SORT_TYPE = "CREATION_DATE_DESCENDING";
+    const [isLoading, setIsLoading] = useState(true);
 
     // Reimposta la pagina numero 1 in caso di modifica Filtri
     useEffect(() => {
         setCurrentPage(1);
-    }, [JSON.stringify(bodyParams)]);
+    }, [JSON.stringify(bodyParams), sortType]);
 
     useEffect(() => {
         const fetchIssues = async () => {
+            setIsLoading(true);
             const token = localStorage.getItem('token');
 
             const payload = {
                 pageNumber: (currentPage - 1).toString(),
                 pageSize: MAX_VIEW_ISSUES,
-                sortType: DEFAULT_SORT_TYPE,
+                sortType: sortType,
                 filters: {
                     ...bodyParams
                 }
@@ -51,9 +57,7 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
                 if (response.ok) {
                     const issueData = await response.json();
 
-                    const issuesArray = issueData.content || [];
-
-                    setFilteredIssues(issuesArray);
+                    setFilteredIssues(issueData.content || []);
                     setTotalPages(issueData.page.totalPages || 1);
                 } else {
                     const errorJson = await response.json();
@@ -63,11 +67,13 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
             } catch (error) {
                 console.error("Errore nella chiamata al backend:", error);
                 alert('Errore: ' + error.message);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchIssues(bodyParams);
-    }, [JSON.stringify(bodyParams), currentPage]);
+    }, [JSON.stringify(bodyParams), sortType, currentPage]);
 
     // Funzioni di supporto
 
@@ -113,28 +119,38 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
             {/* Contenitore Tabella */}
             <div className="bg-white rounded-xl shadow-sm p-5">
                 {/* Elenco Issue */}
-                {filteredIssues.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center p-10 text-center bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-200">
-                        <div className="bg-white p-3 rounded-full shadow-sm mb-4">
-                            <Frown size={32} className="text-gray-400"/>
-                        </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-1">Nessuna issue trovata</h3>
-                        <p className="text-gray-500 max-w-sm">
-                            Non ci sono risultati in questa sezione. Provare a modificare i filtri
-                        </p>
+                {isLoading ? (
+                    <div className="flex flex-col items-center justify-center p-20 text-center bg-gray-50/50 rounded-xl border-2 border-gray-200">
+                        <Loader2 size={40} className="text-gray-200 animate-spin mb-4"/>
+                        <p className="text-gray-500 font-medium animate-pulse">Caricamento issue in corso...</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50/50 p-6 rounded-xl border-2 border-dashed border-gray-200">
-                        {filteredIssues.map((issue) => (
-                            <IssueCard
-                                key={issue.id}
-                                issue={issue}
-                                onClick={() => onViewIssue(issue.id)}
-                                className="min-h-35"
-                            >
-                            </IssueCard>
-                        ))}
+                    <div>
+                        {filteredIssues.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center p-10 text-center bg-gray-50/50 rounded-xl border-2 border-dashed border-gray-200">
+                                <div className="bg-white p-3 rounded-full shadow-sm mb-4">
+                                    <Frown size={32} className="text-gray-400"/>
+                                </div>
+                                <h3 className="text-lg font-medium text-gray-900 mb-1">Nessuna issue trovata</h3>
+                                <p className="text-gray-500 max-w-sm">
+                                    Non ci sono risultati in questa sezione. Provare a modificare i filtri
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50/50 p-6 rounded-xl border-2 border-dashed border-gray-200">
+                                {filteredIssues.map((issue) => (
+                                    <IssueCard
+                                        key={issue.id}
+                                        issue={issue}
+                                        onClick={() => onViewIssue(issue.id)}
+                                        className="min-h-35"
+                                    >
+                                    </IssueCard>
+                                ))}
+                            </div>
+                        )}
                     </div>
+
                 )}
 
                 {/* Controlli paginazione */}
@@ -195,7 +211,21 @@ function ViewIssueList({onViewIssue, bodyParams, pageName}) {
                 )}
             </div>
 
-            <FilterAndSortPopUp isOpen={isFilterAndSortPopUpOpen} onClose={() => setIsFilterAndSortPopUpOpen(false)}/>
+            <FilterAndSortPopUp
+                isOpen={isFilterAndSortPopUpOpen}
+                onClose={() => setIsFilterAndSortPopUpOpen(false)}
+                onApplyFilters={(newFilters, newSort) => {
+                    // Verifica presenza di modifiche nei filtri/ordinamento
+                    const areIdenticalFilters = JSON.stringify(newFilters) === JSON.stringify(bodyParams);
+                    const isIdenticalSort = newSort === sortType;
+
+                    if (areIdenticalFilters && isIdenticalSort) {
+                        return;
+                    }
+                    setBodyParams(newFilters)
+                    setSortType(newSort)
+                }}
+            />
             <ExportPopUp isOpen={isExportPopUpOpen} onClose={() => setIsExportPopUpOpen(false)}/>
         </div>
     );
