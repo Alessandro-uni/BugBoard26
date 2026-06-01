@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {Eye, EyeClosed} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
 
-function ChangePassword({onChangePassword}) {
+function ChangePassword({onLogout}) {
     const [currentRawPassword, setCurrentRawPassword] = useState('');
     const [newRawPassword, setNewRawPassword] = useState('');
     const [repeatNewRawPassword, setRepeatNewRawPassword] = useState('');
@@ -56,8 +56,8 @@ function ChangePassword({onChangePassword}) {
             });
 
             if (response.ok) {
-                const userData = await response.json();
-                onChangePassword(userData);
+                alert("Password modificata correttamente. Reindirizzamento al login");
+                onLogout('Esci');
             } else {
                 const errorJson = await response.json();
 
@@ -193,7 +193,7 @@ function ChangePassword({onChangePassword}) {
                         </div>
 
                         {/* Feedback testuale */}
-                        <>
+                        <div>
                             {passwordsDontMatch && (
                                 <p className="mt-2 text-sm text-red-500 font-medium">
                                     Le password non coincidono
@@ -204,7 +204,7 @@ function ChangePassword({onChangePassword}) {
                                     Le password coincidono
                                 </p>
                             )}
-                        </>
+                        </div>
 
                     </div>
 
@@ -212,6 +212,7 @@ function ChangePassword({onChangePassword}) {
                     <div className="flex justify-end">
                         <CustomButton
                             variant="primary"
+                            type="submit"
                             disabled={isLoading || passwordsDontMatch}
                         >
                             {isLoading ? 'Modifica in corso...' : 'Modifica'}
