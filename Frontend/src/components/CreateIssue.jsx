@@ -25,8 +25,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                 });
 
                 if (response.ok) {
-                    const tagData = await response.json();
-                    setAvailableTypes(tagData);
+                    const typeData = await response.json();
+                    setAvailableTypes(typeData);
                 } else {
                     const errorJson = await response.json();
                     alert("Errore: " + errorJson.message);
@@ -42,11 +42,6 @@ function CreateIssue({onCancel, onIssueCreated}){
     }, []);
 
     const [availableTags, setAvailableTags] = useState([]);
-
-    // Funzione per modificare le STRINGHE in Stringhe
-    const formatLabel = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-    };
 
     // Fetch tags
     useEffect(() => {
@@ -81,7 +76,12 @@ function CreateIssue({onCancel, onIssueCreated}){
     const [showSuccess, setShowSuccess] = useState(false);
     const [createdIssueId, setCreatedIssueId] = useState(null);
 
-    //GESTIONE
+    // GESTIONE
+
+    // Funzione per modificare le STRINGHE in Stringhe
+    const formatLabel = (str) => {
+        return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+    };
 
     // Ricerca tag tramite sottostringa
     const filteredTags = availableTags.filter(tag =>
