@@ -76,6 +76,9 @@ function App() {
 
         //controlli
         if (page === 'Esci') {
+            // Eliminato il token
+            localStorage.removeItem('token');
+
             setIsLoggedIn(false);
             setUserRole(null);
             setSelectIssueId(null);
@@ -122,25 +125,25 @@ function App() {
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole} onNavigation={handleNavigation}/>;
 
             case 'Tutte le issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{}} key={currentPage} pageName={currentPage}/>;
 
             case 'Issue assegnate':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{assignedUserId: userId}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{assignedUserId: userId}} key={currentPage} pageName={currentPage}/>;
 
             case 'Issue segnalate':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{reportingUserId: userId}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{reportingUserId: userId}} key={currentPage} pageName={currentPage}/>;
 
             case 'Segnala Issue':
                 return <CreateIssue onCancel={() => handleNavigation('HomePage')} onIssueCreated={handleViewIssue}/>;
 
             case 'Assegna Issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} bodyParams={{isAssigned: false}} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{isAssigned: false}} key={currentPage} pageName={currentPage}/>;
 
             case 'Aggiungi nuovo utente':
                 return <CreateUser onCreateUser={handleNavigation}/>;
 
             case 'Cambia password':
-                return <ChangePassword onChangePassword={handleNavigation}/>;
+                return <ChangePassword onLogout={handleNavigation}/>;
 
             case 'Issue selezionata':
                 return <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId={userId} onBack={handleBack}/>;
