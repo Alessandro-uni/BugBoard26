@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX} from "lucide-react";
+import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX, Loader2} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
 
 function ViewSingleIssue({issueId, userRole, userId, onBack}) {
@@ -231,7 +231,8 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // Rotella di caricamento
     if (isIssueLoading) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <div className="flex flex-col items-center justify-center p-20 text-center bg-gray-50/50 rounded-xl border-2 border-gray-200">
+                <Loader2 size={40} className="text-gray-200 animate-spin mb-4"/>
                 <div className="text-gray-500 font-medium animate-pulse">Caricamento dettagli issue...</div>
             </div>
         );
