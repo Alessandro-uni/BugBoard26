@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.swe.bugboard.dto.History.HistoryResponse;
 import org.swe.bugboard.dto.Issue.*;
+import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.IssueType;
 import org.swe.bugboard.service.HistoryService;
 import org.swe.bugboard.service.IssueService;
@@ -92,6 +93,15 @@ public class IssueController {
         List<String> response = Arrays.stream(IssueType.values())
                                         .map(Enum::name)
                                         .toList();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<List<String>> getAllIssueStatus() {
+        List<String> response = Arrays.stream(IssueStatus.values())
+                .map(Enum::name)
+                .toList();
 
         return ResponseEntity.ok(response);
     }
