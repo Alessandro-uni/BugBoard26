@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX, Loader2} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
+import History from "./History.jsx";
 
 function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // DOMINIO ISSUE
@@ -8,6 +9,8 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     const [issueData, setIssueData] = useState(null);
     const [isIssueLoading, setIsIssueLoading] = useState(true);
     const [issueError, setIssueError] = useState(null);
+
+    const [showHistory, setShowHistory] = useState(false);
 
     // Fetch dettagli della issue
     const fetchIssueDetails = async () => {
@@ -378,9 +381,25 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </CustomButton>
                             )}
 
+
+
                         </div>
                     )}
+
+                    <div className="w-full md:w-80 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4">
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Info</h3>
+                        {/* Tasto Visualizza History */}
+                        <CustomButton
+                            variant="secondary"
+                            onClick={() => setShowHistory(true)}
+                        >
+                            Visualizza History
+                        </CustomButton>
+                    </div>
+
                 </div>
+
+
 
                 {/* Dettagli issue */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -438,6 +457,12 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                         </div>
                     </div>
                 </div>
+                {showHistory && (
+                    <History
+                        issueId={issueData?.id}
+                        onClose={() => setShowHistory(false)}
+                    />
+                )}
             </div>
 
             {/* POPUP ASSEGNA ISSUE */}
@@ -662,6 +687,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
                             </>
                         )}
+
+
+
                     </div>
                 </div>
             )}
