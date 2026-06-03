@@ -93,7 +93,7 @@ public class IssueService {
         IssueStatus newStatus = findStatusOrThrow(updateIssueRequest.getNewStatus());
 
         if (oldStatus == newStatus) {
-            throw new IllegalStateException("La issue si trova già nello stato: " + oldStatus.name());
+            return null;
         }
 
         if (oldStatus == IssueStatus.RESOLVED || oldStatus == IssueStatus.CLOSED) {
@@ -119,7 +119,7 @@ public class IssueService {
         Issue issue = findIssueOrThrow(closeIssueRequest.getIssueId());
 
         if (issue.getStatus().equals(IssueStatus.CLOSED)) {
-            throw new IllegalStateException("La issue si trova già nello stato: " + issue.getStatus().name());
+            return null;
         }
 
         issue.setStatus(IssueStatus.CLOSED);
