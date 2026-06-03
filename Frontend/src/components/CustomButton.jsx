@@ -14,10 +14,14 @@ export function CustomButton({
     const baseClasses = "inline-flex items-center justify-center gap-2 transition-all font-medium rounded-lg focus:outline-none focus:ring-2";
 
     const variants = {
-        primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-800 shadow-sm",
-        secondary: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-500 shadow-sm",
-        success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-800 shadow-sm",
-        danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-800 shadow-sm"
+        primary: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-800 shadow-sm " +
+            "dark:bg-blue-600 dark:hover:bg-blue-500 dark:focus:ring-blue-400" ,
+        secondary: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-500 shadow-sm " +
+            "dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-400" ,
+        success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-800 shadow-sm " +
+            "dark:bg-green-700 dark:hover:bg-green-600 dark:focus:ring-green-500",
+        danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-800 shadow-sm " +
+            "dark:bg-red-700 dark:hover:bg-red-600 dark:focus:ring-red-500"
     };
 
     const sizes = {
@@ -27,7 +31,7 @@ export function CustomButton({
     }
 
     const stateClasses = disabled
-        ? "opacity-30"
+        ? "opacity-30 cursor-not-allowed"
         : "hover:cursor-pointer active:scale-90";
 
     const iconSizes = {sm: 16, md: 18, lg: 20};

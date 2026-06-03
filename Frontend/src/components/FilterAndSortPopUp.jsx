@@ -281,12 +281,12 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
             {/* Overlay */}
-            <div className="absolute inset-0 bg-black/50" onClick={onClose}/>
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose}/>
 
-            <div className="relative flex flex-col gap-8 bg-white rounded-xl shadow-xl w-full max-w-2xl mx-4 px-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
+            <div className="relative flex flex-col gap-8 bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl mx-4 px-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200 border border-gray-200 dark:border-gray-700">
                 {/* Header principale */}
-                <div className="flex items-center justify-between pt-6 sticky top-0 bg-white pb-4 border-b border-gray-200 z-10">
-                    <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                <div className="flex items-center justify-between pt-6 sticky top-0 bg-white dark:bg-gray-800 pb-4 border-b border-gray-200 dark:border-gray-700 z-10">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         Filtra e ordina Issue
                     </h2>
                     <CustomButton
@@ -299,10 +299,10 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                 <form id="filterForm" onSubmit={handleSubmit} className="flex flex-col gap-8">
                     {/* Contenitore filtri */}
-                    <div className="flex flex-col p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                    <div className="flex flex-col p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border-2 border-gray-200 dark:border-gray-700">
                         {/* Header*/}
-                        <div className="flex items-center justify-between mb-6 sticky top-0 pb-4 border-b border-gray-200">
-                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <div className="flex items-center justify-between mb-6 sticky top-0 pb-4 border-b border-gray-200 dark:border-gray-700">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <Filter size={20} />
                                 Filtri
                             </h2>
@@ -313,14 +313,14 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Stato */}
                                 <div>
-                                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                         Stato
                                     </label>
                                     <select
                                         id="status"
                                         value={selectedFilters.status}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Nessuno stato selezionato</option>
                                         {availableStatus.map((status) => (
@@ -333,14 +333,14 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                                 {/* Tipo */}
                                 <div>
-                                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                         Tipo
                                     </label>
                                     <select
                                         id="type"
                                         value={selectedFilters.type}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Nessun tipo selezionato</option>
                                         {availableTypes.map((type) => (
@@ -353,14 +353,14 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                                 {/* Utente segnalatore */}
                                 <div>
-                                    <label htmlFor="reportingUserId" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="reportingUserId" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                         Segnalata da
                                     </label>
                                     <select
                                         id="reportingUserId"
                                         value={selectedFilters.reportingUserId}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Nessun utente selezionato</option>
                                         {availableReportingUsers.map((user) => (
@@ -374,7 +374,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                 {/* Utente Assegnato */}
                                 <div>
                                     <div className="flex items-center justify-between">
-                                        <label htmlFor="assignedUserId" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="assignedUserId" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                             Assegnata a
                                         </label>
 
@@ -394,7 +394,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                                 }}
                                                 className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded"
                                             />
-                                            <label htmlFor="noAssignedUser" className="text-sm text-gray-600 cursor-pointer select-none">
+                                            <label htmlFor="noAssignedUser" className="text-sm text-gray-600 cursor-pointer select-none dark:text-gray-300">
                                                 Senza utente
                                             </label>
                                         </div>
@@ -402,7 +402,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                                     {/* Se la checkbox non è spuntata, mostrata la select */}
                                     {selectedFilters.isAssigned === false ? (
-                                        <div className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 italic text-sm">
+                                        <div className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-950 text-gray-500 dark:text-gray-500 italic text-sm">
                                             Nessun utente
                                         </div>
                                     ) : (
@@ -410,7 +410,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="assignedUserId"
                                             value={selectedFilters.assignedUserId}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                         >
                                             <option value="">Nessun utente selezionato</option>
                                             {availableAssignableUsers.map((user) => (
@@ -426,7 +426,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                 {/* Tag */}
                                 <div>
                                     <div className="flex items-center justify-between">
-                                        <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                             Tag
                                         </label>
 
@@ -446,7 +446,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                                 }}
                                                 className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded"
                                             />
-                                            <label htmlFor="noTags" className="text-sm text-gray-600 cursor-pointer select-none">
+                                            <label htmlFor="noTags" className="text-sm text-gray-600 cursor-pointer select-none dark:text-gray-300">
                                                 Senza tag
                                             </label>
                                         </div>
@@ -454,7 +454,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                                     {/* Se la checkbox non è spuntata, mostrata la select */}
                                     {selectedFilters.isTagged === false ? (
-                                        <div className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-gray-100 text-gray-500 italic text-sm">
+                                        <div className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-950 text-gray-500 dark:text-gray-500 italic text-sm">
                                             Nessun tag
                                         </div>
                                     ) : (
@@ -463,7 +463,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="tags"
                                             value={selectedFilters.tags}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                         >
                                             {availableTags.map((tag) => (
                                                 <option key={tag} value={tag}>
@@ -476,7 +476,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                                 {/* Priorità */}
                                 <div>
-                                    <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                         Priorità
                                     </label>
 
@@ -485,7 +485,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                         name="booleanField"
                                         value={selectedFilters.priority !== null && selectedFilters.priority !== "" ? String(selectedFilters.priority) : ""}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Nessuna priorità selezionata</option>
                                         <option value="true">Si</option>
@@ -496,10 +496,10 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
 
                             {/* Sezione date: Creazione */}
                             <div className="border-t border-gray-200 pt-6">
-                                <h3 className="text-sm font-semibold text-gray-900 mb-4">Data creazione</h3>
+                                <h3 className="text-sm font-semibold text-gray-900 mb-4 dark:text-gray-300">Data creazione</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="startCreationDate" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="startCreationDate" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                             Da:
                                         </label>
                                         <input
@@ -508,11 +508,11 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="startCreationDate"
                                             value={selectedFilters.startCreationDate ? selectedFilters.startCreationDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="endCreationDate" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="endCreationDate" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                             A:
                                         </label>
                                         <input
@@ -521,7 +521,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="endCreationDate"
                                             value={selectedFilters.endCreationDate ? selectedFilters.endCreationDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
                                         />
                                     </div>
                                 </div>
@@ -532,7 +532,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                 <h3 className="text-sm font-semibold text-gray-900 mb-4">Ultima modifica</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="startLastModifiedDate" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="startLastModifiedDate" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                             Da:
                                         </label>
                                         <input
@@ -541,11 +541,11 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="startLastModifiedDate"
                                             value={selectedFilters.startLastModifiedDate ? selectedFilters.startLastModifiedDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            className=" w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="endLastModifiedDate" className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label htmlFor="endLastModifiedDate" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                                             A:
                                         </label>
                                         <input
@@ -554,7 +554,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="endLastModifiedDate"
                                             value={selectedFilters.endLastModifiedDate ? selectedFilters.endLastModifiedDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
                                         />
                                     </div>
                                 </div>
@@ -563,10 +563,10 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                     </div>
 
                     {/* Contenitore ordinamento */}
-                    <div className="flex flex-col p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                    <div className="flex flex-col p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border-2 border-gray-200 dark:border-gray-700">
                         {/* Header */}
-                        <div className="flex items-center justify-between mb-6 sticky top-0 pb-4 border-b border-gray-200">
-                            <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <div className="flex items-center justify-between mb-6 sticky top-0 pb-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                                 <ArrowUpDown size={20} />
                                 Ordinamento
                             </h2>
@@ -576,14 +576,14 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="sortBy" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Ordina per
                                     </label>
                                     <select
                                         id="sortBy"
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                         required
                                     >
                                         <option value="creationDate">Data Creazione</option>
@@ -592,14 +592,14 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                 </div>
 
                                 <div>
-                                    <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Ordine
                                     </label>
                                     <select
                                         id="sortOrder"
                                         value={order}
                                         onChange={(e) => setOrder(e.target.value)}
-                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                         required
                                     >
                                         <option value="desc">Decrescente</option>
@@ -611,7 +611,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                     </div>
 
                     {/* Pulsanti */}
-                    <div className="flex justify-end gap-3 p-6 border-t border-gray-200 sticky bottom-0 bg-white">
+                    <div className="flex justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700 sticky bottom-0 bg-white dark:bg-gray-800">
                         <CustomButton
                             variant="secondary"
                             onClick={handleReset}

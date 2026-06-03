@@ -3,22 +3,22 @@ import {IssueCard} from "./IssueCard.jsx";
 
 function IssueSection({title, issues, onViewIssue, onViewAll}) {
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col h-full">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 flex flex-col h-full">
 
             {/* Intestazione sezione */}
             <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{title}</h3>
 
                 <button
                     onClick={onViewAll}
-                    className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                    className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 hover:underline transition-colors"
                 >
                     Vedi tutte &rarr;
                 </button>
             </div>
 
             {issues.length === 0 ? (
-                <p className="text-gray-500 text-sm">Nessuna issue in questa sezione</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Nessuna issue in questa sezione</p>
             ) : (
                 <div className="flex flex-row gap-5 overflow-x-auto">
                     {issues.map((issue) => (
@@ -98,8 +98,8 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', on
     return (
         <div className="w-full mx-auto">
             <div className="mb-4">
-                <h2 className="text-2xl font-bold text-gray-900">Home</h2>
-                <p className="text-gray-600">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Home</h2>
+                <p className="text-gray-600 dark:text-gray-400">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
             </div>
 
             <div className="space-y-6 mx-auto">

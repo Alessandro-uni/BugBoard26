@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import LoginPage from './components/LoginPage.jsx';
 import Header from "./components/Header.jsx";
 import Menu from "./components/Menu.jsx";
@@ -28,6 +28,27 @@ function App() {
     const [userId, setUserId] = useState(null)
     const [userName, setUserName] = useState('');
     const [userRole, setUserRole] = useState(null);
+
+    //TEMA
+    const [theme, setTheme] = useState('light');
+
+    //NOTIFICHE
+    const [notifications, setNotifications] = useState([
+        { id: 1, message: "Nuova issue assegnata", time: "10 min fa" },
+        { id: 2, message: "Aggiunto un nuovo utente", time: "5 min fa" }
+    ]);
+
+    const removeNotification = (id) => {
+        setNotifications(prev => prev.filter(n => n.id !== id));
+    };
+
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    }, [theme]);
 
     /*
       FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
@@ -155,7 +176,7 @@ function App() {
 
     // Struttura visiva principale dell'app
     return (
-        <div className="h-screen overflow-hidden w-full flex flex-col md:flex-row bg-gray-50">
+        <div className="h-screen overflow-hidden w-full flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
             {/* Menu */}
             <Menu
                 isOpen={isMenuOpen}
@@ -167,9 +188,13 @@ function App() {
 
             <div className="flex-1 flex flex-col min-w-0 min-h-0">
                 <Header
+                    theme={theme}
+                    setTheme={setTheme}
                     onToggleMenu={() => setIsMenuOpen(!isMenuOpen)}
                     onHomeClick={() => setCurrentPage('HomePage')}
                     isHomeOpen={currentPage === 'HomePage'}
+                    notifications={notifications}
+                    removeNotification={removeNotification}
                 />
 
                 <main className="flex-1 py-4 md:py-4 overflow-y-auto [scrollbar-gutter:stable]">

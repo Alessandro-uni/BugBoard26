@@ -212,21 +212,21 @@ function CreateIssue({onCancel, onIssueCreated}){
     return (
         <div>
             {/* FORM */}
-            <div className="max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto transition-colors duration-300">
                 {/* Intestazione */}
                 <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-900">Segnala Issue</h2>
-                    <p className="text-gray-600">Compila i campi e invia il modulo</p>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Segnala Issue</h2>
+                    <p className="text-gray-600 dark:text-gray-400">Compila i campi e invia il modulo</p>
                 </div>
 
                 {/* Card del Form */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                     <form onSubmit={handleSubmit} className="space-y-6">
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Titolo */}
                             <div>
-                                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Titolo
                                 </label>
                                 <input
@@ -234,7 +234,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-blue-500 shadow-sm"
                                     placeholder="Inserisci il titolo della issue"
                                     required
                                 />
@@ -242,14 +242,14 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                             {/* Tipo */}
                             <div>
-                                <label htmlFor="type" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Tipo
                                 </label>
                                 <select
                                     id="type"
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm"
                                     required
                                 >
                                     <option value="" disabled hidden>Seleziona tipo</option>
@@ -262,9 +262,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </div>
                         </div>
 
-                        <div className="p-4 border border-b-black-300 rounded-lg shadow-sm">
+                        <div className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm">
                             {/* Descrizione */}
-                            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300  mb-2">
                                 Descrizione
                             </label>
                             <textarea
@@ -272,13 +272,13 @@ function CreateIssue({onCancel, onIssueCreated}){
                                 rows={6}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
                                 placeholder="Descrivi il problema o la richiesta in dettaglio..."
                                 required
                             />
 
                             {/* Allega file */}
-                            <label className="block text-sm pt-3 font-medium text-gray-700 mb-2">
+                            <label className="block text-sm pt-3 font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Allega immagine
                             </label>
                             {attachment.length < 1 && (
@@ -294,8 +294,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     htmlFor="file-upload"
                                     className="cursor-pointer flex flex-col items-center"
                                 >
-                                    <Paperclip className="w-10 h-10 text-gray-400 mb-2" />
-                                    <span className="text-sm font-medium text-gray-700">Clicca per caricare un'immagine</span>
+                                    <Paperclip className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-2" />
+                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-500">Clicca per caricare un'immagine</span>
                                     <span className="text-xs text-gray-500 mt-1">JPG, PNG, GIF, WebP</span>
                                 </label>
                             </div>
@@ -306,7 +306,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                 <div className="mt-2 space-y-2">
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center gap-3">
-                                            <Paperclip className="w-4 h-4 text-gray-500" />
+                                            <Paperclip className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-2 " />
                                             <span className="text-sm text-gray-700">Immagine allegata: {attachment[0].name}</span>
                                         </div>
                                         <button
@@ -323,8 +323,8 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                         <div className="flex flex-col md:flex-row gap-6">
                             {/* Sezione tag */}
-                            <div className="flex-1 bg-white p-6 rounded-lg border border-gray-200 shadow-sm space-y-4">
-                                <label className="block text-sm font-medium text-gray-700 mb-3">Tag</label>
+                            <div className="flex-1 bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Tag</label>
 
                                 {/* Input per la ricerca/creazione dei tag */}
                                 <div className="mb-4">
@@ -340,7 +340,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                                 }
                                             }
                                         }}
-                                        className="w-full px-4 py-2 bg-gray-50 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                                        className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white"
                                         placeholder="Cerca o crea un tag..."
                                     />
                                 </div>
@@ -383,9 +383,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </div>
 
                             {/* Priorità */}
-                            <div className="w-full md:w-25 h-25 bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col gap-4">
+                            <div className="w-full md:w-25 h-25 bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900">
+                                    <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
                                         Priorità
                                     </label>
                                 </div>

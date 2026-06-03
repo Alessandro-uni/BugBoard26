@@ -265,7 +265,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // RENDERIZZAZIONE
 
     return (
-        <div className="p-8">
+        <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
             <div className="max-w-4xl mx-auto space-y-6">
 
                 {/* Pagina di errore visualizzazione issue */}
@@ -278,15 +278,15 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                 {/* Pulsante torna alla pagina precedente */}
                 <button
                     onClick={onBack}
-                    className="flex items-center gap-2 text-gray-600 hover:text-blue-600 font-medium transition-colors mb-2"
+                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors mb-2"
                 >
                     &larr; Torna indietro
                 </button>
 
                 <div className="flex flex-col md:flex-row gap-6">
                     {/* Proprietà issue */}
-                    <div className="flex-1 bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4">
-                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Proprietà</h3>
+                    <div className="flex-1 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
+                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Proprietà</h3>
 
                         <div className="flex flex-wrap gap-3">
                             {/* Stato */}
@@ -331,11 +331,11 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                         {/* Tag */}
                         {issueData?.tags && issueData.tags.length > 0 && (
-                            <div className="flex items-center gap-2 text-gray-500">
+                            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
                                 <Tag size={16}/>
                                 <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto w-full pr-2">
                                     {issueData.tags.map(tag => (
-                                        <span key={tag} className="text-sm bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
+                                        <span key={tag} className="text-sm bg-gray-50 dark:bg-gray-700 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300">
                                     #{tag}
                                 </span>
                                     ))}
@@ -346,8 +346,8 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                     {/* Azioni */}
                     {(canAssign || canChange || canClose) && (
-                        <div className="w-full md:w-80 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4">
-                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Azioni</h3>
+                        <div className="w-full md:w-80 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
+                            <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Azioni</h3>
 
                             {/* Tasto Assegna */}
                             {canAssign && (
@@ -386,45 +386,43 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                         </div>
                     )}
 
-                    <div className="w-full md:w-80 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-4">
-                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">Info</h3>
-                        {/* Tasto Visualizza History */}
-                        <CustomButton
-                            variant="secondary"
-                            onClick={() => setShowHistory(true)}
-                        >
-                            Visualizza History
-                        </CustomButton>
-                    </div>
-
                 </div>
 
 
 
                 {/* Dettagli issue */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div className="p-8 space-y-6">
-                        <div className="flex justify-between items-center border-b pb-4">
-                            <h3 className="text-xl font-bold text-gray-900">Dettagli Issue</h3>
+                        <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Dettagli Issue</h3>
+                            {/* Tasto Visualizza History */}
+                            <CustomButton
+                                variant="secondary"
+                                onClick={() => setShowHistory(true)}
+                            >
+                                Visualizza History
+                            </CustomButton>
                         </div>
+
+
 
                         <div className="space-y-6">
                             {/* Titolo */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wider">
+                                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
                                     Titolo
                                 </label>
-                                <div className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 font-medium">
+                                <div className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-200 font-medium">
                                     {issueData?.title || "Nessun titolo"}
                                 </div>
                             </div>
 
                             {/* Descrizione */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wider">
+                                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
                                     Descrizione
                                 </label>
-                                <div className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-700 resize-none wrap-break-word">
+                                <div className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-200 resize-none break-words">
                                      {issueData?.description || "Nessuna descrizione"}
                                 </div>
                             </div>
@@ -468,7 +466,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
             {/* POPUP ASSEGNA ISSUE */}
             {showAssignPopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
 
                         {isAssignSuccess ? (
                             <>
@@ -477,9 +475,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
                                         <Check size={18} className="text-green-600"/>
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Issue assegnata</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue assegnata</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">La issue è stata assegnata con successo all'utente</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">La issue è stata assegnata con successo all'utente</p>
                                 <div className="flex gap-3 pt-1">
                                     <button
                                         onClick={() => {
@@ -489,7 +487,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                             setSearchQuery("");
                                             fetchIssueDetails();
                                         }}
-                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                        className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
                                         Ok
                                     </button>
@@ -502,7 +500,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
                                         <UserPlus size={18} className="text-blue-700" />
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Assegna Issue</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark: text-white">Assegna Issue</h2>
                                 </div>
 
                                 {/* Barra di ricerca */}
@@ -513,12 +511,12 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                         placeholder="Cerca utente..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-9 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="w-full pl-9 pr-3 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     />
                                 </div>
 
                                 {/* Lista utenti */}
-                                <div className="max-h-56 overflow-y-auto border border-gray-200 rounded-lg divide-y divide-gray-100">
+                                <div className="max-h-56 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg divide-y divide-gray-100 dark:divide-gray-700">
                                     {filteredUsers.length === 0 ? (
                                         <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
                                     ) : (
@@ -528,19 +526,19 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                                 onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
                                                 className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
                                                     selectedUser?.id === user.id
-                                                        ? 'bg-blue-50'
-                                                        : 'hover:bg-gray-50'
+                                                        ? 'bg-blue-50 dark:bg-blue-900/30'
+                                                        : 'hover:bg-gray-50 dark:hover:bg-gray-700'
                                                 }`}
                                             >
-                                                <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-semibold">
+                                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-semibold">
                                                     {user.username?.slice(0, 2).toUpperCase()}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-800">{user.username}</p>
+                                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.username}</p>
                                                     <p className="text-xs text-gray-400">{user.role}</p>
                                                 </div>
                                                 {selectedUser?.id === user.id && (
-                                                    <Check size={16} className="text-blue-600 shrink-0" />
+                                                    <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
                                                 )}
                                             </div>
                                         ))
@@ -549,7 +547,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                                 {/* Utente selezionato */}
                                 {selectedUser && (
-                                    <p className="text-xs text-blue-700 bg-blue-50 px-3 py-2 rounded-lg">
+                                    <p className="text-xs text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-3 py-2 rounded-lg">
                                         Selezionato: <span className="font-semibold">{selectedUser.username}</span>
                                     </p>
                                 )}
@@ -579,18 +577,18 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
             {/* POPUP CAMBIA STATO ISSUE */}
             {showStatusPopup && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4">
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
                         {isStatusSuccess ? (
                             <>
                                 {/* Schermata di successo */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-                                        <Check size={18} className="text-green-600"/>
+                                    <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                        <Check size={18} className="text-green-600 dark:text-green-400"/>
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Stato issue modificato</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Stato issue modificato</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">Lo stato della issue è stato modificato con successo</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Lo stato della issue è stato modificato con successo</p>
                                 <div className="flex gap-3 pt-1">
                                     <button
                                         onClick={() => {
@@ -598,7 +596,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                             setIsStatusSuccess(false);
                                             fetchIssueDetails();
                                         }}
-                                        className="flex-1 py-2.5 border border-gray-300 text-gray-700 hover:bg-gray-50 font-semibold rounded-lg"
+                                        className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
                                         Ok
                                     </button>
@@ -608,12 +606,12 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             <>
                                 {/* Schermata di cambio stato */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
-                                        <Info size={18} className="text-blue-600"/>
+                                    <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                        <Info size={18} className="text-blue-600 dark:text-blue-400"/>
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Cambia stato Issue</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Cambia stato Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">Clicca il pulsante di conferma per cambiare lo stato in "<strong>{nextStatus}</strong>"</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Clicca il pulsante di conferma per cambiare lo stato in "<strong>{nextStatus}</strong>"</p>
                                 <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
@@ -636,18 +634,18 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
             {/* POPUP CHIUDI ISSUE */}
             {showClosePopup && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4">
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
                         {isClosedSuccess ? (
                             <>
                                 {/* Schermata di successo */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center">
-                                        <Check size={18} className="text-green-600"/>
+                                    <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                        <Check size={18} className="text-green-600 dark:text-green-400"/>
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Issue chiusa</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue chiusa</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">La issue è stata chiusa con successo</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">La issue è stata chiusa con successo</p>
                                 <div className="flex gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
@@ -665,12 +663,12 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             <>
                                 {/* Schermata di chiusura issue */}
                                 <div className="flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center">
-                                        <AlertCircle size={18} className="text-red-600"/>
+                                    <div className="w-9 h-9 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                                        <AlertCircle size={18} className="text-red-600 dark:text-red-400"/>
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900">Chiudi Issue</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Chiudi Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600">Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "<strong>CLOSED</strong>"</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "<strong>CLOSED</strong>"</p>
                                 <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"

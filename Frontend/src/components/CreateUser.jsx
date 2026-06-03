@@ -80,17 +80,17 @@ function CreateUser({onCreateUser}) {
         <div className="max-w-md mx-auto">
             {/* Intestazione */}
             <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Crea un nuovo utente</h2>
-                <p className="text-gray-600">Compila i campi e invia il modulo</p>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white ">Crea un nuovo utente</h2>
+                <p className="text-gray-600 dark:text-gray-400">Compila i campi e invia il modulo</p>
             </div>
 
             {/* Card del Form */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 max-w-md">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 max-w-md transition-colors">
                 <form onSubmit={handleSubmit} className="space-y-6">
 
                     {/* Username */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Username
                         </label>
                         <div className="relative">
@@ -115,7 +115,7 @@ function CreateUser({onCreateUser}) {
 
                     {/* Mail */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Mail
                         </label>
                         <div className="relative">
@@ -140,7 +140,7 @@ function CreateUser({onCreateUser}) {
 
                     {/* Password */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Password
                         </label>
                         <div className="relative">
@@ -174,7 +174,7 @@ function CreateUser({onCreateUser}) {
 
                     {/* Ripeti password */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ripeti password
                         </label>
                         <div className="relative">
@@ -226,7 +226,7 @@ function CreateUser({onCreateUser}) {
 
                     {/* Ruolo */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ruolo
                         </label>
                         <div className="relative">

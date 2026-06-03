@@ -81,7 +81,7 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
                         animate={{ x: 0 }}
                         exit={{ x: '-100%' }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed left-0 top-0 h-full w-72 bg-white shadow-2xl z-40 flex flex-col"
+                        className="fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-800 shadow-2xl z-40 flex flex-col transition-colors"
                     >
 
                         {/* Pulsante X che chiude il menu */}
@@ -90,11 +90,11 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
                                 variant="secondary"
                                 onClick={onClose}
                                 className="absolute top-4 right-4">
-                                <X size={24}/>
+                                <X size={24} className="dark:text-white"/>
                             </CustomButton>
 
-                            <h1 className="text-2xl font-bold text-gray-900">Menu</h1>
-                            <p className="text-xs text-blue-900 mt-1">{userRole}</p>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Menu</h1>
+                            <p className="text-xs text-blue-900 mt-1 dark:text-blue-300 mt-1">{userRole}</p>
                         </div>
 
                         {/* Navigazione */}
@@ -120,8 +120,8 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
                                                 onClick={() => handleNavigate(item.label)}
                                                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
                                                     isActive
-                                                        ? 'bg-blue-50 text-blue-600'
-                                                        : 'text-gray-600 hover:bg-gray-100 hover:cursor-pointer'
+                                                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300'
+                                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:cursor-pointer'
                                                 }`}
                                             >
                                                 <Icon size={20}/>
