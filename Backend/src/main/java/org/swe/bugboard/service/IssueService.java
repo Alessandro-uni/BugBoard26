@@ -247,7 +247,6 @@ public class IssueService {
     private IssueDetailsResponse convertModelToIssueDetails(Issue issue) {
         IssueImageResponse imageResponse = null;
 
-        System.out.println("I'm here");
         if (issue.getImage() != null) {
             imageResponse = IssueImageResponse.builder()
                     .name(issue.getImage().getName())
