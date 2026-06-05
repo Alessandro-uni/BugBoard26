@@ -1,0 +1,26 @@
+
+#Useful variables for filters
+@pageNumber = "0"
+@pageSize = "10"
+@sortType = "CREATION_DATE_ASCENDING"
+
+###
+POST http://localhost:8080/api/issues/export
+Content-Type: application/json
+
+{
+  "detailLevel": "MEDIUM",
+
+  "issuePageRequest": {
+    "pageInformation": {
+      "pageNumber": {{pageNumber}},
+      "pageSize": {{pageSize}}
+      },
+
+    "sortType": "LAST_MODIFIED_DATE_ASCENDING",
+    
+    "filters": {
+      "status": "INPROGRESS"
+      }
+    }
+}

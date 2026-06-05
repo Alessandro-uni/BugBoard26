@@ -36,8 +36,10 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
             const token = localStorage.getItem('token');
 
             const payload = {
-                pageNumber: (currentPage - 1).toString(),
-                pageSize: MAX_VIEW_ISSUES,
+                pageInformation: {
+                    pageNumber: (currentPage - 1).toString(),
+                    pageSize: MAX_VIEW_ISSUES
+                },
                 sortType: sortType,
                 filters: {
                     ...bodyParams
