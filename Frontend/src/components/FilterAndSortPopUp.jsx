@@ -508,7 +508,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="startCreationDate"
                                             value={selectedFilters.startCreationDate ? selectedFilters.startCreationDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark "
                                         />
                                     </div>
                                     <div>
@@ -521,7 +521,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="endCreationDate"
                                             value={selectedFilters.endCreationDate ? selectedFilters.endCreationDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
                                         />
                                     </div>
                                 </div>
@@ -541,7 +541,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="startLastModifiedDate"
                                             value={selectedFilters.startLastModifiedDate ? selectedFilters.startLastModifiedDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className=" w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className=" w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
                                         />
                                     </div>
                                     <div>
@@ -554,7 +554,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="endLastModifiedDate"
                                             value={selectedFilters.endLastModifiedDate ? selectedFilters.endLastModifiedDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
                                         />
                                     </div>
                                 </div>
