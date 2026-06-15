@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX, Loader2} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
 import History from "./History.jsx";
+import {ReloadingBox} from "./ReloadingBox.jsx";
 
 function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // DOMINIO ISSUE
@@ -9,11 +10,10 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     const [issueData, setIssueData] = useState(null);
     const [isIssueLoading, setIsIssueLoading] = useState(true);
     const [issueError, setIssueError] = useState(null);
-
     const [showHistory, setShowHistory] = useState(false);
 
     // Fetch dettagli della issue
-    const fetchIssueDetails = async () => {
+    const fetchIssueDetails = useCallback(async () => {
         setIssueError(null);
         setIsIssueLoading(true);
         const token = localStorage.getItem('token');
@@ -38,7 +38,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                 try {
                     errorMessage = JSON.parse(errorText).message || errorMessage;
-                } catch (e) {}
+                } catch (error) {
+                    console.log(`Errore durante il caricamento issue: ${error}`);
+                }
 
                 setIssueError(errorMessage);
             }
@@ -49,35 +51,71 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         } finally {
             setIsIssueLoading(false);
         }
-    };
+    }, [issueId]);
 
     // Caricamento iniziale dettagli della issue
     useEffect(() => {
         if (issueId) {
             fetchIssueDetails();
         }
-    }, [issueId]);
+    }, [issueId, fetchIssueDetails]);
 
     // DOMINIO UTENTI ASSEGNABILI
 
     const [showAssignPopup, setShowAssignPopup] = useState(false);
     const [isAssignSuccess, setIsAssignSuccess] = useState(false);
     const [users, setUsers] = useState([]);
+    const [usersError, setUsersError] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isListUsersLoading, setIsListUsersLoading] = useState(true);
 
     // Fetch utenti
+    const fetchAvailableUsers = useCallback(async () => {
+        setUsersError(null);
+        setIsListUsersLoading(true);
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            setUsersError("Autenticazione assente");
+            setIsListUsersLoading(false);
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/api/users/available", {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data);
+            } else {
+                const errorText = await response.text();
+                let errorMessage = "Errore durante il caricamento degli utenti";
+
+                try {
+                    errorMessage = JSON.parse(errorText).message || errorMessage;
+                } catch (error) {
+                    console.log(`Errore durante il caricamento utenti: ${error}`);
+                }
+
+                setUsersError(errorMessage);
+            }
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:", error);
+            setUserError("Impossibile connettersi al server");
+        } finally {
+            setIsListUsersLoading(false);
+        }
+    }, []);
+
+    // Caricamento utenti disponibili quando richiesti
     useEffect(() => {
         if (showAssignPopup) {
-            const token = localStorage.getItem('token');
-            fetch("http://localhost:8080/api/users/available", {
-                headers: {'Authorization': `Bearer ${token}`}
-            })
-                .then(res => res.json())
-                .then(data => setUsers(data))
-                .catch(err => console.error("Errore caricamento utenti:", err));
+            fetchAvailableUsers();
         }
-    }, [showAssignPopup]);
+    }, [showAssignPopup, fetchAvailableUsers]);
 
     // Filtro utenti
     const filteredUsers = users.filter(u =>
@@ -157,6 +195,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [isStatusSuccess, setIsStatusSuccess] = useState(false);
 
+    // todo: capire dove farlo correttamente
     // Calcolo prossimo stato issue
     const statusTransition = {
         'TODO' : 'INPROGRESS',
@@ -221,6 +260,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
     // FUNZIONI AUSILIARIE
 
+    // todo: capire se ha senso farlo qui
     const getStatusStyle = (status) => {
         switch (status) {
             case 'TODO': return 'bg-gray-100 text-gray-700 border-gray-200';
@@ -234,29 +274,36 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // Rotella di caricamento
     if (isIssueLoading) {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-center bg-gray-50/50 rounded-xl border-2 border-gray-200">
-                <Loader2 size={40} className="text-gray-200 animate-spin mb-4"/>
-                <div className="text-gray-500 font-medium animate-pulse">Caricamento dettagli issue...</div>
+            <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <ReloadingBox description='Caricamento issue in corso...'></ReloadingBox>
+                </div>
             </div>
         );
     }
 
-    // Verifica esistenza della issue
-    if (!issueData) {
+    // Riquadro di errore visualizzazione issue
+    if (issueError || !issueData) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-                <p className="text-red-500 font-medium mb-4">Impossibile trovare l'issue richiesta</p>
+            <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+                <div className="max-w-4xl mx-auto space-y-6">
 
-                <button
-                    onClick={onBack}
-                    className="text-blue-600 hover:underline"
-                >
-                    &larr; Torna indietro
-                </button>
+                    <button
+                        onClick={onBack}
+                        className="text-blue-600 hover:underline"
+                    >
+                        &larr; Torna indietro
+                    </button>
+
+                    <p className="text-red-700">
+                        {issueError || "Errore sconosciuto durante il caricamento"}
+                    </p>
+                </div>
             </div>
         );
     }
 
+    // todo: capire dove farlo correttamente
     // Controlli dei permessi
     const canAssign = userRole === 'ADMIN' && issueData.status !== "CLOSED" && !issueData?.assignedUserId;
     const canChange = userId === issueData?.assignedUserId && issueData?.status !== 'CLOSED' && issueData?.status !== 'RESOLVED';
@@ -265,16 +312,8 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     // RENDERIZZAZIONE
 
     return (
-        <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+        <div className="p-8 transition-colors">
             <div className="max-w-4xl mx-auto space-y-6">
-
-                {/* Pagina di errore visualizzazione issue */}
-                {issueError && (
-                    <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                        <p className="text-red-700">{issueError}</p>
-                    </div>
-                )}
-
                 {/* Pulsante torna alla pagina precedente */}
                 <button
                     onClick={onBack}
@@ -345,66 +384,57 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     </div>
 
                     {/* Azioni */}
-                    {(canAssign || canChange || canClose) && (
-                        <div className="w-full md:w-80 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
-                            <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Azioni</h3>
+                    <div className="w-full md:w-80 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
+                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Azioni</h3>
 
-                            {/* Tasto Assegna */}
-                            {canAssign && (
-                                <CustomButton
-                                    variant="primary"
-                                    onClick={() => setShowAssignPopup(true)}
-                                >
-                                    <UserPlus size={18}/>
-                                    Assegna Issue
-                                </CustomButton>
-                            )}
+                        {/* Tasto Assegna */}
+                        {canAssign && (
+                            <CustomButton
+                                variant="primary"
+                                onClick={() => setShowAssignPopup(true)}
+                            >
+                                <UserPlus size={18}/>
+                                Assegna Issue
+                            </CustomButton>
+                        )}
 
-                            {/* Tasto Cambia stato issue */}
-                            {canChange && (
-                                <CustomButton
-                                    variant="primary"
-                                    onClick={() => setShowStatusPopup(true)}
-                                >
-                                    Cambia stato in {nextStatus}
-                                </CustomButton>
-                            )}
+                        {/* Tasto Cambia stato issue */}
+                        {canChange && (
+                            <CustomButton
+                                variant="primary"
+                                onClick={() => setShowStatusPopup(true)}
+                            >
+                                Cambia stato in {nextStatus}
+                            </CustomButton>
+                        )}
 
-                            {/* Tasto Chiudi Issue */}
-                            {canClose    && (
-                                <CustomButton
-                                    variant="danger"
-                                    onClick={() => setShowClosePopup(true)}
-                                >
-                                    <BookmarkX size={18}/>
-                                    Chiudi Issue
-                                </CustomButton>
-                            )}
+                        {/* Tasto Chiudi issue */}
+                        {canClose    && (
+                            <CustomButton
+                                variant="danger"
+                                onClick={() => setShowClosePopup(true)}
+                            >
+                                <BookmarkX size={18}/>
+                                Chiudi Issue
+                            </CustomButton>
+                        )}
 
-
-
-                        </div>
-                    )}
-
+                        {/* Tasto Visualizza history */}
+                        <CustomButton
+                            variant="secondary"
+                            onClick={() => setShowHistory(true)}
+                        >
+                            Visualizza History
+                        </CustomButton>
+                    </div>
                 </div>
-
-
 
                 {/* Dettagli issue */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div className="p-8 space-y-6">
                         <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Dettagli Issue</h3>
-                            {/* Tasto Visualizza History */}
-                            <CustomButton
-                                variant="secondary"
-                                onClick={() => setShowHistory(true)}
-                            >
-                                Visualizza History
-                            </CustomButton>
                         </div>
-
-
 
                         <div className="space-y-6">
                             {/* Titolo */}
@@ -428,7 +458,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             </div>
 
                             {/* Allegato */}
-                            <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <div className="pt-4 border-t border-gray-200 flex items-center justify-between dark:border-gray-700">
                                 <div className="mt-4">
                                     {issueData?.image?.rawImage ? (
                                         <div className="flex flex-col gap-2">
@@ -516,33 +546,44 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
 
                                 {/* Lista utenti */}
+
+                                {usersError && <p className="text-sm text-red-600">{usersError}</p>}
+
                                 <div className="max-h-56 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg divide-y divide-gray-100 dark:divide-gray-700">
-                                    {filteredUsers.length === 0 ? (
-                                        <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
+                                    {isListUsersLoading ? (
+                                        <ReloadingBox description='Ricerca utenti in corso...'></ReloadingBox>
                                     ) : (
-                                        filteredUsers.map(user => (
-                                            <div
-                                                key={user.id}
-                                                onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
-                                                className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                                                    selectedUser?.id === user.id
-                                                        ? 'bg-blue-50 dark:bg-blue-900/30'
-                                                        : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-                                                }`}
-                                            >
-                                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-semibold">
-                                                    {user.username?.slice(0, 2).toUpperCase()}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.username}</p>
-                                                    <p className="text-xs text-gray-400">{user.role}</p>
-                                                </div>
-                                                {selectedUser?.id === user.id && (
-                                                    <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
-                                                )}
-                                            </div>
-                                        ))
+                                        <div>
+                                            {filteredUsers.length === 0 ? (
+                                                <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
+                                            ) : (
+                                                filteredUsers.map(user => (
+                                                    <div
+                                                        key={user.id}
+                                                        onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
+                                                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
+                                                            selectedUser?.id === user.id
+                                                                ? 'bg-blue-50 dark:bg-blue-900/30'
+                                                                : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                                                        }`}
+                                                    >
+                                                        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-semibold">
+                                                            {user.username?.slice(0, 2).toUpperCase()}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.username}</p>
+                                                            <p className="text-xs text-gray-400">{user.role}</p>
+                                                        </div>
+                                                        {selectedUser?.id === user.id && (
+                                                            <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                                                        )}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
                                     )}
+
+
                                 </div>
 
                                 {/* Utente selezionato */}

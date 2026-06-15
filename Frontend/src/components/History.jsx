@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from "react";
 import {Loader2, X} from "lucide-react";
+import {ReloadingBox} from "./ReloadingBox.jsx";
 
 function History({issueId, onClose}){
 
     const [history, setHistory] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -15,13 +16,12 @@ function History({issueId, onClose}){
                 });
                 if(response.ok){
                     const data = await response.json();
-                    console.log("Dati ricevuti dall'API:", data);
                     setHistory(data);
                 }
             }catch (err){
                 console.error('Errore', err);
             }finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         }
 
@@ -40,8 +40,8 @@ function History({issueId, onClose}){
                 <div className="overflow-y-auto flex-1 space-y-3 pr-2"
                     style={{minHeight: '200px',maxHeight: '400px',scrollbarWidth: 'thin'}}
                 >
-                    {loading ? (
-                        <div className="flex justify-center p-10"><Loader2 className="animate-spin text-blue-600"/></div>
+                    {isLoading ? (
+                        <ReloadingBox description='Caricamento history in corso...'></ReloadingBox>
                     ) : history.length > 0 ? (
                         history.map((event, index) => (
                             <div key={index} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600 text-sm hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
