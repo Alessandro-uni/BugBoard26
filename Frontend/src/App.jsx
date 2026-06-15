@@ -105,6 +105,7 @@ function App() {
             setSelectIssueId(null);
             setUserId(null);
             setUserName(null);
+            setTheme('light');
             setCurrentPage('HomePage');
         } else {
             setSelectIssueId(null);
