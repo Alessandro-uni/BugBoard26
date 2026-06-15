@@ -413,7 +413,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                         </div>
 
                         {/* Riquadro di conferma */}
-                        <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                        <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <CustomButton
                                 variant="secondary"
                                 onClick={onCancel}
@@ -423,6 +423,7 @@ function CreateIssue({onCancel, onIssueCreated}){
 
                             <CustomButton
                                 variant="primary"
+                                type="submit"
                             >
                                 Conferma
                             </CustomButton>
