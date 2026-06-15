@@ -96,6 +96,7 @@ function LoginPage({onLogin}) {
                     <CustomButton
                         variant="primary"
                         className="w-full py-3 px-3"
+                        type="submit"
                     >
                         Accedi
                     </CustomButton>
