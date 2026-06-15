@@ -258,6 +258,7 @@ function CreateUser({onCreateUser}) {
                     <div className="flex justify-end">
                         <CustomButton
                             variant="primary"
+                            type="submit"
                             disabled={isLoading || passwordsDontMatch}
                         >
                             {isLoading ? 'Creazione in corso...' : 'Crea utente'}
