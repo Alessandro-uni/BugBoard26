@@ -96,12 +96,12 @@ public class IssueService {
             return null;
         }
 
-        if (oldStatus == IssueStatus.RESOLVED || oldStatus == IssueStatus.CLOSED) {
+        if (!oldStatus.isModifiable()) {
             throw new IllegalStateException("Impossibile modificare lo stato di una Issue che si trova nello stato '" + oldStatus.name() + "'");
         }
 
-        if (newStatus == IssueStatus.TODO) {
-            throw new IllegalStateException("Impossibile modificare lo stato di una Issue in '" + updateIssueRequest.getNewStatus() + "'");
+        if (!newStatus.isSettable()) {
+            throw new IllegalStateException("Impossibile modificare lo stato di una Issue in '" + newStatus.name() + "'");
         }
 
         issue.setStatus(newStatus);
@@ -119,7 +119,11 @@ public class IssueService {
         Issue issue = findIssueOrThrow(closeIssueRequest.getIssueId());
 
         if (issue.getStatus().equals(IssueStatus.CLOSED)) {
-            return null;
+            return convertModelToIssueDetails(issue);
+        }
+
+        if (!issue.getStatus().isCloseable()) {
+            throw new IllegalStateException("Impossibile chiudere una Issue che si trova nello stato '" + issue.getStatus().name() + "'");
         }
 
         issue.setStatus(IssueStatus.CLOSED);
@@ -137,7 +141,11 @@ public class IssueService {
         Issue issue = findIssueOrThrow(issueId);
 
         if (issue.getAssignedUser() != null) {
-            throw new IllegalStateException("Issue già assegnata all'utente " + issue.getAssignedUser().getUsername());
+            if (issue.getAssignedUser().getId().equals(userId)) {
+                return convertModelToIssueDetails(issue);
+            }
+
+            throw new IllegalStateException("Attenzione, questa issue è già stata assegnata all'utente: " + issue.getAssignedUser().getUsername());
         }
 
         if (!issue.getStatus().equals(IssueStatus.TODO)) {
