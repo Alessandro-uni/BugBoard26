@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.swe.bugboard.model.IssueStatus;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class IssueFilters {
     private Long reportingUserId;
     private Boolean isAssigned;
     private Long assignedUserId;
+    private Boolean isAssignable;
     private Boolean hasImage;
     private Boolean isTagged;
     private Set<String> tags;
@@ -31,23 +33,32 @@ public class IssueFilters {
     private LocalDateTime startLastModifiedDate;
     private LocalDateTime endLastModifiedDate;
 
-    @AssertTrue(message = "La data iniziale deve essere precedente a quella finale")
+
+    @AssertTrue(message = "La data iniziale deve essere precedente o uguale a quella finale")
     private boolean isCreationRangeValid() {
-        return startCreationDate == null || endCreationDate == null || startCreationDate.isBefore(endCreationDate);
+        return startCreationDate == null || endCreationDate == null || !startCreationDate.isAfter(endCreationDate);
     }
 
     @AssertTrue(message = "La data iniziale deve essere precedente a quella finale")
     private boolean isLastModifiedRangeValid() {
-        return startLastModifiedDate == null || endLastModifiedDate == null || startLastModifiedDate.isBefore(endLastModifiedDate);
+        return startLastModifiedDate == null || endLastModifiedDate == null || !startLastModifiedDate.isAfter(endLastModifiedDate);
     }
 
-    @AssertTrue(message = "Filtri incompatibili")
+    @AssertTrue(message = "Filtri utente assegnato incompatibili")
     private boolean isAssignedUserFilteringValid() {
-        return isAssigned == null || assignedUserId == null;
+        if (Boolean.TRUE.equals(isAssignable)) {
+            return !Boolean.TRUE.equals(isAssigned) && assignedUserId == null;
+        }
+
+        if (Boolean.FALSE.equals(isAssigned)) {
+            return assignedUserId == null;
+        }
+
+        return true;
     }
 
-    @AssertTrue(message = "Filtri incompatibili")
+    @AssertTrue(message = "Filtri dei tag incompatibili")
     private boolean isTagFilteringValid() {
-        return isTagged == null || tags == null;
+        return !(Boolean.FALSE.equals(isTagged) && tags != null && !tags.isEmpty());
     }
 }
