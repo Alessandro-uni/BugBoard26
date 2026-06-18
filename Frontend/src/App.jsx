@@ -28,11 +28,13 @@ function App() {
     const [userId, setUserId] = useState(null)
     const [userName, setUserName] = useState('');
     const [userRole, setUserRole] = useState(null);
+    const [userPermissions, setUserPermissions] = useState(null);
 
-    //TEMA
+    // Tema
     const [theme, setTheme] = useState('light');
 
-    //NOTIFICHE
+    // Notifiche todo: farle veramente
+
     const [notifications, setNotifications] = useState([
         { id: 1, message: "Nuova issue assegnata", time: "10 min fa" },
         { id: 2, message: "Aggiunto un nuovo utente", time: "5 min fa" }
@@ -68,18 +70,25 @@ function App() {
                 // Estrazione dell'id
                 const id = decoded.userId;
 
-                // Estrazione del ruolo
-                const role = decoded.role ? decoded.role.toUpperCase().trim() : 'LURKER';
-
                 // Estrazione dello username
                 const username = decoded.username;
 
-                // Aggiornamento dello stato
-                setIsLoggedIn(true);
-                setUserId(id);
-                setUserRole(role);
-                setUserName(username);
+                // Estrazione del ruolo
+                const role = decoded.role ? decoded.role.toUpperCase().trim() : 'LURKER';
+
+                // Estrazione dei permessi
+                const permissions = Array.isArray(decoded.permissions) ? decoded.permissions : [];
+
+                // Salvataggio del token nel local storage
                 localStorage.setItem('token', userData.token);
+
+                // Aggiornamento dello stato
+                setUserId(id);
+                setUserName(username);
+                setUserRole(role);
+                setUserPermissions(permissions);
+
+                setIsLoggedIn(true);
 
             } catch (error) {
                 console.error("Errore nella decodifica del token:", error);
@@ -87,8 +96,6 @@ function App() {
             }
 
         }
-      //setUserInfo(username);
-
     };
 
     // Funzione che aggiorna le pagine
@@ -144,7 +151,7 @@ function App() {
     const renderPage = () => {
         switch (currentPage) {
             case 'HomePage':
-                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole} onNavigation={handleNavigation}/>;
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userPermissions={userPermissions} onNavigation={handleNavigation}/>;
 
             case 'Tutte le issue':
                 return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{}} key={currentPage} pageName={currentPage}/>;
@@ -159,7 +166,7 @@ function App() {
                 return <CreateIssue onCancel={() => handleNavigation('HomePage')} onIssueCreated={handleViewIssue}/>;
 
             case 'Assegna Issue':
-                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{isAssigned: false}} key={currentPage} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{isAssignable: true}} key={currentPage} pageName={currentPage}/>;
 
             case 'Aggiungi nuovo utente':
                 return <CreateUser onCreateUser={handleNavigation}/>;
@@ -168,10 +175,10 @@ function App() {
                 return <ChangePassword onLogout={handleNavigation}/>;
 
             case 'Issue selezionata':
-                return <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userId={userId} onBack={handleBack}/>;
+                return <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userPermissions={userPermissions} userId={userId} onBack={handleBack}/>;
 
             default:
-                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userRole={userRole} onNavigation={handleNavigation}/>;
+                return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userPermissions={userPermissions} onNavigation={handleNavigation}/>;
         }
     };
 
@@ -185,6 +192,7 @@ function App() {
                 currentPage={currentPage}
                 onNavigate={handleNavigation}
                 userRole={userRole}
+                userPermissions={userPermissions}
             />
 
             <div className="flex-1 flex flex-col min-w-0 min-h-0">
