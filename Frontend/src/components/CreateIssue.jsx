@@ -294,7 +294,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     htmlFor="file-upload"
                                     className="cursor-pointer flex flex-col items-center"
                                 >
-                                    <Paperclip className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-2" />
+                                    <Paperclip className="size-6 text-gray-400 dark:text-gray-500 mb-2" />
                                     <span className="text-sm font-medium text-gray-700 dark:text-gray-500">Clicca per caricare un'immagine</span>
                                     <span className="text-xs text-gray-500 mt-1">JPG, PNG, GIF, WebP</span>
                                 </label>
@@ -306,7 +306,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                 <div className="mt-2 space-y-2">
                                     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                         <div className="flex items-center gap-3">
-                                            <Paperclip className="w-10 h-10 text-gray-400 dark:text-gray-500 mb-2 " />
+                                            <Paperclip className="size-6 text-gray-400 dark:text-gray-500 mb-2 " />
                                             <span className="text-sm text-gray-700">Immagine allegata: {attachment[0].name}</span>
                                         </div>
                                         <button
@@ -446,8 +446,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                         </CustomButton>
 
                         {/* Icona Successo */}
-                        <div className="mx-auto w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-2">
-                            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
+                            <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
