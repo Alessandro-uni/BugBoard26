@@ -186,10 +186,8 @@ public class IssueController {
     }
 
     @GetMapping("/status")
-    public ResponseEntity<List<String>> getAllIssueStatus() {
-        List<String> response = Arrays.stream(IssueStatus.values())
-                .map(Enum::name)
-                .toList();
+    public ResponseEntity<List<IssueStatus>> getAllIssueStatus() {
+        List<IssueStatus> response = Arrays.asList(IssueStatus.values());
 
         return ResponseEntity.ok(response);
     }
