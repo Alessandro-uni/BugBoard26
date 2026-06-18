@@ -11,7 +11,7 @@ import java.util.Set;
 public enum IssueStatus {
     TODO(Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE, Feature.ASSIGNABLE),
     INPROGRESS(Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE),
-    RESOLVED(Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE),
+    RESOLVED(Feature.SETTABLE, Feature.CLOSEABLE),
     CLOSED();
 
     // Enum interno con le caratteristiche degli stati
