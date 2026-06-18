@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.swe.bugboard.model.IssueStatus;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -17,7 +18,7 @@ public class IssueDetailsResponse {
     private String title;
     private String description;
     private String type;
-    private String status;
+    private IssueStatus status;
     private Boolean priority;
     private Set<String> tags;
     private IssueImageResponse image;
