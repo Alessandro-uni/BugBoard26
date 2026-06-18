@@ -214,16 +214,25 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
             <FilterAndSortPopUp
                 isOpen={isFilterAndSortPopUpOpen}
                 onClose={() => setIsFilterAndSortPopUpOpen(false)}
+                currentFilters={bodyParams}
+                lockedFilters={initialBodyParams}
                 onApplyFilters={(newFilters, newSort) => {
+                    // Unione filtri della pagina con quelli richiesti nel PopUp
+                    const mergedFilters = {
+                        ...initialBodyParams,
+                        ...newFilters
+                    };
+
                     // Verifica presenza di modifiche nei filtri/ordinamento
-                    const areIdenticalFilters = JSON.stringify(newFilters) === JSON.stringify(bodyParams);
+                    const areIdenticalFilters = JSON.stringify(mergedFilters) === JSON.stringify(bodyParams);
                     const isIdenticalSort = newSort === sortType;
 
                     if (areIdenticalFilters && isIdenticalSort) {
                         return;
                     }
-                    setBodyParams(newFilters)
-                    setSortType(newSort)
+
+                    setBodyParams(mergedFilters);
+                    setSortType(newSort);
                 }}
             />
             <ExportPopUp isOpen={isExportPopUpOpen} onClose={() => setIsExportPopUpOpen(false)}/>
