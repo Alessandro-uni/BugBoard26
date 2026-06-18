@@ -23,8 +23,7 @@ public enum UserRole {
     private final Set<RolePermission> permissions;
 
     UserRole(Set<RolePermission> permissions) {
-        this.permissions = permissions;
-
+        this.permissions = Collections.unmodifiableSet(permissions);
     }
 
     public Set<RolePermission> getPermissions() {
