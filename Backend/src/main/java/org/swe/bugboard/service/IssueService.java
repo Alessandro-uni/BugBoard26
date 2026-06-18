@@ -219,11 +219,13 @@ public class IssueService {
 
         if (filter == null) return specification; //fail fast
 
-        return specification.and(IssueSpecification.hasAssignedUser(filter.getAssignedUserId()))
+        return specification
+                .and(IssueSpecification.hasAssignedUser(filter.getAssignedUserId()))
                 .and(IssueSpecification.isAssigned(filter.getIsAssigned()))
                 .and(IssueSpecification.hasReportingUser(filter.getReportingUserId()))
                 .and(IssueSpecification.hasPriority(filter.getPriority()))
                 .and(IssueSpecification.hasStatus(filter.getStatus()))
+                .and(IssueSpecification.isAssignable(filter.getIsAssignable()))
                 .and(IssueSpecification.hasType(filter.getType()))
                 .and(IssueSpecification.hasCreationDateAfter(filter.getStartCreationDate()))
                 .and(IssueSpecification.hasCreationDateBefore(filter.getEndCreationDate()))
