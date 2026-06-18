@@ -4,7 +4,7 @@ import {CustomButton} from "./CustomButton.jsx";
 import History from "./History.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 
-function ViewSingleIssue({issueId, userRole, userId, onBack}) {
+function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // DOMINIO ISSUE
 
     const [issueData, setIssueData] = useState(null);
@@ -175,7 +175,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
 
-                if (!response.ok) throw new Error("Errore recupero utente");
+                if (!response.ok) {
+                    throw new Error("Errore recupero utente");
+                }
 
                 const data = await response.json();
                 setAssignedUser(data);
@@ -195,15 +197,44 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [isStatusSuccess, setIsStatusSuccess] = useState(false);
 
-    // todo: capire dove farlo correttamente
-    // Calcolo prossimo stato issue
-    const statusTransition = {
-        'TODO' : 'INPROGRESS',
-        'INPROGRESS' : 'RESOLVED'
-    }
+    const [allStatuses, setAllStatuses] = useState([]);
+    const [selectedNextStatus, setSelectedNextStatus] = useState("");
 
-    // Prossimo stato issue
-    const nextStatus = statusTransition[issueData?.status] || null;
+    // Fetch degli stati dal backend
+    const fetchStatuses = useCallback(async () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch("http://localhost:8080/api/issues/status", {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setAllStatuses(data);
+            }
+        } catch (error) {
+            console.error("Errore nel recupero degli stati:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (showStatusPopup) {
+            fetchStatuses();
+        }
+    }, [showStatusPopup, fetchStatuses]);
+
+    // Seleziona solo gli stati settable, escludendo quello attuale
+    const availableStatuses = allStatuses.filter(status =>
+        status.settable && status.name !== issueData?.status?.name
+    );
+
+    // Selezionato in automatico il primo
+    useEffect(() => {
+        if (availableStatuses.length > 0) {
+            setSelectedNextStatus(availableStatuses[0].name);
+        }
+    }, [allStatuses, issueData?.status?.name]);
 
     const handleStatusIssue = async () => {
         const token = localStorage.getItem('token');
@@ -215,13 +246,14 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({issueId: issueData?.id, newStatus: nextStatus}),
+                body: JSON.stringify({issueId: issueData?.id, newStatus: selectedNextStatus}),
             });
 
             if (response.ok) {
                 setIsStatusSuccess(true)
             } else {
-                alert("Errore durante il cambio di stato della issue");
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
             }
 
         } catch (err) {
@@ -303,11 +335,10 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         );
     }
 
-    // todo: capire dove farlo correttamente
     // Controlli dei permessi
-    const canAssign = userRole === 'ADMIN' && issueData.status !== "CLOSED" && !issueData?.assignedUserId;
-    const canChange = userId === issueData?.assignedUserId && issueData?.status !== 'CLOSED' && issueData?.status !== 'RESOLVED';
-    const canClose = userRole === 'ADMIN' && issueData?.status !== 'CLOSED';
+    const canAssign = userPermissions.includes('ASSIGN_ISSUE') && issueData?.status?.assignable && !issueData?.assignedUserId;
+    const canChange = userId === issueData?.assignedUserId && issueData?.status?.modifiable;
+    const canClose = userPermissions.includes('CLOSE_ISSUE') && issueData?.status?.closeable;
 
     // RENDERIZZAZIONE
 
@@ -329,8 +360,8 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                         <div className="flex flex-wrap gap-3">
                             {/* Stato */}
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(issueData?.status)}`}>
-                                {issueData?.status || 'Stato non definito'}
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(issueData?.status?.name)}`}>
+                                {issueData?.status?.name || 'Stato non definito'}
                             </span>
 
                             {/* Tipo */}
@@ -361,7 +392,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             )}
 
                             {/* Nessun utente assegnato */}
-                            {!(userRole === 'ADMIN' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
+                            {!canAssign && !issueData?.assignedUserId && (
                                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                                     Nessun utente assegnato
                                 </span>
@@ -404,12 +435,12 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 variant="primary"
                                 onClick={() => setShowStatusPopup(true)}
                             >
-                                Cambia stato in {nextStatus}
+                                Cambia stato
                             </CustomButton>
                         )}
 
                         {/* Tasto Chiudi issue */}
-                        {canClose    && (
+                        {canClose && (
                             <CustomButton
                                 variant="danger"
                                 onClick={() => setShowClosePopup(true)}
@@ -619,7 +650,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
             {/* POPUP CAMBIA STATO ISSUE */}
             {showStatusPopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
                         {isStatusSuccess ? (
                             <>
                                 {/* Schermata di successo */}
@@ -652,17 +683,37 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Cambia stato Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Clicca il pulsante di conferma per cambiare lo stato in "<strong>{nextStatus}</strong>"</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Seleziona lo stato in cui cambiare la issue: </p>
+
+                                <div className="mt-3 mb-1">
+                                    <select
+                                        value={selectedNextStatus}
+                                        onChange={(e) => setSelectedNextStatus(e.target.value)}
+                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer"
+                                    >
+                                        {availableStatuses.map((status) => (
+                                            <option key={status.name} value={status.name}>
+                                                {status.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
-                                        onClick={() => setShowStatusPopup(false)}
+                                        onClick={() => {
+                                            setShowStatusPopup(false);
+                                            if (availableStatuses.length > 0) {
+                                                setSelectedNextStatus(availableStatuses[0].name);
+                                            }
+                                        }}
                                     >
                                         Annulla
                                     </CustomButton>
                                     <CustomButton
                                         variant="primary"
                                         onClick={handleStatusIssue}
+                                        disabled={!selectedNextStatus}
                                     >
                                         Conferma
                                     </CustomButton>
@@ -687,7 +738,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue chiusa</h2>
                                 </div>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">La issue è stata chiusa con successo</p>
-                                <div className="flex gap-3 pt-1">
+                                <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
                                         onClick={() => {
@@ -695,6 +746,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                             setIsClosedSuccess(false);
                                             fetchIssueDetails();
                                         }}
+                                        className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
                                         Ok
                                     </CustomButton>
@@ -726,9 +778,6 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
                             </>
                         )}
-
-
-
                     </div>
                 </div>
             )}
