@@ -175,7 +175,7 @@ function App() {
                 return <ChangePassword onLogout={handleNavigation}/>;
 
             case 'Issue selezionata':
-                return <ViewSingleIssue issueId={selectIssueId} userRole={userRole} userPermissions={userPermissions} userId={userId} onBack={handleBack}/>;
+                return <ViewSingleIssue issueId={selectIssueId} userPermissions={userPermissions} userId={userId} onBack={handleBack}/>;
 
             default:
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userPermissions={userPermissions} onNavigation={handleNavigation}/>;
