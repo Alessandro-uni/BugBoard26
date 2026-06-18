@@ -267,7 +267,7 @@ public class IssueService {
                 .title(issue.getTitle())
                 .description(issue.getDescription())
                 .type(issue.getType().name())
-                .status(issue.getStatus().name())
+                .status(issue.getStatus())
                 .priority(issue.getPriority())
                 .tags(
                         Optional.ofNullable(issue.getTags())
