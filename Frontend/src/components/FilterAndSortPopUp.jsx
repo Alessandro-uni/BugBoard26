@@ -346,8 +346,8 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
                                     >
                                         <option value="">Nessuno stato selezionato</option>
                                         {availableStatus.map((status) => (
-                                            <option key={status} value={status}>
-                                                {formatLabel(status)}
+                                            <option key={status.name} value={status.name}>
+                                                {formatLabel(status.name)}
                                             </option>
                                         ))}
                                     </select>
