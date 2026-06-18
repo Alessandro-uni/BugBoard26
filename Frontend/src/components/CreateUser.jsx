@@ -237,8 +237,8 @@ function CreateUser({onCreateUser}) {
                                     setRole(e.target.value);
                                     clearError('role');
                                 }}
-                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                                    errors.role ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                                className={`block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                    errors.role ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
                                 }`}
                                 required
                             > {/* todo: decidere se prelevare ruoli dal db */}
