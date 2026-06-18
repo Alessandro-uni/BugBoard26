@@ -1,32 +1,65 @@
 package org.swe.bugboard.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum IssueStatus {
-    TODO(true, true, true, true),
-    INPROGRESS(true, true, true, true),
-    RESOLVED(false, false, true, true),
-    CLOSED(false, false, false, false);
+    TODO(Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE, Feature.ASSIGNABLE),
+    INPROGRESS(Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE),
+    RESOLVED(Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE),
+    CLOSED();
 
-    private final boolean isWorkload;
-    private final boolean isSettable;
-    private final boolean isModifiable;
-    private final boolean isCloseable;
+    // Enum interno con le caratteristiche degli stati
+    public enum Feature {
+        WORKLOAD,
+        SETTABLE,
+        MODIFIABLE,
+        CLOSEABLE,
+        ASSIGNABLE
+    }
 
-    IssueStatus(boolean isWorkload, boolean isSettable, boolean isModifiable, boolean isCloseable) {
-        this.isWorkload = isWorkload;
-        this.isSettable = isSettable;
-        this.isModifiable = isModifiable;
-        this.isCloseable = isCloseable;
+    private final Set<Feature> features;
+
+    IssueStatus(Feature... features) {
+        if (features.length == 0) {
+            this.features = EnumSet.noneOf(Feature.class);
+        } else {
+            this.features = EnumSet.copyOf(Arrays.asList(features));
+        }
     }
 
     public boolean isWorkload() {
-        return isWorkload;
+        return features.contains(Feature.WORKLOAD);
     }
 
-    public boolean isSettable() { return isSettable; }
+    public boolean isSettable() {
+        return features.contains(Feature.SETTABLE);
+    }
 
     public boolean isModifiable() {
-        return isModifiable;
+        return features.contains(Feature.MODIFIABLE);
     }
 
-    public boolean isCloseable() { return isCloseable; }
+    public boolean isCloseable() {
+        return features.contains(Feature.CLOSEABLE);
+    }
+
+    public boolean isAssignable() {
+        return features.contains(Feature.ASSIGNABLE);
+    }
+
+    public static List<IssueStatus> getAssignableStatuses() {
+        return Arrays.stream(values())
+                .filter(IssueStatus::isAssignable)
+                .toList();
+    }
+
+    public String getName() {
+        return this.name();
+    }
 }
