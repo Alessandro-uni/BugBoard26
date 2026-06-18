@@ -37,7 +37,7 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
     );
 }
 
-function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', onNavigation}){
+function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], onNavigation}){
     const [allIssues, setAllIssues] = useState([]);
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
@@ -80,9 +80,9 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', on
 
             try {
                 const [allData, assignedData, reportedData] = await Promise.all([
-                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES}),
-                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES, filters: {assignedUserId: currentUserId}}),
-                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES, filters: {reportingUserId: currentUserId}})
+                    fetchIssueGroup({pageInformation: {pageNumber: 0, pageSize: MAX_HOME_ISSUES}}),
+                    fetchIssueGroup({pageInformation: {pageNumber: 0, pageSize: MAX_HOME_ISSUES}, filters: {assignedUserId: currentUserId}}),
+                    fetchIssueGroup({pageInformation: {pageNumber: 0, pageSize: MAX_HOME_ISSUES}, filters: {reportingUserId: currentUserId}})
                 ]);
 
                 setAllIssues(allData);
@@ -120,22 +120,24 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', on
                             onViewAll={() => onNavigation('Tutte le issue')}
                         />
 
-                        {['USER', 'ADMIN'].includes(userRole) && (
-                            <>
-                                <IssueSection
-                                    title="Issue assegnate"
-                                    issues={assignedIssues}
-                                    onViewIssue={onViewIssue}
-                                    onViewAll={() => onNavigation('Issue assegnate')}
-                                />
-                                <IssueSection
-                                    title="Issue segnalate"
-                                    issues={reportedIssues}
-                                    onViewIssue={onViewIssue}
-                                    onViewAll={() => onNavigation('Issue segnalate')}
-                                />
-                            </>
+                        {userPermissions.includes('BE_ASSIGNED_TO_ISSUE') && (
+                            <IssueSection
+                                title="Issue assegnate"
+                                issues={assignedIssues}
+                                onViewIssue={onViewIssue}
+                                onViewAll={() => onNavigation('Issue assegnate')}
+                            />
                         )}
+
+                        {userPermissions.includes('REPORT_ISSUE') && (
+                            <IssueSection
+                                title="Issue segnalate"
+                                issues={reportedIssues}
+                                onViewIssue={onViewIssue}
+                                onViewAll={() => onNavigation('Issue segnalate')}
+                            />
+                        )}
+
                     </div>
                 </div>
             )}
