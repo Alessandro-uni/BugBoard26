@@ -17,6 +17,7 @@ import org.swe.bugboard.dto.User.AuthenticationResponse;
 import org.swe.bugboard.security.CustomUserDetails;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,9 @@ public class AuthenticationService {
 
     @Value("${application.security.jwt.expiration-time}")
     private Long jwtExpiration;
+
+    @Value("${application.security.jwt.jws-algorithm}")
+    private String jcaAlgorithm;
 
     @Transactional
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -45,6 +49,10 @@ public class AuthenticationService {
         Long id = userDetails.getId();
         String username = userDetails.getName();
         String role = userDetails.getRole().name();
+        List<String> permissions = userDetails.getRole().getPermissions()
+                .stream()
+                .map(Enum::name)
+                .toList();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("bugboard")
@@ -53,10 +61,13 @@ public class AuthenticationService {
                 .subject(mail)
                 .claim("userId", id)
                 .claim("username", username)
-                .claim("role", role).build();
+                .claim("role", role)
+                .claim("permissions", permissions)
+                .build();
+
 
         JwtEncoderParameters parameters = JwtEncoderParameters.from(
-                JwsHeader.with(MacAlgorithm.HS256).build(),
+                JwsHeader.with(MacAlgorithm.from(jcaAlgorithm)).build(),
                 claims
         );
 
