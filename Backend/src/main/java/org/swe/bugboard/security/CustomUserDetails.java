@@ -8,7 +8,6 @@ import org.swe.bugboard.model.User;
 import org.swe.bugboard.model.UserRole;
 
 import java.util.Collection;
-import java.util.List;
 
 public record CustomUserDetails(User user) implements UserDetails {
     public Long getId() {
@@ -26,7 +25,10 @@ public record CustomUserDetails(User user) implements UserDetails {
     @Override
     @NullMarked
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
+        return user.getRole().getPermissions()
+                .stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.name()))
+                .toList();
     }
 
     @Override
