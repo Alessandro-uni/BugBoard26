@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('ADMIN')") // todo: togliere il commento dopo aver collegato il db persistente
+    //@PreAuthorize("hasAuthority('CREATE_USERS')") // todo: togliere il commento dopo aver collegato il db persistente
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         UserResponse response = userService.createUser(signUpUserRequest);
 
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @GetMapping("/available")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ASSIGN_ISSUE')")
     public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
         List<UserResponse> response = userService.getUserByAvailabilityAsc();
 

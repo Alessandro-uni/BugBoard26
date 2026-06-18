@@ -31,7 +31,7 @@ public class IssueController {
     private static final String USER_ID_CLAIM = "userId";
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('REPORT_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
                                                             @Valid @RequestPart("data") ReportIssueRequest reportIssueRequest,
                                                             @RequestPart(value = "file", required = false) MultipartFile file) {
@@ -138,7 +138,7 @@ public class IssueController {
     }
 
     @PutMapping("/status")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('BE_ASSIGNED_TO_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> updateIssueStatus(@AuthenticationPrincipal Jwt jwt,
                                                                   @Valid @RequestBody UpdateIssueRequest updateIssueRequest) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
@@ -149,7 +149,7 @@ public class IssueController {
     }
 
     @PutMapping("/close")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('CLOSE_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> closeIssue(@AuthenticationPrincipal Jwt jwt,
                                                            @Valid @RequestBody UpdateIssueRequest updateIssueRequest) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
@@ -160,7 +160,7 @@ public class IssueController {
     }
 
     @PutMapping("/assign")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ASSIGN_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> assignIssue(@AuthenticationPrincipal Jwt jwt,
                                                             @Valid @RequestBody AssignIssueToUserRequest issueAndUserRequest) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);

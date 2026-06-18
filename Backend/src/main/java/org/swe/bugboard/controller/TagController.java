@@ -19,7 +19,7 @@ public class TagController {
     private final TagService tagService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('REPORT_ISSUE')")
     public ResponseEntity<TagResponse> createTag(@Valid @RequestBody CreateTagRequest createTagRequest) {
         TagResponse response = tagService.createTag(createTagRequest);
 
@@ -27,7 +27,6 @@ public class TagController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('USER')")
     public ResponseEntity<List<TagResponse>> viewAllTags() {
         List<TagResponse> response = tagService.getAllTag();
 

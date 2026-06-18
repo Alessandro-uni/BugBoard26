@@ -3,36 +3,34 @@ import {List, PlusCircle, UserPlus, ClipboardList, KeyRound, LogOut, X, ListTodo
 import {motion, AnimatePresence} from 'framer-motion';
 import {CustomButton} from "./CustomButton.jsx";
 
-function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
-    // Lista ruoli possibili
-    const ALL_ROLES = ['USER', 'ADMIN', 'LURKER'];
+function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER', userPermissions = []}) {
 
     // Configurazione del menu
     const menuSections = [
         {
             title: 'Principale',
-            allowedRoles: ALL_ROLES,
+            requiredPermission: null,
             items: [
-                { icon: List, label: 'Tutte le issue', allowedRoles: ALL_ROLES },
-                { icon: ListTodo, label: 'Issue assegnate', allowedRoles: ['USER', 'ADMIN'] },
-                { icon: ListCollapse, label: 'Issue segnalate', allowedRoles: ['USER', 'ADMIN'] },
-                { icon: PlusCircle, label: 'Segnala Issue', allowedRoles: ['USER', 'ADMIN'] },
+                { icon: List, label: 'Tutte le issue', requiredPermission: null },
+                { icon: ListTodo, label: 'Issue assegnate', requiredPermission: 'BE_ASSIGNED_TO_ISSUE' },
+                { icon: ListCollapse, label: 'Issue segnalate', requiredPermission: 'REPORT_ISSUE' },
+                { icon: PlusCircle, label: 'Segnala Issue', requiredPermission: 'REPORT_ISSUE' },
             ]
         },
         {
             title: 'Gestione',
-            allowedRoles: ['ADMIN'],
+            requiredPermission: null,
             items: [
-                { icon: ClipboardList, label: 'Assegna Issue', allowedRoles: ['ADMIN'] },
-                { icon: UserPlus, label: 'Aggiungi nuovo utente', allowedRoles: ['ADMIN'] },
+                { icon: ClipboardList, label: 'Assegna Issue', requiredPermission: 'ASSIGN_ISSUE' },
+                { icon: UserPlus, label: 'Aggiungi nuovo utente', requiredPermission: 'CREATE_USERS' },
             ]
         },
         {
             title: 'Account',
-            allowedRoles: ALL_ROLES,
+            requiredPermission: null,
             items: [
-                { icon: KeyRound, label: 'Cambia password', allowedRoles: ALL_ROLES },
-                { icon: LogOut, label: 'Esci', allowedRoles: ALL_ROLES },
+                { icon: KeyRound, label: 'Cambia password', requiredPermission: null },
+                { icon: LogOut, label: 'Esci', requiredPermission: null },
             ]
         }
     ];
@@ -40,14 +38,12 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER'}) {
     // Filtraggio menu
     const filteredMenu = menuSections
         .filter(section => {
-            const sectionRoles = section.allowedRoles || ALL_ROLES;
-            return sectionRoles.includes(userRole);
+            return !section.requiredPermission || userPermissions.includes(section.requiredPermission);
         })
         .map(section => ({
             ...section,
             items: section.items.filter(item => {
-                const itemRoles = item.allowedRoles || ALL_ROLES;
-                return itemRoles.includes(userRole);
+                return !item.requiredPermission || userPermissions.includes(item.requiredPermission);
             })
         }))
         .filter(section => section.items.length > 0);
