@@ -3,6 +3,7 @@ import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX, L
 import {CustomButton} from "./CustomButton.jsx";
 import History from "./History.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
+import {Badge} from "./Badge.jsx";
 
 function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // DOMINIO ISSUE
@@ -205,7 +206,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch("http://localhost:8080/api/issues/status", {
+            const response = await fetch("http://localhost:8080/api/issues/statuses", {
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
@@ -292,16 +293,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
     // FUNZIONI AUSILIARIE
 
-    // todo: capire se ha senso farlo qui
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case 'TODO': return 'bg-gray-100 text-gray-700 border-gray-200';
-            case 'INPROGRESS': return 'bg-blue-100 text-blue-700 border-blue-200';
-            case 'RESOLVED': return 'bg-green-100 text-green-700 border-green-200';
-            case 'CLOSED': return 'bg-red-100 text-red-700 border-red-200';
-            default: return 'bg-gray-100 text-gray-700 border-gray-200';
-        }
-    };
+
 
     // Rotella di caricamento
     if (isIssueLoading) {
@@ -360,9 +352,9 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
                         <div className="flex flex-wrap gap-3">
                             {/* Stato */}
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(issueData?.status?.name)}`}>
-                                {issueData?.status?.name || 'Stato non definito'}
-                            </span>
+                            <Badge variant={issueData.status?.theme || 'NEUTRAL'}>
+                                {issueData.status?.name || 'Stato non disponibile'}
+                            </Badge>
 
                             {/* Tipo */}
                             <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
