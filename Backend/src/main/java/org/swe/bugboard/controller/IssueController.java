@@ -185,7 +185,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/status")
+    @GetMapping("/statuses")
     public ResponseEntity<List<IssueStatus>> getAllIssueStatus() {
         List<IssueStatus> response = Arrays.asList(IssueStatus.values());
 
