@@ -8,8 +8,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.swe.bugboard.dto.User.*;
+import org.swe.bugboard.model.UserRole;
 import org.swe.bugboard.service.UserService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -70,6 +72,14 @@ public class UserController {
     @PreAuthorize("hasAuthority('ASSIGN_ISSUE')")
     public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
         List<UserResponse> response = userService.getUserByAvailabilityAsc();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/roles")
+    @PreAuthorize("hasAuthority('CREATE_USERS')")
+    public ResponseEntity<List<UserRole>> getAllUserRoles() {
+        List<UserRole> response = Arrays.asList(UserRole.values());
 
         return ResponseEntity.ok(response);
     }
