@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.swe.bugboard.model.IssueStatus;
 
 @Data
 @NoArgsConstructor
@@ -16,6 +17,6 @@ public class IssuePreviewResponse {
 
     private String description;
     private String type;
-    private String status;
+    private IssueStatus status;
     private Boolean priority;
 }
