@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Eye, EyeOff} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 
@@ -8,6 +8,38 @@ function CreateUser({onCreateUser}) {
     const [rawPassword, setRawPassword] = useState('');
     const [repeatRawPassword, setRepeatRawPassword] = useState('');
     const [role, setRole] = useState('');
+
+    const [availableRoles, setAvailableRoles] = useState([]);
+
+    // Fetch roles
+    useEffect(() => {
+        const fetchRoles = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch('http://localhost:8080/api/users/roles', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const rolesData = await response.json();
+                    setAvailableRoles(rolesData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchRoles();
+    }, []);
 
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -241,11 +273,13 @@ function CreateUser({onCreateUser}) {
                                     errors.role ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white'
                                 }`}
                                 required
-                            > {/* todo: decidere se prelevare ruoli dal db */}
+                            >
                                 <option value="" disabled hidden>Seleziona ruolo</option>
-                                <option value="ADMIN">Admin</option>
-                                <option value="USER">User</option>
-                                <option value="LURKER">Lurker</option>
+                                {availableRoles.map((role) => (
+                                    <option key={role.name} value={role.name}>
+                                        {role.name}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 
