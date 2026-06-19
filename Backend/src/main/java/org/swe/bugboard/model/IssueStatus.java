@@ -9,10 +9,10 @@ import java.util.Set;
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum IssueStatus {
-    TODO(Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE, Feature.ASSIGNABLE),
-    INPROGRESS(Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE),
-    RESOLVED(Feature.SETTABLE, Feature.CLOSEABLE),
-    CLOSED();
+    TODO(Theme.NEUTRAL, Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE, Feature.ASSIGNABLE),
+    INPROGRESS(Theme.INFO, Feature.WORKLOAD, Feature.SETTABLE, Feature.MODIFIABLE, Feature.CLOSEABLE),
+    RESOLVED(Theme.SUCCESS, Feature.SETTABLE, Feature.CLOSEABLE),
+    CLOSED(Theme.DANGER);
 
     // Enum interno con le caratteristiche degli stati
     public enum Feature {
@@ -23,9 +23,19 @@ public enum IssueStatus {
         ASSIGNABLE
     }
 
+    // Enum interno con il tema dello stato (per poter gestire poi la visualizzazione lato frontend)
+    public enum Theme {
+        NEUTRAL,
+        INFO,
+        SUCCESS,
+        DANGER
+    }
+
+    private final Theme theme;
     private final Set<Feature> features;
 
-    IssueStatus(Feature... features) {
+    IssueStatus(Theme theme, Feature... features) {
+        this.theme = theme;
         if (features.length == 0) {
             this.features = EnumSet.noneOf(Feature.class);
         } else {
