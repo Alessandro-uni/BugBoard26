@@ -5,7 +5,7 @@ import {CustomButton} from "./CustomButton.jsx";
 function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {}, lockedFilters = {}}){
     // Stato unico per i filtri
     const [selectedFilters, setSelectedFilters] = useState({
-        status: currentFilters.status || "",
+        status: currentFilters.status?.name || "",
         type: currentFilters.type || "",
         reportingUserId: currentFilters.reportingUserId || "",
         isAssigned: currentFilters.isAssigned ?? null,
@@ -23,7 +23,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     useEffect(() => {
         if (isOpen) {
             setSelectedFilters({
-                status: currentFilters.status || "",
+                status: currentFilters.status?.name || "",
                 type: currentFilters.type || "",
                 reportingUserId: currentFilters.reportingUserId || "",
                 isAssigned: currentFilters.isAssigned ?? null,
@@ -59,15 +59,15 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
         }
     }
 
-    const [availableStatus, setAvailableStatus] = useState([]);
+    const [availableStatuses, setAvailableStatuses] = useState([]);
 
-    // Fetch status
+    // Fetch statuses
     useEffect(() => {
-        const fetchStatus = async () => {
+        const fetchStatuses = async () => {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/issues/status', {
+                const response = await fetch('http://localhost:8080/api/issues/statuses', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -75,8 +75,8 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
                 });
 
                 if (response.ok) {
-                    const statusData = await response.json();
-                    setAvailableStatus(statusData);
+                    const statusesData = await response.json();
+                    setAvailableStatuses(statusesData);
                 } else {
                     const errorJson = await response.json();
                     alert("Errore: " + errorJson.message);
@@ -88,7 +88,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
             }
         };
 
-        fetchStatus();
+        fetchStatuses();
     }, []);
 
     const [availableTypes, setAvailableTypes] = useState([]);
@@ -345,7 +345,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
                                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Nessuno stato selezionato</option>
-                                        {availableStatus.map((status) => (
+                                        {availableStatuses.map((status) => (
                                             <option key={status.name} value={status.name}>
                                                 {formatLabel(status.name)}
                                             </option>
