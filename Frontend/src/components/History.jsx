@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Loader2, X} from "lucide-react";
+import {X} from "lucide-react";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 
 function History({issueId, onClose}){
@@ -45,10 +45,11 @@ function History({issueId, onClose}){
                     ) : history.length > 0 ? (
                         history.map((event, index) => (
                             <div key={index} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600 text-sm hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
-                                <p className="font-semibold text-blue-800 dark:text-blue-300">{event.action}</p>
+
                                 <p className="text-gray-600 dark:text-gray-300">
-                                    Effettuato da <span className="font-medium text-gray-900 dark:text-white">{event.mainActorUsername}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{event.mainActorUsername}</span>
                                 </p>
+                                <p className="font-semibold text-blue-800 dark:text-blue-300">{event.action}</p>
                                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                                     {new Date(event.date).toLocaleString()}
                                 </p>

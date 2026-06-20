@@ -130,7 +130,7 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha chiuso questa issue perché ritenuta duplicata.");
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha chiuso questa issue perché ritenuta duplicata");
         historyService.createHistory(historyRequest, userId);
 
         return convertModelToIssueDetails(savedIssue);
