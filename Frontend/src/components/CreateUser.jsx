@@ -200,8 +200,15 @@ function CreateUser({onCreateUser}) {
                         </div>
 
                         {/* Mostra errore relativo a password */}
-                        {errors.rawPassword && <p className="mt-2 text-sm text-red-500">{errors.rawPassword}</p>}
-
+                        {errors.rawPassword && errors.rawPassword.length > 0 && (
+                            <div className="mt-2">
+                                {errors.rawPassword.map((errorMessage, index) => (
+                                    <p key={index} className="text-sm text-red-500">
+                                        {errorMessage}
+                                    </p>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     {/* Ripeti password */}
@@ -277,7 +284,7 @@ function CreateUser({onCreateUser}) {
                                 <option value="" disabled hidden>Seleziona ruolo</option>
                                 {availableRoles.map((role) => (
                                     <option key={role.name} value={role.name}>
-                                        {role.name}
+                                        {role?.name || 'Ruolo non disponibile'}
                                     </option>
                                 ))}
                             </select>
