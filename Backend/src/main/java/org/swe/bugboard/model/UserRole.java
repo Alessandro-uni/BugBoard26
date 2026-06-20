@@ -1,9 +1,12 @@
 package org.swe.bugboard.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum UserRole {
     USER(EnumSet.of(
             RolePermission.REPORT_ISSUE,
@@ -33,4 +36,6 @@ public enum UserRole {
     public boolean hasPermission(RolePermission permission) {
         return permissions.contains(permission);
     }
+
+    public String getName() { return this.name(); }
 }
