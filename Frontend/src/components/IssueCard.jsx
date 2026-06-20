@@ -33,8 +33,8 @@ export function IssueCard({issue, onClick, className = "", disabled, ...props}) 
 
                 {/* Lato destro card */}
                 <div className="flex flex-col gap-2 ml-2 shrink-0 items-end">
-                    <Badge variant={issue.status}>
-                        {issue.status}
+                    <Badge variant={issue.status?.theme || 'NEUTRAL'}>
+                        {issue.status?.name || 'Stato non disponibile'}
                     </Badge>
 
                     <Badge variant="type">

@@ -2,23 +2,47 @@ import React, {useEffect, useState} from "react";
 import {X, Filter, ArrowUpDown} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 
-function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
+function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {}, lockedFilters = {}}){
     // Stato unico per i filtri
     const [selectedFilters, setSelectedFilters] = useState({
-        status: "",
-        type: "",
-        reportingUserId: "",
-        isAssigned: null,
-        assignedUserId: "",
-        isTagged: null,
-        tags: [],
-        priority: null,
-        hasImage: null,
-        startCreationDate: "",
-        endCreationDate: "",
-        startLastModifiedDate: "",
-        endLastModifiedDate: "",
+        status: currentFilters.status?.name || "",
+        type: currentFilters.type || "",
+        reportingUserId: currentFilters.reportingUserId || "",
+        isAssigned: currentFilters.isAssigned ?? null,
+        assignedUserId: currentFilters.assignedUserId || "",
+        isTagged: currentFilters.isTagged ?? null,
+        tags: currentFilters.tags || [],
+        priority: currentFilters.priority ?? null,
+        hasImage: currentFilters.hasImage ?? null,
+        startCreationDate: currentFilters.startCreationDate || "",
+        endCreationDate: currentFilters.endCreationDate || "",
+        startLastModifiedDate: currentFilters.startLastModifiedDate || "",
+        endLastModifiedDate: currentFilters.endLastModifiedDate || "",
     });
+
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedFilters({
+                status: currentFilters.status?.name || "",
+                type: currentFilters.type || "",
+                reportingUserId: currentFilters.reportingUserId || "",
+                isAssigned: currentFilters.isAssigned ?? null,
+                assignedUserId: currentFilters.assignedUserId || "",
+                isTagged: currentFilters.isTagged ?? null,
+                tags: currentFilters.tags || [],
+                priority: currentFilters.priority ?? null,
+                hasImage: currentFilters.hasImage ?? null,
+                startCreationDate: currentFilters.startCreationDate || "",
+                endCreationDate: currentFilters.endCreationDate || "",
+                startLastModifiedDate: currentFilters.startLastModifiedDate || "",
+                endLastModifiedDate: currentFilters.endLastModifiedDate || "",
+            });
+        }
+    }, [isOpen, currentFilters]);
+
+    const isReporterLocked = lockedFilters.hasOwnProperty('reportingUserId');
+
+    const isAssignmentLocked = lockedFilters.hasOwnProperty('assignedUserId') || lockedFilters.hasOwnProperty('isAssignable') || lockedFilters.hasOwnProperty('isAssigned');
 
     const [sortBy, setSortBy] = useState('creationDate');
     const [order, setOrder] = useState('desc');
@@ -35,15 +59,15 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
         }
     }
 
-    const [availableStatus, setAvailableStatus] = useState([]);
+    const [availableStatuses, setAvailableStatuses] = useState([]);
 
-    // Fetch status
+    // Fetch statuses
     useEffect(() => {
-        const fetchStatus = async () => {
+        const fetchStatuses = async () => {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/issues/status', {
+                const response = await fetch('http://localhost:8080/api/issues/statuses', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -51,8 +75,8 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                 });
 
                 if (response.ok) {
-                    const statusData = await response.json();
-                    setAvailableStatus(statusData);
+                    const statusesData = await response.json();
+                    setAvailableStatuses(statusesData);
                 } else {
                     const errorJson = await response.json();
                     alert("Errore: " + errorJson.message);
@@ -64,7 +88,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
             }
         };
 
-        fetchStatus();
+        fetchStatuses();
     }, []);
 
     const [availableTypes, setAvailableTypes] = useState([]);
@@ -272,8 +296,6 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
         const myFilters = Object.fromEntries(Object.entries(selectedFilters).filter(([_, value]) => value !== "" && value !== null && value.length !== 0));
         const mySort = calculateSortingPolicy(sortBy, order);
 
-        console.log("1. Modale - Sort calcolato:", mySort);
-
         onApplyFilters(myFilters, mySort);
         onClose();
     };
@@ -332,9 +354,9 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                                     >
                                         <option value="">Nessuno stato selezionato</option>
-                                        {availableStatus.map((status) => (
-                                            <option key={status} value={status}>
-                                                {formatLabel(status)}
+                                        {availableStatuses.map((status) => (
+                                            <option key={status.name} value={status.name}>
+                                                {formatLabel(status.name)}
                                             </option>
                                         ))}
                                     </select>
@@ -363,13 +385,14 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                 {/* Utente segnalatore */}
                                 <div>
                                     <label htmlFor="reportingUserId" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                                        Segnalata da
+                                        Segnalata da {isReporterLocked && " (Filtro fisso)"}
                                     </label>
                                     <select
                                         id="reportingUserId"
+                                        disabled={isReporterLocked}
                                         value={selectedFilters.reportingUserId}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white disabled:bg-gray-200 dark:disabled:bg-gray-700 disabled:opacity-70 disabled:cursor-not-allowed"
                                     >
                                         <option value="">Nessun utente selezionato</option>
                                         {availableReportingUsers.map((user) => (
@@ -384,7 +407,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                 <div>
                                     <div className="flex items-center justify-between">
                                         <label htmlFor="assignedUserId" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
-                                            Assegnata a
+                                            Assegnata a {isAssignmentLocked && " (Filtro fisso)"}
                                         </label>
 
                                         {/* Checkbox (utente non assegnato) */}
@@ -392,7 +415,8 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             <input
                                                 type="checkbox"
                                                 id="noAssignedUser"
-                                                checked={selectedFilters.isAssigned === false}
+                                                disabled={isAssignmentLocked}
+                                                checked={selectedFilters.isAssigned === false || lockedFilters.isAssignable === true}
                                                 onChange={(e) => {
                                                     const isChecked = e.target.checked;
                                                     setSelectedFilters(prev => ({
@@ -401,25 +425,26 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                                         assignedUserId: isChecked ? "" : prev.assignedUserId
                                                     }));
                                                 }}
-                                                className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded"
+                                                className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                                             />
-                                            <label htmlFor="noAssignedUser" className="text-sm text-gray-600 cursor-pointer select-none dark:text-gray-300">
+                                            <label htmlFor="noAssignedUser" className="text-sm text-gray-600 select-none dark:text-gray-300">
                                                 Senza utente
                                             </label>
                                         </div>
                                     </div>
 
                                     {/* Se la checkbox non è spuntata, mostrata la select */}
-                                    {selectedFilters.isAssigned === false ? (
+                                    {selectedFilters.isAssigned === false || lockedFilters.isAssignable === true ? (
                                         <div className="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-700 rounded-lg bg-gray-100 dark:bg-gray-950 text-gray-500 dark:text-gray-500 italic text-sm">
                                             Nessun utente
                                         </div>
                                     ) : (
                                         <select
                                             id="assignedUserId"
+                                            disabled={isAssignmentLocked}
                                             value={selectedFilters.assignedUserId}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white disabled:bg-gray-200 dark:disabled:bg-gray-700 disabled:opacity-70 disabled:cursor-not-allowed"
                                         >
                                             <option value="">Nessun utente selezionato</option>
                                             {availableAssignableUsers.map((user) => (
@@ -529,7 +554,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="startCreationDate"
                                             value={selectedFilters.startCreationDate ? selectedFilters.startCreationDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark "
                                         />
                                     </div>
                                     <div>
@@ -542,7 +567,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="endCreationDate"
                                             value={selectedFilters.endCreationDate ? selectedFilters.endCreationDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
                                         />
                                     </div>
                                 </div>
@@ -562,7 +587,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="startLastModifiedDate"
                                             value={selectedFilters.startLastModifiedDate ? selectedFilters.startLastModifiedDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className=" w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className=" w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
                                         />
                                     </div>
                                     <div>
@@ -575,7 +600,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             id="endLastModifiedDate"
                                             value={selectedFilters.endLastModifiedDate ? selectedFilters.endLastModifiedDate.split('T')[0] : ""}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white [color-scheme:dark]"
+                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
                                         />
                                     </div>
                                 </div>

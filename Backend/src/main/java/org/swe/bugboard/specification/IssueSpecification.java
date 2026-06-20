@@ -1,11 +1,14 @@
 package org.swe.bugboard.specification;
 
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.swe.bugboard.model.Issue;
+import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.Tag;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 //todo: capisci come usare JPA static metamodel generator per rimuovere le stringhe
@@ -30,6 +33,26 @@ public class IssueSpecification {
                 return criteriaBuilder.isNotNull(root.get("assignedUser"));
 
             return criteriaBuilder.isNull(root.get("assignedUser"));
+        });
+    }
+
+    public static Specification<Issue> isAssignable(Boolean isAssignable) {
+
+        return ((root, query, criteriaBuilder) -> {
+            if (isAssignable == null)
+                return null;
+
+            Predicate unassignedIssue = criteriaBuilder.isNull(root.get("assignedUser"));
+
+            List<IssueStatus> assignableStatuses = IssueStatus.getAssignableStatuses();
+
+            Predicate assignableStatus = root.get("status").in(assignableStatuses);
+
+            if (isAssignable) {
+                return criteriaBuilder.and(unassignedIssue, assignableStatus);
+            } else {
+                return criteriaBuilder.not(criteriaBuilder.and(unassignedIssue, assignableStatus));
+            }
         });
     }
 

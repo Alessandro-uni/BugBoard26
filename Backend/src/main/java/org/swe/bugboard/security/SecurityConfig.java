@@ -39,7 +39,7 @@ public class SecurityConfig {
     @Value("${application.security.jwt.secret-key}")
     private String jwtKey;
 
-    @Value("${application.security.jwt.decoder-algorithm}")
+    @Value("${application.security.jwt.jca-algorithm}")
     private String jwtAlgorithm;
 
     // CONFIGURAZIONE AUTORIZZAZIONI ENDPOINT
@@ -103,7 +103,7 @@ public class SecurityConfig {
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix(""); // Nessun prefisso aggiunto
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("role");
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("permissions");
 
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

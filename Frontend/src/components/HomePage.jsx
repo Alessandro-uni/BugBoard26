@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {IssueCard} from "./IssueCard.jsx";
+import {ReloadingBox} from "./ReloadingBox.jsx";
 
 function IssueSection({title, issues, onViewIssue, onViewAll}) {
     return (
@@ -36,10 +37,11 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
     );
 }
 
-function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', onNavigation}){
+function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], onNavigation}){
     const [allIssues, setAllIssues] = useState([]);
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const MAX_HOME_ISSUES = 3;
 
@@ -74,11 +76,13 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', on
         };
 
         const fetchAllData = async () => {
+            setIsLoading(true);
+
             try {
                 const [allData, assignedData, reportedData] = await Promise.all([
-                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES}),
-                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES, filters: {assignedUserId: currentUserId}}),
-                    fetchIssueGroup({pageNumber: 0, pageSize: MAX_HOME_ISSUES, filters: {reportingUserId: currentUserId}})
+                    fetchIssueGroup({pageInformation: {pageNumber: 0, pageSize: MAX_HOME_ISSUES}}),
+                    fetchIssueGroup({pageInformation: {pageNumber: 0, pageSize: MAX_HOME_ISSUES}, filters: {assignedUserId: currentUserId}}),
+                    fetchIssueGroup({pageInformation: {pageNumber: 0, pageSize: MAX_HOME_ISSUES}, filters: {reportingUserId: currentUserId}})
                 ]);
 
                 setAllIssues(allData);
@@ -87,6 +91,8 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', on
             } catch (error) {
                 console.error("Errore nella chiamata al backend:", error);
                 alert('Errore: ' + error.message);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -102,31 +108,39 @@ function HomePage({onViewIssue, currentUserId, userName, userRole = 'LURKER', on
                 <p className="text-gray-600 dark:text-gray-400">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
             </div>
 
-            <div className="space-y-6 mx-auto">
-                <IssueSection
-                    title="Tutte le issue"
-                    issues={allIssues}
-                    onViewIssue={onViewIssue}
-                    onViewAll={() => onNavigation('Tutte le issue')}
-                />
+            {isLoading ? (
+                <ReloadingBox description='Caricamento issue in corso...'></ReloadingBox>
+            ) : (
+                <div>
+                    <div className="space-y-6 mx-auto">
+                        <IssueSection
+                            title="Tutte le issue"
+                            issues={allIssues}
+                            onViewIssue={onViewIssue}
+                            onViewAll={() => onNavigation('Tutte le issue')}
+                        />
 
-                {['USER', 'ADMIN'].includes(userRole) && (
-                    <>
-                        <IssueSection
-                            title="Issue assegnate"
-                            issues={assignedIssues}
-                            onViewIssue={onViewIssue}
-                            onViewAll={() => onNavigation('Issue assegnate')}
-                        />
-                        <IssueSection
-                            title="Issue segnalate"
-                            issues={reportedIssues}
-                            onViewIssue={onViewIssue}
-                            onViewAll={() => onNavigation('Issue segnalate')}
-                        />
-                    </>
-                )}
-            </div>
+                        {userPermissions.includes('BE_ASSIGNED_TO_ISSUE') && (
+                            <IssueSection
+                                title="Issue assegnate"
+                                issues={assignedIssues}
+                                onViewIssue={onViewIssue}
+                                onViewAll={() => onNavigation('Issue assegnate')}
+                            />
+                        )}
+
+                        {userPermissions.includes('REPORT_ISSUE') && (
+                            <IssueSection
+                                title="Issue segnalate"
+                                issues={reportedIssues}
+                                onViewIssue={onViewIssue}
+                                onViewAll={() => onNavigation('Issue segnalate')}
+                            />
+                        )}
+
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

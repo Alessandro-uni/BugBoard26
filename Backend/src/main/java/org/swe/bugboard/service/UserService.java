@@ -10,6 +10,7 @@ import org.swe.bugboard.dto.User.SearchUserRequest;
 import org.swe.bugboard.dto.User.SignUpUserRequest;
 import org.swe.bugboard.dto.User.UserResponse;
 import org.swe.bugboard.model.IssueStatus;
+import org.swe.bugboard.model.RolePermission;
 import org.swe.bugboard.model.User;
 import org.swe.bugboard.model.UserRole;
 import org.swe.bugboard.repository.UserRepository;
@@ -27,15 +28,18 @@ public class UserService {
 
     // Ruoli di utenti a cui è possibile assegnare issue
     private static final List<UserRole> ASSIGNABLE_ROLES = Arrays.stream(UserRole.values())
-            .filter(UserRole::canBeAssignedToIssue).toList();
+            .filter(role -> role.hasPermission(RolePermission.BE_ASSIGNED_TO_ISSUE))
+            .toList();
 
     // Ruoli di utenti che possono segnalare issue
     private static final List<UserRole> REPORTING_ROLES = Arrays.stream(UserRole.values())
-            .filter(UserRole::canReportIssue).toList();
+            .filter(role -> role.hasPermission(RolePermission.REPORT_ISSUE))
+            .toList();
 
     // Stati di issue che vengono considerati come "carico di lavoro"
     private static final List<IssueStatus> WORKLOAD_STATUS = Arrays.stream(IssueStatus.values())
-            .filter(IssueStatus::isWorkload).toList();
+            .filter(IssueStatus::isWorkload)
+            .toList();
 
     @Transactional
     public UserResponse createUser(SignUpUserRequest user) {
@@ -43,7 +47,8 @@ public class UserService {
                 .mail(user.getMail().toLowerCase())
                 .username(user.getUsername())
                 .hashedPassword(passwordEncoder.encode(user.getRawPassword()))
-                .role(UserRole.valueOf(user.getRole())).build();
+                .role(UserRole.valueOf(user.getRole()))
+                .build();
 
         User savedUser = userRepository.save(newUser);
 

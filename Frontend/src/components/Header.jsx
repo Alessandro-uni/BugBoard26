@@ -22,21 +22,6 @@ function Header ({theme, setTheme,onToggleMenu, onHomeClick, isHomeOpen, notific
                 <Menu size={24} className="text-gray-900 dark:text-white"/>
             </CustomButton>
 
-            {/* Toggle Tema
-            <button onClick={toggleTheme}>
-                {theme === 'light' ? <Moon /> : <Sun />}
-            </button>
-
-            {/* Tasto home
-            <CustomButton
-                variant="secondary"
-                onClick={onHomeClick}
-                disabled={isHomeOpen}
-            >
-                <Home size={24} className="text-gray-900 dark:text-white"/>
-            </CustomButton>
-            */}
-
             <div className="flex items-center gap-3">
 
                 {/* 1. Notifiche */}
@@ -67,7 +52,7 @@ function Header ({theme, setTheme,onToggleMenu, onHomeClick, isHomeOpen, notific
                                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{notif.time}</p>
                                             </div>
                                             <button onClick={() => removeNotification(notif.id)} className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400">
-                                                <X size={16} />
+                                                <X size={16}/>
                                             </button>
                                         </div>
                                     ))
@@ -77,22 +62,26 @@ function Header ({theme, setTheme,onToggleMenu, onHomeClick, isHomeOpen, notific
                     )}
                 </div>
 
-                {/* 2. Toggle Tema */}
-                <CustomButton variant="secondary" onClick={toggleTheme}>
+                {/* Toggle Tema */}
+                <CustomButton
+                    variant="secondary"
+                    onClick={toggleTheme}
+                >
                     {theme === 'light'
-                        ? <Moon size={24} className="text-gray-900" />
-                        : <Sun size={24} className="text-yellow-500" />
+                        ? <Moon size={24} className="text-gray-900"/>
+                        : <Sun size={24} className="text-yellow-500"/>
                     }
                 </CustomButton>
 
-                {/* 3. Home */}
-                <CustomButton variant="secondary" onClick={onHomeClick} disabled={isHomeOpen}>
-                    <Home size={24} className="text-gray-900 dark:text-white" />
+                {/* Home */}
+                <CustomButton
+                    variant="secondary"
+                    onClick={onHomeClick}
+                    disabled={isHomeOpen}
+                >
+                    <Home size={24} className="text-gray-900 dark:text-white"/>
                 </CustomButton>
             </div>
-
-
-
         </header>
     );
 

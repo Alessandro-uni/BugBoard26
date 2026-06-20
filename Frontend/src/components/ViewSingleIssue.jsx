@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX, Loader2} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
 import History from "./History.jsx";
+import {ReloadingBox} from "./ReloadingBox.jsx";
+import {Badge} from "./Badge.jsx";
 
-function ViewSingleIssue({issueId, userRole, userId, onBack}) {
+function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // DOMINIO ISSUE
 
     const [issueData, setIssueData] = useState(null);
     const [isIssueLoading, setIsIssueLoading] = useState(true);
     const [issueError, setIssueError] = useState(null);
-
     const [showHistory, setShowHistory] = useState(false);
 
     // Fetch dettagli della issue
-    const fetchIssueDetails = async () => {
+    const fetchIssueDetails = useCallback(async () => {
         setIssueError(null);
         setIsIssueLoading(true);
         const token = localStorage.getItem('token');
@@ -38,7 +39,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                 try {
                     errorMessage = JSON.parse(errorText).message || errorMessage;
-                } catch (e) {}
+                } catch (error) {
+                    console.log(`Errore durante il caricamento issue: ${error}`);
+                }
 
                 setIssueError(errorMessage);
             }
@@ -49,35 +52,71 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
         } finally {
             setIsIssueLoading(false);
         }
-    };
+    }, [issueId]);
 
     // Caricamento iniziale dettagli della issue
     useEffect(() => {
         if (issueId) {
             fetchIssueDetails();
         }
-    }, [issueId]);
+    }, [issueId, fetchIssueDetails]);
 
     // DOMINIO UTENTI ASSEGNABILI
 
     const [showAssignPopup, setShowAssignPopup] = useState(false);
     const [isAssignSuccess, setIsAssignSuccess] = useState(false);
     const [users, setUsers] = useState([]);
+    const [usersError, setUsersError] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isListUsersLoading, setIsListUsersLoading] = useState(true);
 
     // Fetch utenti
+    const fetchAvailableUsers = useCallback(async () => {
+        setUsersError(null);
+        setIsListUsersLoading(true);
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            setUsersError("Autenticazione assente");
+            setIsListUsersLoading(false);
+            return;
+        }
+
+        try {
+            const response = await fetch("http://localhost:8080/api/users/available", {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUsers(data);
+            } else {
+                const errorText = await response.text();
+                let errorMessage = "Errore durante il caricamento degli utenti";
+
+                try {
+                    errorMessage = JSON.parse(errorText).message || errorMessage;
+                } catch (error) {
+                    console.log(`Errore durante il caricamento utenti: ${error}`);
+                }
+
+                setUsersError(errorMessage);
+            }
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:", error);
+            setUserError("Impossibile connettersi al server");
+        } finally {
+            setIsListUsersLoading(false);
+        }
+    }, []);
+
+    // Caricamento utenti disponibili quando richiesti
     useEffect(() => {
         if (showAssignPopup) {
-            const token = localStorage.getItem('token');
-            fetch("http://localhost:8080/api/users/available", {
-                headers: {'Authorization': `Bearer ${token}`}
-            })
-                .then(res => res.json())
-                .then(data => setUsers(data))
-                .catch(err => console.error("Errore caricamento utenti:", err));
+            fetchAvailableUsers();
         }
-    }, [showAssignPopup]);
+    }, [showAssignPopup, fetchAvailableUsers]);
 
     // Filtro utenti
     const filteredUsers = users.filter(u =>
@@ -137,7 +176,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
 
-                if (!response.ok) throw new Error("Errore recupero utente");
+                if (!response.ok) {
+                    throw new Error("Errore recupero utente");
+                }
 
                 const data = await response.json();
                 setAssignedUser(data);
@@ -157,14 +198,44 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
     const [showStatusPopup, setShowStatusPopup] = useState(false);
     const [isStatusSuccess, setIsStatusSuccess] = useState(false);
 
-    // Calcolo prossimo stato issue
-    const statusTransition = {
-        'TODO' : 'INPROGRESS',
-        'INPROGRESS' : 'RESOLVED'
-    }
+    const [allStatuses, setAllStatuses] = useState([]);
+    const [selectedNextStatus, setSelectedNextStatus] = useState("");
 
-    // Prossimo stato issue
-    const nextStatus = statusTransition[issueData?.status] || null;
+    // Fetch degli stati dal backend
+    const fetchStatuses = useCallback(async () => {
+        const token = localStorage.getItem('token');
+
+        try {
+            const response = await fetch("http://localhost:8080/api/issues/statuses", {
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setAllStatuses(data);
+            }
+        } catch (error) {
+            console.error("Errore nel recupero degli stati:", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (showStatusPopup) {
+            fetchStatuses();
+        }
+    }, [showStatusPopup, fetchStatuses]);
+
+    // Seleziona solo gli stati settable, escludendo quello attuale
+    const availableStatuses = allStatuses.filter(status =>
+        status.settable && status.name !== issueData?.status?.name
+    );
+
+    // Selezionato in automatico il primo
+    useEffect(() => {
+        if (availableStatuses.length > 0) {
+            setSelectedNextStatus(availableStatuses[0].name);
+        }
+    }, [allStatuses, issueData?.status?.name]);
 
     const handleStatusIssue = async () => {
         const token = localStorage.getItem('token');
@@ -176,13 +247,14 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({issueId: issueData?.id, newStatus: nextStatus}),
+                body: JSON.stringify({issueId: issueData?.id, newStatus: selectedNextStatus}),
             });
 
             if (response.ok) {
                 setIsStatusSuccess(true)
             } else {
-                alert("Errore durante il cambio di stato della issue");
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
             }
 
         } catch (err) {
@@ -221,60 +293,50 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
     // FUNZIONI AUSILIARIE
 
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case 'TODO': return 'bg-gray-100 text-gray-700 border-gray-200';
-            case 'INPROGRESS': return 'bg-blue-100 text-blue-700 border-blue-200';
-            case 'RESOLVED': return 'bg-green-100 text-green-700 border-green-200';
-            case 'CLOSED': return 'bg-red-100 text-red-700 border-red-200';
-            default: return 'bg-gray-100 text-gray-700 border-gray-200';
-        }
-    };
+
 
     // Rotella di caricamento
     if (isIssueLoading) {
         return (
-            <div className="flex flex-col items-center justify-center p-20 text-center bg-gray-50/50 rounded-xl border-2 border-gray-200">
-                <Loader2 size={40} className="text-gray-200 animate-spin mb-4"/>
-                <div className="text-gray-500 font-medium animate-pulse">Caricamento dettagli issue...</div>
+            <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <ReloadingBox description='Caricamento issue in corso...'></ReloadingBox>
+                </div>
             </div>
         );
     }
 
-    // Verifica esistenza della issue
-    if (!issueData) {
+    // Riquadro di errore visualizzazione issue
+    if (issueError || !issueData) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-                <p className="text-red-500 font-medium mb-4">Impossibile trovare l'issue richiesta</p>
+            <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+                <div className="max-w-4xl mx-auto space-y-6">
 
-                <button
-                    onClick={onBack}
-                    className="text-blue-600 hover:underline"
-                >
-                    &larr; Torna indietro
-                </button>
+                    <button
+                        onClick={onBack}
+                        className="text-blue-600 hover:underline"
+                    >
+                        &larr; Torna indietro
+                    </button>
+
+                    <p className="text-red-700">
+                        {issueError || "Errore sconosciuto durante il caricamento"}
+                    </p>
+                </div>
             </div>
         );
     }
 
     // Controlli dei permessi
-    const canAssign = userRole === 'ADMIN' && issueData.status !== "CLOSED" && !issueData?.assignedUserId;
-    const canChange = userId === issueData?.assignedUserId && issueData?.status !== 'CLOSED' && issueData?.status !== 'RESOLVED';
-    const canClose = userRole === 'ADMIN' && issueData?.status !== 'CLOSED';
+    const canAssign = userPermissions.includes('ASSIGN_ISSUE') && issueData?.status?.assignable && !issueData?.assignedUserId;
+    const canChange = userId === issueData?.assignedUserId && issueData?.status?.modifiable;
+    const canClose = userPermissions.includes('CLOSE_ISSUE') && issueData?.status?.closeable;
 
     // RENDERIZZAZIONE
 
     return (
-        <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
+        <div className="p-8 transition-colors">
             <div className="max-w-4xl mx-auto space-y-6">
-
-                {/* Pagina di errore visualizzazione issue */}
-                {issueError && (
-                    <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                        <p className="text-red-700">{issueError}</p>
-                    </div>
-                )}
-
                 {/* Pulsante torna alla pagina precedente */}
                 <button
                     onClick={onBack}
@@ -290,9 +352,9 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
 
                         <div className="flex flex-wrap gap-3">
                             {/* Stato */}
-                            <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusStyle(issueData?.status)}`}>
-                                {issueData?.status || 'Stato non definito'}
-                            </span>
+                            <Badge variant={issueData.status?.theme || 'NEUTRAL'}>
+                                {issueData.status?.name || 'Stato non disponibile'}
+                            </Badge>
 
                             {/* Tipo */}
                             <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-700 border border-purple-200">
@@ -322,7 +384,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             )}
 
                             {/* Nessun utente assegnato */}
-                            {!(userRole === 'ADMIN' && issueData.status !== "CLOSED") && !issueData?.assignedUserId && (
+                            {!canAssign && !issueData?.assignedUserId && (
                                 <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-200">
                                     Nessun utente assegnato
                                 </span>
@@ -345,66 +407,57 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                     </div>
 
                     {/* Azioni */}
-                    {(canAssign || canChange || canClose) && (
-                        <div className="w-full md:w-80 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
-                            <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Azioni</h3>
+                    <div className="w-full md:w-80 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
+                        <h3 className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Azioni</h3>
 
-                            {/* Tasto Assegna */}
-                            {canAssign && (
-                                <CustomButton
-                                    variant="primary"
-                                    onClick={() => setShowAssignPopup(true)}
-                                >
-                                    <UserPlus size={18}/>
-                                    Assegna Issue
-                                </CustomButton>
-                            )}
+                        {/* Tasto Assegna */}
+                        {canAssign && (
+                            <CustomButton
+                                variant="primary"
+                                onClick={() => setShowAssignPopup(true)}
+                            >
+                                <UserPlus size={18}/>
+                                Assegna Issue
+                            </CustomButton>
+                        )}
 
-                            {/* Tasto Cambia stato issue */}
-                            {canChange && (
-                                <CustomButton
-                                    variant="primary"
-                                    onClick={() => setShowStatusPopup(true)}
-                                >
-                                    Cambia stato in {nextStatus}
-                                </CustomButton>
-                            )}
+                        {/* Tasto Cambia stato issue */}
+                        {canChange && (
+                            <CustomButton
+                                variant="primary"
+                                onClick={() => setShowStatusPopup(true)}
+                            >
+                                Cambia stato
+                            </CustomButton>
+                        )}
 
-                            {/* Tasto Chiudi Issue */}
-                            {canClose    && (
-                                <CustomButton
-                                    variant="danger"
-                                    onClick={() => setShowClosePopup(true)}
-                                >
-                                    <BookmarkX size={18}/>
-                                    Chiudi Issue
-                                </CustomButton>
-                            )}
+                        {/* Tasto Chiudi issue */}
+                        {canClose && (
+                            <CustomButton
+                                variant="danger"
+                                onClick={() => setShowClosePopup(true)}
+                            >
+                                <BookmarkX size={18}/>
+                                Chiudi Issue
+                            </CustomButton>
+                        )}
 
-
-
-                        </div>
-                    )}
-
+                        {/* Tasto Visualizza history */}
+                        <CustomButton
+                            variant="secondary"
+                            onClick={() => setShowHistory(true)}
+                        >
+                            Visualizza History
+                        </CustomButton>
+                    </div>
                 </div>
-
-
 
                 {/* Dettagli issue */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div className="p-8 space-y-6">
                         <div className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">Dettagli Issue</h3>
-                            {/* Tasto Visualizza History */}
-                            <CustomButton
-                                variant="secondary"
-                                onClick={() => setShowHistory(true)}
-                            >
-                                Visualizza History
-                            </CustomButton>
                         </div>
-
-
 
                         <div className="space-y-6">
                             {/* Titolo */}
@@ -428,7 +481,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                             </div>
 
                             {/* Allegato */}
-                            <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                            <div className="pt-4 border-t border-gray-200 flex items-center justify-between dark:border-gray-700">
                                 <div className="mt-4">
                                     {issueData?.image?.rawImage ? (
                                         <div className="flex flex-col gap-2">
@@ -516,33 +569,44 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
 
                                 {/* Lista utenti */}
+
+                                {usersError && <p className="text-sm text-red-600">{usersError}</p>}
+
                                 <div className="max-h-56 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg divide-y divide-gray-100 dark:divide-gray-700">
-                                    {filteredUsers.length === 0 ? (
-                                        <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
+                                    {isListUsersLoading ? (
+                                        <ReloadingBox description='Ricerca utenti in corso...'></ReloadingBox>
                                     ) : (
-                                        filteredUsers.map(user => (
-                                            <div
-                                                key={user.id}
-                                                onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
-                                                className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
-                                                    selectedUser?.id === user.id
-                                                        ? 'bg-blue-50 dark:bg-blue-900/30'
-                                                        : 'hover:bg-gray-50 dark:hover:bg-gray-700'
-                                                }`}
-                                            >
-                                                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-semibold">
-                                                    {user.username?.slice(0, 2).toUpperCase()}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.username}</p>
-                                                    <p className="text-xs text-gray-400">{user.role}</p>
-                                                </div>
-                                                {selectedUser?.id === user.id && (
-                                                    <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
-                                                )}
-                                            </div>
-                                        ))
+                                        <div>
+                                            {filteredUsers.length === 0 ? (
+                                                <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
+                                            ) : (
+                                                filteredUsers.map(user => (
+                                                    <div
+                                                        key={user.id}
+                                                        onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
+                                                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
+                                                            selectedUser?.id === user.id
+                                                                ? 'bg-blue-50 dark:bg-blue-900/30'
+                                                                : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                                                        }`}
+                                                    >
+                                                        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-semibold">
+                                                            {user.username?.slice(0, 2).toUpperCase()}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.username}</p>
+                                                            <p className="text-xs text-gray-400">{user.role}</p>
+                                                        </div>
+                                                        {selectedUser?.id === user.id && (
+                                                            <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
+                                                        )}
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
                                     )}
+
+
                                 </div>
 
                                 {/* Utente selezionato */}
@@ -578,7 +642,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
             {/* POPUP CAMBIA STATO ISSUE */}
             {showStatusPopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
                         {isStatusSuccess ? (
                             <>
                                 {/* Schermata di successo */}
@@ -611,17 +675,37 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Cambia stato Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Clicca il pulsante di conferma per cambiare lo stato in "<strong>{nextStatus}</strong>"</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">Seleziona lo stato in cui cambiare la issue: </p>
+
+                                <div className="mt-3 mb-1">
+                                    <select
+                                        value={selectedNextStatus}
+                                        onChange={(e) => setSelectedNextStatus(e.target.value)}
+                                        className="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-600 rounded-lg text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer"
+                                    >
+                                        {availableStatuses.map((status) => (
+                                            <option key={status.name} value={status.name}>
+                                                {status.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
                                 <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
-                                        onClick={() => setShowStatusPopup(false)}
+                                        onClick={() => {
+                                            setShowStatusPopup(false);
+                                            if (availableStatuses.length > 0) {
+                                                setSelectedNextStatus(availableStatuses[0].name);
+                                            }
+                                        }}
                                     >
                                         Annulla
                                     </CustomButton>
                                     <CustomButton
                                         variant="primary"
                                         onClick={handleStatusIssue}
+                                        disabled={!selectedNextStatus}
                                     >
                                         Conferma
                                     </CustomButton>
@@ -646,7 +730,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue chiusa</h2>
                                 </div>
                                 <p className="text-sm text-gray-600 dark:text-gray-400">La issue è stata chiusa con successo</p>
-                                <div className="flex gap-3 pt-1">
+                                <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
                                         onClick={() => {
@@ -654,6 +738,7 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                             setIsClosedSuccess(false);
                                             fetchIssueDetails();
                                         }}
+                                        className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
                                         Ok
                                     </CustomButton>
@@ -685,9 +770,6 @@ function ViewSingleIssue({issueId, userRole, userId, onBack}) {
                                 </div>
                             </>
                         )}
-
-
-
                     </div>
                 </div>
             )}

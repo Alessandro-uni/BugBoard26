@@ -17,8 +17,11 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "pageNumber": {{pageNumber}},
-  "pageSize": {{pageSize}},
+  "pageInformation": {
+    "pageNumber": {{pageNumber}},
+    "pageSize": {{pageSize}}
+  },
+
   "sortType": {{sortType}},
 
   "filters": {
@@ -170,8 +173,11 @@ POST http://localhost:8080/api/issues/search
 Content-Type: application/json
 
 {
-  "pageNumber": 1,
-  "pageSize": 10,
+  "pageInformation": {
+    "pageNumber": 1,
+    "pageSize": 10
+  },
+
   "sortType": "CREATION_DATE_ASCENDING",
 
   "filters": {

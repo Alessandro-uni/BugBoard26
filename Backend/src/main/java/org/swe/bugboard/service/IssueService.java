@@ -35,7 +35,7 @@ public class IssueService {
     private final HistoryService historyService;
 
     @Transactional
-    public IssueResponse createIssue(ReportIssueRequest reportIssueRequest, Long currentUserId, MultipartFile file) {
+    public IssueDetailsResponse createIssue(ReportIssueRequest reportIssueRequest, Long currentUserId, MultipartFile file) {
         User reportingUser = findUserOrThrow(currentUserId);
 
         Set<Tag> tags = tagRepository.findByNameIn(reportIssueRequest.getTags());
@@ -73,11 +73,11 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha segnalato la issue");
         historyService.createHistory(historyRequest, currentUserId);
 
-        return convertModelToIssueResponse(savedIssue);
+        return convertModelToIssueDetails(savedIssue);
     }
 
     @Transactional
-    public IssueResponse updateIssueStatus(UpdateIssueRequest updateIssueRequest, Long userId) {
+    public IssueDetailsResponse updateIssueStatus(UpdateIssueRequest updateIssueRequest, Long userId) {
         User assignedUser = findUserOrThrow(userId);
         Issue issue = findIssueOrThrow(updateIssueRequest.getIssueId());
 
@@ -96,12 +96,12 @@ public class IssueService {
             return null;
         }
 
-        if (oldStatus == IssueStatus.RESOLVED || oldStatus == IssueStatus.CLOSED) {
+        if (!oldStatus.isModifiable()) {
             throw new IllegalStateException("Impossibile modificare lo stato di una Issue che si trova nello stato '" + oldStatus.name() + "'");
         }
 
-        if (newStatus == IssueStatus.TODO) {
-            throw new IllegalStateException("Impossibile modificare lo stato di una Issue in '" + updateIssueRequest.getNewStatus() + "'");
+        if (!newStatus.isSettable()) {
+            throw new IllegalStateException("Impossibile modificare lo stato di una Issue in '" + newStatus.name() + "'");
         }
 
         issue.setStatus(newStatus);
@@ -111,33 +111,41 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha aggiornato lo stato in " + savedIssue.getStatus());
         historyService.createHistory(historyRequest, userId);
 
-        return convertModelToIssueResponse(savedIssue);
+        return convertModelToIssueDetails(savedIssue);
     }
 
     @Transactional
-    public IssueResponse closeIssue(UpdateIssueRequest closeIssueRequest, Long userId) {
+    public IssueDetailsResponse closeIssue(UpdateIssueRequest closeIssueRequest, Long userId) {
         Issue issue = findIssueOrThrow(closeIssueRequest.getIssueId());
 
         if (issue.getStatus().equals(IssueStatus.CLOSED)) {
-            return null;
+            return convertModelToIssueDetails(issue);
+        }
+
+        if (!issue.getStatus().isCloseable()) {
+            throw new IllegalStateException("Impossibile chiudere una Issue che si trova nello stato '" + issue.getStatus().name() + "'");
         }
 
         issue.setStatus(IssueStatus.CLOSED);
 
         Issue savedIssue = issueRepository.save(issue);
 
-        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha chiuso questa issue perché ritenuta duplicata.");
+        HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha chiuso questa issue perché ritenuta duplicata");
         historyService.createHistory(historyRequest, userId);
 
-        return convertModelToIssueResponse(savedIssue);
+        return convertModelToIssueDetails(savedIssue);
     }
 
     @Transactional
-    public IssueResponse assignUserToIssue(Long issueId, Long userId, Long currentUserId) {
+    public IssueDetailsResponse assignUserToIssue(Long issueId, Long userId, Long currentUserId) {
         Issue issue = findIssueOrThrow(issueId);
 
         if (issue.getAssignedUser() != null) {
-            throw new IllegalStateException("Issue già assegnata all'utente " + issue.getAssignedUser().getUsername());
+            if (issue.getAssignedUser().getId().equals(userId)) {
+                return convertModelToIssueDetails(issue);
+            }
+
+            throw new IllegalStateException("Attenzione, questa issue è già stata assegnata all'utente: " + issue.getAssignedUser().getUsername());
         }
 
         if (!issue.getStatus().equals(IssueStatus.TODO)) {
@@ -152,39 +160,72 @@ public class IssueService {
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha assegnato la issue a " + savedIssue.getAssignedUser().getUsername());
         historyService.createHistory(historyRequest, currentUserId);
 
-        return convertModelToIssueResponse(savedIssue);
+        return convertModelToIssueDetails(savedIssue);
     }
 
     @Transactional(readOnly = true)
-    public IssueResponse getIssueById(Long issueId) {
-        return convertModelToIssueResponse(findIssueOrThrow(issueId));
+    public IssueDetailsResponse getIssueById(Long issueId) {
+        return convertModelToIssueDetails(findIssueOrThrow(issueId));
     }
 
     @Transactional(readOnly = true)
-    public Page<IssuePreviewResponse> getFilteredIssues(IssuePageRequest request) {
+    public Page<IssuePreviewResponse> getIssuePage(IssuePageRequest request) {
 
-        Specification<Issue> specification = applyFilters(request.getFilters());
+        Specification<Issue> specification = buildSpecification(request.getFilters());
 
-        int pageNumber = request.getPageNumber() != null ? request.getPageNumber() : DEFAULT_PAGE_NUMBER;
-        int pageSize = request.getPageSize() != null ? request.getPageSize() : DEFAULT_PAGE_SIZE;
+        PageRequest pageRequest = buildPageRequest(request.getPageInformation(), request.getSortType());
 
-        Sort sortingPolicy = request.getSortType() == null ? IssueSortingPolicy.DEFAULT.getSortingPolicy() : request.getSortType().getSortingPolicy();
+        return issueRepository.findAll(specification, pageRequest).map(this::convertModelToIssuePreview);
 
-        return issueRepository.findAll(specification, PageRequest.of(pageNumber, pageSize, sortingPolicy))
-                .map(this::convertModelToIssuePreviewResponse);
     }
 
-    private Specification<Issue> applyFilters(IssueFilters filter) {
+    public List<IssueDetailsResponse> getDetailedIssuesList(IssuePageRequest request) {
+
+        if (request == null) {
+            return issueRepository.findAll(IssueSortingPolicy.DEFAULT.getSortingPolicy()).stream().map(this::convertModelToIssueDetails).toList();
+        }
+
+        Specification<Issue> specification = buildSpecification(request.getFilters());
+
+        if (request.getPageInformation() == null) {
+            Sort sort = request.getSortType() == null ? IssueSortingPolicy.DEFAULT.getSortingPolicy() : request.getSortType().getSortingPolicy();
+            return issueRepository.findAll(specification, sort).stream().map(this::convertModelToIssueDetails).toList();
+        }
+
+        PageRequest pageRequest = buildPageRequest(request.getPageInformation(), request.getSortType());
+        return issueRepository.findAll(specification, pageRequest).map(this::convertModelToIssueDetails).stream().toList();
+    }
+
+    private PageRequest buildPageRequest(PageInformation pageInformation, IssueSortingPolicy sortType) {
+
+        int pageNumber, pageSize;
+
+        if (pageInformation == null) {
+            pageNumber = DEFAULT_PAGE_NUMBER;
+            pageSize = DEFAULT_PAGE_SIZE;
+        } else {
+            pageNumber = pageInformation.getPageNumber();
+            pageSize = pageInformation.getPageSize();
+        }
+
+        Sort sortingPolicy = sortType == null ? IssueSortingPolicy.DEFAULT.getSortingPolicy() : sortType.getSortingPolicy();
+
+        return PageRequest.of(pageNumber, pageSize, sortingPolicy);
+    }
+
+    private Specification<Issue> buildSpecification(IssueFilters filter) {
 
         Specification<Issue> specification = Specification.unrestricted(); //Makes it possible to fetch all issues with an empty filter request
 
         if (filter == null) return specification; //fail fast
 
-        return specification.and(IssueSpecification.hasAssignedUser(filter.getAssignedUserId()))
+        return specification
+                .and(IssueSpecification.hasAssignedUser(filter.getAssignedUserId()))
                 .and(IssueSpecification.isAssigned(filter.getIsAssigned()))
                 .and(IssueSpecification.hasReportingUser(filter.getReportingUserId()))
                 .and(IssueSpecification.hasPriority(filter.getPriority()))
                 .and(IssueSpecification.hasStatus(filter.getStatus()))
+                .and(IssueSpecification.isAssignable(filter.getIsAssignable()))
                 .and(IssueSpecification.hasType(filter.getType()))
                 .and(IssueSpecification.hasCreationDateAfter(filter.getStartCreationDate()))
                 .and(IssueSpecification.hasCreationDateBefore(filter.getEndCreationDate()))
@@ -213,7 +254,7 @@ public class IssueService {
         }
     }
 
-    private IssueResponse convertModelToIssueResponse(Issue issue) {
+    private IssueDetailsResponse convertModelToIssueDetails(Issue issue) {
         IssueImageResponse imageResponse = null;
 
         if (issue.getImage() != null) {
@@ -222,11 +263,11 @@ public class IssueService {
                     .rawImage(issue.getImage().getRawImage()).build();
         }
 
-        return IssueResponse.builder().id(issue.getId())
+        return IssueDetailsResponse.builder().id(issue.getId())
                 .title(issue.getTitle())
                 .description(issue.getDescription())
                 .type(issue.getType().name())
-                .status(issue.getStatus().name())
+                .status(issue.getStatus())
                 .priority(issue.getPriority())
                 .tags(
                         Optional.ofNullable(issue.getTags())
@@ -251,22 +292,22 @@ public class IssueService {
                 .build();
     }
 
-    private IssuePreviewResponse convertModelToIssuePreviewResponse(Issue issue) {
+    private IssuePreviewResponse convertModelToIssuePreview(Issue issue) {
 
         return IssuePreviewResponse.builder().id(issue.getId())
                 .title(issue.getTitle())
                 .description(issue.getDescription())
                 .type(issue.getType().name())
-                .status(issue.getStatus().name())
+                .status(issue.getStatus())
                 .priority(issue.getPriority())
                 .build();
     }
 
     // Debugging
     @Transactional(readOnly = true)
-    public List<IssueResponse> getAllIssue() {
+    public List<IssueDetailsResponse> getAllIssue() {
         List<Issue> issues = issueRepository.findAll();
 
-        return issues.stream().map(this::convertModelToIssueResponse).toList();
+        return issues.stream().map(this::convertModelToIssueDetails).toList();
     }
 }
