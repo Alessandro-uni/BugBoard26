@@ -72,4 +72,6 @@ public enum IssueStatus {
     public String getName() {
         return this.name();
     }
+
+    public String getTheme() { return theme.name();}
 }
