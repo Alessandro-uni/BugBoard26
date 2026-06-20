@@ -201,6 +201,15 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
         let newValue;
 
         if (type === 'checkbox') {
+            if (id === 'tags') {
+                setSelectedFilters(prev => ({
+                    ...prev,
+                    tags: checked
+                        ? [...prev.tags, value]
+                        : prev.tags.filter((t) => t !== value),
+                }));
+                return;
+            }
             newValue = checked;
 
         } else if (type === 'select-multiple') {
@@ -458,19 +467,31 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters}){
                                             Nessun tag
                                         </div>
                                     ) : (
-                                        <select
-                                            multiple // todo: renderlo più user friendly
-                                            id="tags"
-                                            value={selectedFilters.tags}
-                                            onChange={handleChange}
-                                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                                        >
-                                            {availableTags.map((tag) => (
-                                                <option key={tag} value={tag}>
-                                                    {formatLabel(tag)}
-                                                </option>
-                                            ))}
-                                        </select>
+                                        <div className="w-full border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700 max-h-48 overflow-y-auto">
+                                            {availableTags.map((tag) => {
+                                                const isSelected = selectedFilters.tags.includes(tag);
+                                                return (
+                                                    <label
+                                                        key={tag}
+                                                        className={`flex items-center gap-3 px-4 py-2 cursor-pointer text-sm transition-colors ${isSelected
+                                                            ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
+                                                            : "text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
+                                                        }`}
+                                                    >
+                                                        <input
+                                                            type="checkbox"
+                                                            id="tags"
+                                                            value={tag}
+                                                            checked={isSelected}
+                                                            onChange={handleChange}
+                                                            className="accent-blue-500 w-4 h-4 cursor-pointer"
+                                                        />
+                                                        {formatLabel(tag)}
+                                                    </label>
+                                                );
+                                            })}
+                                        </div>
+
                                     )}
                                 </div>
 
