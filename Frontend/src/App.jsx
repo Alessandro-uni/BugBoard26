@@ -9,29 +9,24 @@ import CreateUser from "./components/CreateUser.jsx";
 import ChangePassword from "./components/ChangePassword.jsx";
 import ViewSingleIssue from "./components/ViewSingleIssue.jsx";
 
-import { jwtDecode } from 'jwt-decode'; // Libreria per la decodifica di JWT (Json Web Token)
+import {jwtDecode} from 'jwt-decode';
 
 function App() {
-
-    // Creo una costante per verificare lo stato: l'utente è loggato? false = no, true = si
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    // Verifico quale pagina è attualmente visibile nell'app
+    // Stati pagina
     const [currentPage, setCurrentPage] = useState('HomePage');
-
-    // Conservo la pagina precedente
     const [previousPage, setPreviousPage] = useState('HomePage');
-
-    const [selectIssueId, setSelectIssueId] = useState(null);
-
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [theme, setTheme] = useState('light');
+
+    // Stati utente
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userId, setUserId] = useState(null)
     const [userName, setUserName] = useState('');
     const [userRole, setUserRole] = useState(null);
     const [userPermissions, setUserPermissions] = useState(null);
 
-    // Tema
-    const [theme, setTheme] = useState('light');
+   // Stati issue
+    const [selectIssueId, setSelectIssueId] = useState(null);
 
     // Notifiche todo: farle veramente
 
@@ -52,49 +47,34 @@ function App() {
         }
     }, [theme]);
 
-    /*
-      FUNZIONI PER LA GESTIONE DI EVENTI = reagisce a un'azione dell'utente e decide cosa deve succedere nell'app
-      si occupano di cambiare stato
-    */
+    // Funzioni per la gestione degli eventi
 
-    // Funzione per l'accesso del login: accetta due parametri mail e pw
+    // Funzione per login
     const handleLogin = userData => {
-        // Verifica che non siano entrambi vuoti
         if (userData) {
-            setIsLoggedIn(true); // Segna l'utente come autenticato tramite useState che aggiorna lo stato
+            setIsLoggedIn(true);
 
             try {
-                // Decodifica del token
                 const decoded = jwtDecode(userData.token);
 
-                // Estrazione dell'id
                 const id = decoded.userId;
-
-                // Estrazione dello username
                 const username = decoded.username;
-
-                // Estrazione del ruolo
                 const role = decoded.role ? decoded.role.toUpperCase().trim() : 'LURKER';
-
-                // Estrazione dei permessi
                 const permissions = Array.isArray(decoded.permissions) ? decoded.permissions : [];
 
                 // Salvataggio del token nel local storage
                 localStorage.setItem('token', userData.token);
 
-                // Aggiornamento dello stato
                 setUserId(id);
                 setUserName(username);
                 setUserRole(role);
                 setUserPermissions(permissions);
-
                 setIsLoggedIn(true);
 
             } catch (error) {
                 console.error("Errore nella decodifica del token:", error);
-                alert("Errore durante l'accesso.");
+                alert("Errore imprevisto durante l'accesso.");
             }
-
         }
     };
 
@@ -102,9 +82,7 @@ function App() {
     const handleNavigation = (page) => {
         setIsMenuOpen(false);
 
-        //controlli
         if (page === 'Esci') {
-            // Eliminato il token
             localStorage.removeItem('token');
 
             setIsLoggedIn(false);
@@ -120,26 +98,20 @@ function App() {
         }
     };
 
-    // Funziona che porta l'utente dalla pagina generale ViewIssueList a quella specifica di una singola issue
+    // Funzione per visualizzare l'issue selezionata
     const handleViewIssue = (issueId) => {
         setSelectIssueId(issueId);
         setPreviousPage(currentPage);
         setCurrentPage('Issue selezionata');
     };
 
-    // Funzione di torna indietro
+    // Funzione per tornare alla pagina precedente
     const handleBack = () => {
         setSelectIssueId(null);
         setCurrentPage(previousPage);
     };
 
-    const handleHomeClick = () => {
-        setSelectIssueId(null);
-        setCurrentPage('HomePage');
-    };
-
-    //CONTROLLO = se l'utente non accede, mostra solo la pagina di login
-
+    // Verifica che l'utente sia loggato
     if (!isLoggedIn) {
         return <LoginPage onLogin={handleLogin}/>;
     }
@@ -148,6 +120,7 @@ function App() {
       FUNZIONE = definiamo cosa deve apparire fisicamente sullo schermo
     */
 
+    // Funzione per la gestione della visualizzazione della pagina richiesta
     const renderPage = () => {
         switch (currentPage) {
             case 'HomePage':
@@ -176,7 +149,7 @@ function App() {
 
             case 'Issue selezionata':
                 return <ViewSingleIssue issueId={selectIssueId} userPermissions={userPermissions} userId={userId} onBack={handleBack}/>;
-
+            // todo: rivedi il default quando viene utilizzato
             default:
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userPermissions={userPermissions} onNavigation={handleNavigation}/>;
         }
