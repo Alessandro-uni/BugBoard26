@@ -33,6 +33,7 @@ public class IssueService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
     private final HistoryService historyService;
+    private final NotificationService notificationService;
 
     @Transactional
     public IssueDetailsResponse createIssue(ReportIssueRequest reportIssueRequest, Long currentUserId, MultipartFile file) {
@@ -107,6 +108,11 @@ public class IssueService {
         issue.setStatus(newStatus);
 
         Issue savedIssue = issueRepository.save(issue);
+
+        //todo: use observer pattern for these next parts
+        if(newStatus.equals(IssueStatus.RESOLVED)){
+            notificationService.createNotification(issue);
+        }
 
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha aggiornato lo stato in " + savedIssue.getStatus());
         historyService.createHistory(historyRequest, userId);
