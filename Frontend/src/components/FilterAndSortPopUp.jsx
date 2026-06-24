@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {X, Filter, ArrowUpDown} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {}, lockedFilters = {}}){
     // Stato unico per i filtri
@@ -67,7 +68,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/issues/statuses', {
+                const response = await fetch(`${API_BASE_URL}/api/issues/statuses`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -99,7 +100,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/issues/types', {
+                const response = await fetch(`${API_BASE_URL}/api/issues/types`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -131,7 +132,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/tags', {
+                const response = await fetch(`${API_BASE_URL}/api/tags`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -162,7 +163,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/users/reporting', {
+                const response = await fetch(`${API_BASE_URL}/api/users/reporting`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -194,7 +195,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/users/assignable', {
+                const response = await fetch(`${API_BASE_URL}/api/users/assignable`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`

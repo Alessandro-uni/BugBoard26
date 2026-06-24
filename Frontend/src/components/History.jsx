@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from "react";
 import {X} from "lucide-react";
 import {ReloadingBox} from "./ReloadingBox.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function History({issueId, onClose}){
 
@@ -11,7 +12,7 @@ function History({issueId, onClose}){
         const fetchHistory = async () => {
             const token = localStorage.getItem('token');
             try{
-                const response = await fetch(`http://localhost:8080/api/issues/${issueId}/history`,{
+                const response = await fetch(`${API_BASE_URL}/api/issues/${issueId}/history`,{
                     headers: {'Authorization': `Bearer ${token}`}
                 });
                 if(response.ok){

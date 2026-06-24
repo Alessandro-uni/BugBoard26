@@ -4,6 +4,7 @@ import {CustomButton} from "./CustomButton.jsx";
 import History from "./History.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 import {Badge} from "./Badge.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // DOMINIO ISSUE
@@ -26,7 +27,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/api/issues/${issueId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/issues/${issueId}`, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
@@ -84,7 +85,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         }
 
         try {
-            const response = await fetch("http://localhost:8080/api/users/available", {
+            const response = await fetch(`${API_BASE_URL}/api/users/available`, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
@@ -130,7 +131,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/issues/assign`, {
+            const response = await fetch(`${API_BASE_URL}/api/issues/assign`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -172,7 +173,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch(`http://localhost:8080/api/users/${assignedId}`, {
+                const response = await fetch(`${API_BASE_URL}/api/users/${assignedId}`, {
                     headers: {'Authorization': `Bearer ${token}`}
                 });
 
@@ -206,7 +207,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch("http://localhost:8080/api/issues/statuses", {
+            const response = await fetch(`${API_BASE_URL}/api/issues/statuses`, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
@@ -241,7 +242,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/issues/status`, {
+            const response = await fetch(`${API_BASE_URL}/api/issues/status`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
@@ -271,7 +272,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`http://localhost:8080/api/issues/close`, {
+            const response = await fetch(`${API_BASE_URL}/api/issues/close`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',

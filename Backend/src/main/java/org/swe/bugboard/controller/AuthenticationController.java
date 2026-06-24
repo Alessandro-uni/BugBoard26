@@ -11,7 +11,7 @@ import org.swe.bugboard.dto.User.AuthenticationResponse;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.frontend.url}")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 

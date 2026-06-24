@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Eye, EyeOff} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function CreateUser({onCreateUser}) {
     const [mail,setMail] = useState('');
@@ -17,7 +18,7 @@ function CreateUser({onCreateUser}) {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/users/roles', {
+                const response = await fetch(`${API_BASE_URL}/api/users/roles`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -78,7 +79,7 @@ function CreateUser({onCreateUser}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('http://localhost:8080/api/users', {
+            const response = await fetch(`${API_BASE_URL}/api/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'

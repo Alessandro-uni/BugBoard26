@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {SlidersHorizontal, Download, Frown, Loader2} from 'lucide-react';
+import {SlidersHorizontal, Download, Frown} from 'lucide-react';
 
 import FilterAndSortPopUp from './FilterAndSortPopUp.jsx';
 import ExportPopUp from './ExportPopUp';
 import {IssueCard} from "./IssueCard.jsx";
 import {CustomButton} from "./CustomButton.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
     // Variabili per la ricerca/visualizzazione di issue
@@ -48,7 +49,7 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
             };
 
             try {
-                const response = await fetch('http://localhost:8080/api/issues/search', {
+                const response = await fetch(`${API_BASE_URL}/api/issues/search`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
