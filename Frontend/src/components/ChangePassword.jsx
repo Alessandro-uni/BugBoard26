@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {Eye, EyeClosed} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function ChangePassword({onLogout}) {
     const [currentRawPassword, setCurrentRawPassword] = useState('');
@@ -46,7 +47,7 @@ function ChangePassword({onLogout}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/me/password`, {
+            const response = await fetch(`${API_BASE_URL}/api/users/me/password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type' : 'application/json',

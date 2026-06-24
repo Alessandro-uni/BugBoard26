@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
-import { Paperclip, X, Tag, Plus } from 'lucide-react';
+import {Paperclip, X, Tag, Plus} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function CreateIssue({onCancel, onIssueCreated}){
     const [selectedTags, setSelectedTags] = useState([]);
@@ -17,7 +18,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/issues/types`, {
+                const response = await fetch(`${API_BASE_URL}/api/issues/types`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -49,7 +50,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tags`, {
+                const response = await fetch(`${API_BASE_URL}/api/tags`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -113,7 +114,7 @@ function CreateIssue({onCancel, onIssueCreated}){
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/tags`, {
+            const response = await fetch(`${API_BASE_URL}/api/tags`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +179,7 @@ function CreateIssue({onCancel, onIssueCreated}){
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/issues`,{
+            const response = await fetch(`${API_BASE_URL}/api/issues`,{
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

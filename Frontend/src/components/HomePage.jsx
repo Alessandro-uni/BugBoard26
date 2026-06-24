@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {IssueCard} from "./IssueCard.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
+import {API_BASE_URL} from "../apiConfig.js";
 
 function IssueSection({title, issues, onViewIssue, onViewAll}) {
     return (
@@ -48,7 +49,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
     useEffect(() => {
         const fetchIssueGroup = async (bodyParams) => {
             const token = localStorage.getItem('token');
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/issues/search`, {
+            const response = await fetch(`${API_BASE_URL}/api/issues/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
