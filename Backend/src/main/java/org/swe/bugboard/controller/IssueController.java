@@ -37,6 +37,7 @@ public class IssueController {
                                                             @RequestPart(value = "file", required = false) MultipartFile file) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
+
         IssueDetailsResponse response = issueService.createIssue(reportIssueRequest, currentUserId, file);
 
         return ResponseEntity.ok(response);
