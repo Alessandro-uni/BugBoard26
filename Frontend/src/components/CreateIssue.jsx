@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Paperclip, X, Tag, Plus} from 'lucide-react';
+import {Paperclip, X, Tag, Plus, Check} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
 
@@ -436,36 +436,34 @@ function CreateIssue({onCancel, onIssueCreated}){
             {/* POPUP DI SUCCESSO CREAZIONE */}
             {showSuccess && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-                    <div className="relative bg-white rounded-lg shadow-xl p-8 w-full max-w-sm mx-4 space-y-4 text-center animate-in fade-in zoom-in duration-300">
-                        {/* Pulsante X di chiusura popup */}
-                        <CustomButton
-                            variant="secondary"
-                            onClick={() => setShowSuccess(false)}
-                            className="absolute top-4 right-4"
-                        >
-                            <X size={20}/>
-                        </CustomButton>
-
-                        {/* Icona Successo */}
-                        <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-2">
-                            <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                            </svg>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 animate-in fade-in zoom-in duration-300 border border-gray-200 dark:border-gray-700">
+                        {/* Schermata di successo */}
+                        <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                <Check size={18} className="text-green-600 dark:text-green-400"/>
+                            </div>
+                            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue inviata</h2>
                         </div>
 
-                        {/* Testo */}
-                        <div className="space-y-2">
-                            <h2 className="text-xl font-bold text-gray-900">Issue Inviata!</h2>
-                            <p className="text-sm text-gray-600">
-                                La segnalazione è stata salvata correttamente nel sistema.
-                            </p>
-                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                            La segnalazione è stata salvata correttamente nel sistema
+                        </p>
 
-                        {/* Pulsante per andare alla issue */}
-                        <div className="pt-2">
+                        <div className="flex justify-end gap-3 pt-1">
+                            <CustomButton
+                                variant="secondary"
+                                onClick={() => {
+                                    setShowSuccess(false);
+                                }}
+                                className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
+                            >
+                                Ok
+                            </CustomButton>
+
                             <CustomButton
                                 variant="success"
                                 onClick={() => onIssueCreated(createdIssueId)}
+                                className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                             >
                                 Vai alla issue
                             </CustomButton>
