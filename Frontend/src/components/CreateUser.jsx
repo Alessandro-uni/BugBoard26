@@ -82,8 +82,8 @@ function CreateUser({onCreateUser}) {
             const response = await fetch(`${API_BASE_URL}/api/users`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type' : 'application/json'
-                    //'Authorization': `Bearer ${token}`  // todo: togliere il commento dopo aver collegato il db persistente
+                    'Content-Type' : 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({mail: mail, username: username, rawPassword: rawPassword, repeatRawPassword: repeatRawPassword, role: role}),
             });
