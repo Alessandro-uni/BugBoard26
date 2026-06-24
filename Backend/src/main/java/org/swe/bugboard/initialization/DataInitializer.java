@@ -19,7 +19,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     @Override
-    public void run(String @NonNull ... args) throws Exception {
+    public void run(String @NonNull ... args) {
         if (userRepository.findByUsername("admin").isEmpty()) {
             User admin = User.builder()
                     .mail("admin@unina.it")
