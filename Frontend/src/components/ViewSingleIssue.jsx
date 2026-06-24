@@ -312,7 +312,6 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
         return (
             <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
                 <div className="max-w-4xl mx-auto space-y-6">
-
                     <button
                         onClick={onBack}
                         className="text-blue-600 hover:underline"
@@ -554,7 +553,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
                                         <UserPlus size={18} className="text-blue-700" />
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark: text-white">Assegna Issue</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Assegna Issue</h2>
                                 </div>
 
                                 {/* Barra di ricerca */}
@@ -730,7 +729,11 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue chiusa</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">La issue è stata chiusa con successo</p>
+
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    La issue è stata chiusa con successo
+                                </p>
+
                                 <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"
