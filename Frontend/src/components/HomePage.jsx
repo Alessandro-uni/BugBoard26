@@ -48,7 +48,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
     useEffect(() => {
         const fetchIssueGroup = async (bodyParams) => {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/issues/search', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/issues/search`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

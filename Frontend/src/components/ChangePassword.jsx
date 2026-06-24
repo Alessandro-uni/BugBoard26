@@ -46,7 +46,7 @@ function ChangePassword({onLogout}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('http://localhost:8080/api/users/me/password', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/me/password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type' : 'application/json',

@@ -17,7 +17,7 @@ function CreateUser({onCreateUser}) {
             const token = localStorage.getItem('token');
 
             try {
-                const response = await fetch('http://localhost:8080/api/users/roles', {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/roles`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -78,7 +78,7 @@ function CreateUser({onCreateUser}) {
         const token = localStorage.getItem('token');
 
         try {
-            const response = await fetch('http://localhost:8080/api/users', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'

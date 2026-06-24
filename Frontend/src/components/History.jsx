@@ -11,7 +11,7 @@ function History({issueId, onClose}){
         const fetchHistory = async () => {
             const token = localStorage.getItem('token');
             try{
-                const response = await fetch(`http://localhost:8080/api/issues/${issueId}/history`,{
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api/issues/${issueId}/history`,{
                     headers: {'Authorization': `Bearer ${token}`}
                 });
                 if(response.ok){
