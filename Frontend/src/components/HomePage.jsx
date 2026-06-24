@@ -52,7 +52,8 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
             const response = await fetch(`${API_BASE_URL}/api/issues/search`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(bodyParams)
             });
