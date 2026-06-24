@@ -13,7 +13,7 @@ import org.swe.bugboard.service.NotificationService;
 @RestController
 @RequestMapping("/api/notification")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.frontend.url}")
 public class NotificationController {
     private NotificationService notificationService;
 

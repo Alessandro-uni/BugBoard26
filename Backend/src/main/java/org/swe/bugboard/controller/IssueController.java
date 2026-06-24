@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/issues")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${app.frontend.url}")
 public class IssueController {
     private final IssueService issueService;
 
