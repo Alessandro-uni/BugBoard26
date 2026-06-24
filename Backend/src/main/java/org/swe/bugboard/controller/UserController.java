@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @PostMapping
-    //@PreAuthorize("hasAuthority('CREATE_USERS')") // todo: togliere il commento dopo aver collegato il db persistente
+    @PreAuthorize("hasAuthority('CREATE_USERS')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         UserResponse response = userService.createUser(signUpUserRequest);
 
