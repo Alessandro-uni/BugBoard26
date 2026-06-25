@@ -19,7 +19,6 @@ public class PasswordRulesConfig {
             props.load(getClass().getResourceAsStream("/passay_it.properties"));
             return new PropertiesMessageResolver(props);
         } catch (Exception e) {
-            e.printStackTrace();
             return new PropertiesMessageResolver();
         }
     }
