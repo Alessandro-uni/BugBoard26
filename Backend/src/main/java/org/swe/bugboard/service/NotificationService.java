@@ -1,6 +1,5 @@
 package org.swe.bugboard.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +11,7 @@ import org.swe.bugboard.repository.NotificationRepository;
 @RequiredArgsConstructor
 public class NotificationService {
 
-    private NotificationRepository notificationRepository;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public Integer getUserNotificationCount(Long userId){
@@ -30,8 +29,8 @@ public class NotificationService {
     }
 
     @Transactional
-    public void deleteNotification(Long notificationId){
-        notificationRepository.deleteById(notificationId);
+    public void deleteNotification(Long notificationId, Long userId){
+        notificationRepository.deleteByIdAndUser_Id(notificationId, userId);
     }
 
     @Transactional

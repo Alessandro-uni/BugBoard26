@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.swe.bugboard.service.NotificationService;
 
 @RestController
@@ -26,11 +23,20 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getUserNotificationCount(currentUserId));
     }
 
-    @GetMapping("/readAll")
+    @DeleteMapping("/readAll")
     public ResponseEntity<Boolean> readAll(@AuthenticationPrincipal Jwt jwt) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
         notificationService.deleteUserNotifications(currentUserId);
+
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @DeleteMapping("/read/{notificationId}")
+    public ResponseEntity<Boolean> read(@AuthenticationPrincipal Jwt jwt, @PathVariable Long notificationId) {
+        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
+
+        notificationService.deleteNotification(notificationId, currentUserId);
 
         return ResponseEntity.ok(Boolean.TRUE);
     }
