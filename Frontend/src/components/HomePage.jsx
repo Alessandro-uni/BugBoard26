@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {IssueCard} from "./IssueCard.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import {CustomButton} from "./CustomButton.jsx";
+import {Bell, X} from "lucide-react";
 
 function IssueSection({title, issues, onViewIssue, onViewAll}) {
     return (
@@ -39,6 +41,7 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
 }
 
 function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], onNavigation}){
+    // Sezione issues
     const [allIssues, setAllIssues] = useState([]);
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
@@ -46,6 +49,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
 
     const MAX_HOME_ISSUES = 3;
 
+    // Fetch issues
     useEffect(() => {
         const fetchIssueGroup = async (bodyParams) => {
             const token = localStorage.getItem('token');
@@ -103,11 +107,129 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
         }
     }, [currentUserId]);
 
+    // Sezione notifiche
+    const [notifications, setNotifications] = useState([]);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const removeNotification = (id) => {
+        setNotifications(prev => prev.filter(n => n.id !== id));
+        // todo: chiama rimozione singola notifica
+    };
+
+    // Fetch notifiche
+    useEffect(() => {
+        const fetchNotifications = async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/notification`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const notificationsData = await response.json();
+                    setNotifications(notificationsData);
+                } else {
+                    const errorJson = await response.json();
+                    alert("Errore: " + errorJson.message);
+                }
+
+            } catch (error) {
+                console.error("Errore nella chiamata al backend:", error);
+                alert('Errore: ' + error.message);
+            }
+        };
+
+        fetchNotifications();
+    }, []);
+
+    // Rimozione singola notifica
+
+    // Rimozione tutte le notifiche
+
     return (
         <div className="w-full mx-auto">
             <div className="mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Home</h2>
-                <p className="text-gray-600 dark:text-gray-400">Ciao, {userName}. Benvenutə nella tua area di lavoro</p>
+                <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        Home
+                    </h2>
+
+                    {/* 1. Notifiche */}
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <CustomButton
+                                variant="secondary"
+                                onClick={() => setShowNotifications(!showNotifications)}
+                            >
+                                <Bell size={24} className="text-gray-900 dark:text-white"/>
+                                {notifications.length > 0 && (
+                                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                                        {notifications.length}
+                                    </span>
+                                )}
+                            </CustomButton>
+
+                            {/* Dropdown Notifiche */}
+                            {showNotifications && (
+                                <div className="absolute right-0 mt-2 w-80 rounded-lg shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                                            <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                Notifiche
+                                            </h3>
+                                        </div>
+                                        <CustomButton
+                                            variant="secondary"
+                                            onClick={() => {/* todo: Chiama rimozione tutte notifiche */}}
+                                        >
+                                            segna tutte come lette
+                                        </CustomButton>
+                                    </div>
+                                    <div className="max-h-96 overflow-y-auto">
+                                        {notifications.length === 0 ? (
+                                            <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">Nessuna notifica</div>
+                                        ) : (
+                                            notifications.map((notification) => (
+                                                <div
+                                                    key={notification.id}
+                                                    onClick={() => onViewIssue(notification.idIssue)}
+                                                    className="p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-start justify-between gap-3 hover:cursor-pointer"
+                                                >
+                                                    <div className="flex-1">
+                                                        <p className="text-sm text-gray-800 dark:text-gray-200">
+                                                            {notification.message}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                            {new Date(notification.time).toLocaleString()}
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Pulsante di chiusura e rimozione notifica */}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            removeNotification(notification.id);
+                                                        }}
+                                                        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400 hover:cursor-pointer"
+                                                    >
+                                                        <X size={16}/>
+                                                    </button>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <p className="text-gray-600 dark:text-gray-400">
+                    Ciao, {userName}. Benvenutə nella tua area di lavoro
+                </p>
             </div>
 
             {isLoading ? (
