@@ -18,6 +18,7 @@ import org.swe.bugboard.service.IssueService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,56 +80,55 @@ public class IssueController {
     }
 
     private String getCSVRow(IssueDetailsResponse issue, ExportSettings.DetailLevel detailLevel) {
+        List<String> columns = new ArrayList<>();
+        int levelDetail = detailLevel.getLevel();
 
-        StringBuilder CSVRowBuilder = new StringBuilder();
-        char CSVFieldDelimiter = ';';
-
-        if (detailLevel.getLevel() >= ExportSettings.DetailLevel.LOW.getLevel()) {
-
-            CSVRowBuilder.append(wrapCSV(issue.getTitle())).append(CSVFieldDelimiter)
-                    .append(wrapCSV(issue.getReportingUserUsername())).append(CSVFieldDelimiter)
-                    .append(wrapCSV(issue.getCreationDate().toLocalDate())).append(CSVFieldDelimiter)
-                    .append(wrapCSV(issue.getAssignedUserUsername() == null ? "Non assegnata" :issue.getAssignedUserUsername()));
-
-            if (detailLevel.getLevel() >= ExportSettings.DetailLevel.MEDIUM.getLevel()) {
-                CSVRowBuilder.append(CSVFieldDelimiter)
-                        .append(wrapCSV(issue.getLastModifiedDate().toLocalDate())).append(CSVFieldDelimiter)
-                        .append(wrapCSV(issue.getStatus())).append(CSVFieldDelimiter)
-                        .append(wrapCSV(issue.getPriority().equals(true) ? "Prioritario" : "Ordinario")).append(CSVFieldDelimiter)
-                        .append(wrapCSV(issue.getType()));
-
-                if (detailLevel.getLevel() >= ExportSettings.DetailLevel.HIGH.getLevel()) {
-                    CSVRowBuilder.append(CSVFieldDelimiter)
-                            .append(wrapCSV(issue.getDescription())).append(CSVFieldDelimiter);
-
-                    StringBuilder TagField = new StringBuilder();
-                    for(String tag : issue.getTags()) {
-                        TagField.append(tag).append(", ");
-                    }
-
-                    //removing last comma and space
-                    if (!TagField.isEmpty()) {
-                        TagField.replace(TagField.length()-2, TagField.length(), "");
-                    }
-
-                    CSVRowBuilder.append(wrapCSV(TagField.toString())).append(CSVFieldDelimiter)
-                            .append(wrapCSV(issue.getId()));
-
-                }
-            }
+        if (levelDetail >= ExportSettings.DetailLevel.LOW.getLevel()) {
+            addLowDetails(issue, columns);
         }
 
-        return CSVRowBuilder.toString();
+        if (levelDetail >= ExportSettings.DetailLevel.MEDIUM.getLevel()) {
+            addMediumDetails(issue, columns);
+        }
+
+        if (levelDetail >= ExportSettings.DetailLevel.HIGH.getLevel()) {
+            addHighDetails(issue, columns);
+        }
+
+        return String.join(";", columns);
     }
 
     private String wrapCSV(Object input) {
-        String s = String.valueOf(input);
-
         if (input == null) {
             return "";
         }
 
+        String s = String.valueOf(input);
+
         return "\"" + s.replace("\"", "\"\"") + "\"";
+    }
+
+    private void addLowDetails(IssueDetailsResponse issue, List<String> columns) {
+        columns.add(wrapCSV(issue.getTitle()));
+        columns.add(wrapCSV(issue.getReportingUserUsername()));
+        columns.add(wrapCSV(issue.getCreationDate().toLocalDate()));
+        columns.add(wrapCSV(issue.getAssignedUserUsername() == null ? "Non assegnata" :issue.getAssignedUserUsername()));
+    }
+
+    private void addMediumDetails(IssueDetailsResponse issue, List<String> columns) {
+        columns.add(wrapCSV(issue.getLastModifiedDate().toLocalDate()));
+        columns.add(wrapCSV(issue.getStatus()));
+        columns.add(wrapCSV(issue.getPriority().equals(true) ? "Prioritario" : "Ordinario"));
+        columns.add(wrapCSV(issue.getType()));
+    }
+
+    private void addHighDetails(IssueDetailsResponse issue, List<String> columns) {
+        columns.add(wrapCSV(issue.getDescription()));
+
+        String tagField = String.join(", ", issue.getTags());
+
+        columns.add(wrapCSV(tagField));
+        columns.add(wrapCSV(issue.getId()));
     }
 
     @GetMapping("/{issueId}")
