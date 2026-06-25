@@ -15,7 +15,7 @@ import org.swe.bugboard.service.NotificationService;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "${app.frontend.url}")
 public class NotificationController {
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
     private static final String USER_ID_CLAIM = "userId";
 
