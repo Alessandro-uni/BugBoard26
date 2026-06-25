@@ -1,6 +1,7 @@
 package org.swe.bugboard.initialization;
 
 import org.jspecify.annotations.NonNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,9 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Value("${app.security.pw-admin}")
+    private String pw;
+
     public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -23,7 +27,7 @@ public class DataInitializer implements CommandLineRunner {
         if (userRepository.findByUsername("admin").isEmpty()) {
             User admin = User.builder()
                     .mail("admin@unina.it")
-                    .hashedPassword(passwordEncoder.encode("Admin01!"))
+                    .hashedPassword(passwordEncoder.encode(pw))
                     .username("admin")
                     .role(UserRole.ADMIN)
                     .build();
