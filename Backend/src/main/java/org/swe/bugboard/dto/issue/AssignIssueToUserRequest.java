@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto.Issue;
+package org.swe.bugboard.dto.issue;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

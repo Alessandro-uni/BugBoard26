@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.swe.bugboard.dto.Tag.CreateTagRequest;
-import org.swe.bugboard.dto.Tag.TagResponse;
+import org.swe.bugboard.dto.tag.CreateTagRequest;
+import org.swe.bugboard.dto.tag.TagResponse;
 import org.swe.bugboard.service.TagService;
 
 import java.util.List;

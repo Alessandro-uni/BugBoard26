@@ -12,8 +12,8 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import org.swe.bugboard.dto.User.AuthenticationRequest;
-import org.swe.bugboard.dto.User.AuthenticationResponse;
+import org.swe.bugboard.dto.user.AuthenticationRequest;
+import org.swe.bugboard.dto.user.AuthenticationResponse;
 import org.swe.bugboard.security.CustomUserDetails;
 
 import java.time.Instant;

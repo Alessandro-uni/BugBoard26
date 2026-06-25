@@ -4,9 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.swe.bugboard.dto.Tag.CreateTagRequest;
-import org.swe.bugboard.dto.Tag.TagRequest;
-import org.swe.bugboard.dto.Tag.TagResponse;
+import org.swe.bugboard.dto.tag.CreateTagRequest;
+import org.swe.bugboard.dto.tag.TagRequest;
+import org.swe.bugboard.dto.tag.TagResponse;
 import org.swe.bugboard.model.Tag;
 import org.swe.bugboard.repository.TagRepository;
 

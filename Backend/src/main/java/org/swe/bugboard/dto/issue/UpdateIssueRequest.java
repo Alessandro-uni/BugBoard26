@@ -1,18 +1,18 @@
-package org.swe.bugboard.dto.History;
+package org.swe.bugboard.dto.issue;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class HistoryRequest {
-    @NotNull(message = "Id issue assente")
+@Builder
+public class UpdateIssueRequest {
+    @NotNull(message = "Id assente")
     private Long issueId;
 
-    @NotEmpty
-    private String action;
+    private String newStatus;
 }

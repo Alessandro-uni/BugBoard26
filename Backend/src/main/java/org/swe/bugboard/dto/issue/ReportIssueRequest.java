@@ -1,6 +1,5 @@
-package org.swe.bugboard.dto.Issue;
+package org.swe.bugboard.dto.issue;
 
-import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

@@ -3,7 +3,7 @@ package org.swe.bugboard.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.swe.bugboard.dto.History.HistoryResponse;
+import org.swe.bugboard.dto.history.HistoryResponse;
 import org.swe.bugboard.service.HistoryService;
 
 import java.util.List;

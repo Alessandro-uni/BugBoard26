@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto.User;
+package org.swe.bugboard.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

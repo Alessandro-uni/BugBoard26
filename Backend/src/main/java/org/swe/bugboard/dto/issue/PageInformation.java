@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto.Issue;
+package org.swe.bugboard.dto.issue;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UpdateIssueRequest {
-    @NotNull(message = "Id assente")
-    private Long issueId;
+public class PageInformation {
 
-    private String newStatus;
+    @NotNull
+    private Integer pageNumber;
+    @NotNull
+    private Integer pageSize;
 }

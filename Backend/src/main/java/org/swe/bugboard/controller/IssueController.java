@@ -11,7 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.swe.bugboard.dto.Issue.*;
+import org.swe.bugboard.dto.issue.*;
 import org.swe.bugboard.model.IssueStatus;
 import org.swe.bugboard.model.IssueType;
 import org.swe.bugboard.service.IssueService;

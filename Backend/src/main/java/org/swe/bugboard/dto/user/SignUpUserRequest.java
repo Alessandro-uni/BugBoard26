@@ -1,4 +1,4 @@
-package org.swe.bugboard.dto.User;
+package org.swe.bugboard.dto.user;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
