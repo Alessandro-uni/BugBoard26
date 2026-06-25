@@ -30,7 +30,7 @@ public class PasswordRulesConfig {
     }
 
     @Bean
-    public Rule lengthRule(@Value("${application.security.password.min-lenght:8}") int minLenght) {
+    public Rule lengthRule(@Value("${application.security.password.min-length:8}") int minLenght) {
         return new LengthRule(minLenght, 128);
     }
 
