@@ -6,7 +6,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.user.ChangePasswordUserRequest;
-import org.swe.bugboard.dto.user.SearchUserRequest;
 import org.swe.bugboard.dto.user.SignUpUserRequest;
 import org.swe.bugboard.dto.user.UserResponse;
 import org.swe.bugboard.model.IssueStatus;
@@ -16,9 +15,7 @@ import org.swe.bugboard.model.UserRole;
 import org.swe.bugboard.repository.UserRepository;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -73,52 +70,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponse getUserById(Long userId) {
         return convertModelToResponse(findUserOrThrow(userId));
-    }
-
-    @Transactional(readOnly = true)
-    public List<UserResponse> getUser(SearchUserRequest user) {
-        if (user.getMail() != null) {
-            UserResponse userResponse = getUserByMail(user.getMail());
-            return Collections.singletonList(userResponse);
-        }
-
-        if (user.getUsername() != null) {
-            UserResponse userResponse = getUserByUsername(user.getUsername());
-            return Collections.singletonList(userResponse);
-        }
-
-        if (user.getRole() != null) {
-            List<UserResponse> usersResponse = getUsersByRole(UserRole.valueOf(user.getRole()));
-            if (!usersResponse.isEmpty()) {
-                return usersResponse;
-            }
-        }
-
-        throw new IllegalArgumentException("Nessun utente trovato con almeno uno dei parametri di ricerca forniti");
-    }
-
-    private UserResponse getUserByMail(String mail) {
-        Optional<User> user = userRepository.findByMail(mail.toLowerCase());
-
-        return user.map(this::convertModelToResponse).
-                orElseThrow(() -> new RuntimeException("Nessun utente trovato con mail: " + mail));
-    }
-
-    private UserResponse getUserByUsername(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-
-        return user.map(this::convertModelToResponse).
-                orElseThrow(() -> new RuntimeException("Nessun utente trovato con username: " + username));
-    }
-
-    private List<UserResponse> getUsersByRole(UserRole role) {
-        Optional<List<User>> users = userRepository.findByRole(role);
-
-        return users.filter(list -> !list.isEmpty())
-                .orElseThrow(() -> new RuntimeException("Nessun utente trovato con ruolo: " + role.name()))
-                .stream()
-                .map(this::convertModelToResponse)
-                .toList();
     }
 
     @Transactional(readOnly = true)
