@@ -5,7 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.swe.bugboard.dto.notification.NotificationResponse;
 import org.swe.bugboard.service.NotificationService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/notification")
@@ -16,8 +19,15 @@ public class NotificationController {
 
     private static final String USER_ID_CLAIM = "userId";
 
+    @GetMapping
+    public ResponseEntity<List<NotificationResponse>> getUserNotification(@AuthenticationPrincipal Jwt jwt) {
+        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
+
+        return ResponseEntity.ok(notificationService.getUserNotifications(currentUserId));
+    }
+
     @GetMapping("/count")
-    public ResponseEntity<Integer> getUserNotificationCount(@AuthenticationPrincipal Jwt jwt){
+    public ResponseEntity<Integer> getUserNotificationCount(@AuthenticationPrincipal Jwt jwt) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
         return ResponseEntity.ok(notificationService.getUserNotificationCount(currentUserId));

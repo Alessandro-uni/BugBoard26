@@ -19,6 +19,11 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false,
+            updatable = false
+    )
+    private String message;
+
     @OneToOne
     @JoinColumn(name = "issue_id")
     private Issue issue;
