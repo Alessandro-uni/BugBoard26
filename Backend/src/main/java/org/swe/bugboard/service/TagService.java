@@ -1,11 +1,9 @@
 package org.swe.bugboard.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.swe.bugboard.dto.tag.CreateTagRequest;
-import org.swe.bugboard.dto.tag.TagRequest;
 import org.swe.bugboard.dto.tag.TagResponse;
 import org.swe.bugboard.model.Tag;
 import org.swe.bugboard.repository.TagRepository;
@@ -24,14 +22,6 @@ public class TagService {
         Tag savedTag = tagRepository.save(newTag);
 
         return convertModelToResponse(savedTag);
-    }
-
-    @Transactional(readOnly = true)
-    public TagResponse searchTag(TagRequest tagRequest) {
-        Tag tag = tagRepository.findByName(tagRequest.getName())
-                .orElseThrow(() -> new EntityNotFoundException("Tag '" + tagRequest.getName() + "' non trovato"));
-
-        return convertModelToResponse(tag);
     }
 
     @Transactional(readOnly = true)
