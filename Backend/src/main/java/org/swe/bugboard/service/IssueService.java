@@ -19,6 +19,7 @@ import org.swe.bugboard.repository.TagRepository;
 import org.swe.bugboard.repository.UserRepository;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class IssueService {
                         .rawImage(file.getBytes())
                         .name(storedName).build();
             } catch (IOException e) {
-                throw new RuntimeException("Could not save file");
+                throw new UncheckedIOException("Could not save file", e);
             }
         }
 
@@ -204,7 +205,8 @@ public class IssueService {
 
     private PageRequest buildPageRequest(PageInformation pageInformation, IssueSortingPolicy sortType) {
 
-        int pageNumber, pageSize;
+        int pageNumber;
+        int pageSize;
 
         if (pageInformation == null) {
             pageNumber = DEFAULT_PAGE_NUMBER;
