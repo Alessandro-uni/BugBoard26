@@ -1,4 +1,5 @@
 ###
+@admin_auth_token = variable value
 POST http://localhost:8080/api/issues
 Authorization: Bearer {{admin_auth_token}}
 Content-Type: multipart/form-data; boundary=boundary;
