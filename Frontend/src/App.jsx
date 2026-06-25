@@ -25,19 +25,8 @@ function App() {
     const [userRole, setUserRole] = useState(null);
     const [userPermissions, setUserPermissions] = useState(null);
 
-   // Stati issue
+    // Stato issue
     const [selectIssueId, setSelectIssueId] = useState(null);
-
-    // Notifiche todo: farle veramente
-
-    const [notifications, setNotifications] = useState([
-        { id: 1, message: "Nuova issue assegnata", time: "10 min fa" },
-        { id: 2, message: "Aggiunto un nuovo utente", time: "5 min fa" }
-    ]);
-
-    const removeNotification = (id) => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
-    };
 
     useEffect(() => {
         if (theme === 'dark') {
@@ -175,8 +164,6 @@ function App() {
                     onToggleMenu={() => setIsMenuOpen(!isMenuOpen)}
                     onHomeClick={() => setCurrentPage('HomePage')}
                     isHomeOpen={currentPage === 'HomePage'}
-                    notifications={notifications}
-                    removeNotification={removeNotification}
                 />
 
                 <main className="flex-1 py-4 md:py-4 overflow-y-auto [scrollbar-gutter:stable]">
