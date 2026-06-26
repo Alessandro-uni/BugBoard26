@@ -91,6 +91,7 @@ function CreateUser({onCreateUser}) {
             if (response.ok) {
                 const userData = await response.json();
                 onCreateUser(userData);
+                alert("Utente creato con successo");
             } else {
                 const errorJson = await response.json();
 
