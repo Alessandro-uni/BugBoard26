@@ -26,13 +26,6 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getUserNotifications(currentUserId));
     }
 
-    @GetMapping("/count")
-    public ResponseEntity<Integer> getUserNotificationCount(@AuthenticationPrincipal Jwt jwt) {
-        Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
-
-        return ResponseEntity.ok(notificationService.getUserNotificationCount(currentUserId));
-    }
-
     @DeleteMapping("/readAll")
     public ResponseEntity<Boolean> readAll(@AuthenticationPrincipal Jwt jwt) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);

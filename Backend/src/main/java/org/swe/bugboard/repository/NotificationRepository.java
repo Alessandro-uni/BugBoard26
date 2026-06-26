@@ -8,8 +8,6 @@ import java.util.List;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    Integer countByUser_Id(Long userId);
-
     void deleteAllByUser_Id(Long userId);
     void deleteByIdAndUser_Id(Long notificationId, Long userId);
 

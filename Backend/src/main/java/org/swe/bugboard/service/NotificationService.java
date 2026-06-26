@@ -26,12 +26,7 @@ public class NotificationService {
     }
 
     @Transactional
-    public Integer getUserNotificationCount(Long userId){
-        return notificationRepository.countByUser_Id(userId);
-    }
-
-    @Transactional
-    public void createNotificationOnResolvedIssue(Issue issue){
+    public void createNotification(Issue issue){
         String typeMessage = messageFromStatus(issue.getStatus());
 
         Notification newNotification = Notification.builder().
