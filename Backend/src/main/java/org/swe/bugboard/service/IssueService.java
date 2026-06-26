@@ -112,7 +112,7 @@ public class IssueService {
 
         //todo: use observer pattern for these next parts
         if(newStatus.equals(IssueStatus.RESOLVED)){
-            notificationService.createNotificationOnResolvedIssue(issue);
+            notificationService.createNotification(issue);
         }
 
         HistoryRequest historyRequest = new HistoryRequest(savedIssue.getId(), "ha aggiornato lo stato in " + savedIssue.getStatus());
