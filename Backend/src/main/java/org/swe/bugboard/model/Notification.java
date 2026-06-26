@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Notification")
 
@@ -23,6 +25,11 @@ public class Notification {
             updatable = false
     )
     private String message;
+
+    @Column(nullable = false,
+            updatable = false
+    )
+    private LocalDateTime date;
 
     @OneToOne
     @JoinColumn(name = "issue_id")

@@ -31,6 +31,7 @@ public class NotificationService {
 
         Notification newNotification = Notification.builder().
                 message("La issue '" + issue.getTitle() + "' è " + typeMessage).
+                date(LocalDateTime.now()).
                 issue(issue).
                 user(issue.getReportingUser()).
                 build();
@@ -50,7 +51,7 @@ public class NotificationService {
 
     private NotificationResponse convertModelToResponse(Notification notification) {
         return new NotificationResponse(notification.getId(), "La issue '" + notification.getIssue().getTitle() + "' è stata risolta!",
-                notification.getIssue().getId(), LocalDateTime.now());
+                notification.getIssue().getId(), notification.getDate());
     }
 
     private String messageFromStatus(IssueStatus status) {
