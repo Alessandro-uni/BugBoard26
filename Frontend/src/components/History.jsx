@@ -13,6 +13,7 @@ function History({issueId, onClose}){
             const token = sessionStorage.getItem('token');
             try{
                 const response = await fetch(`${API_BASE_URL}/api/issues/${issueId}/history`,{
+                    method: 'GET',
                     headers: {'Authorization': `Bearer ${token}`}
                 });
                 if(response.ok){

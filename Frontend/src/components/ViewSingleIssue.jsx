@@ -28,6 +28,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/issues/${issueId}`, {
+                method: 'GET',
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
@@ -86,6 +87,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/users/available`, {
+                method: 'GET',
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
@@ -174,6 +176,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/users/${assignedId}`, {
+                    method: 'GET',
                     headers: {'Authorization': `Bearer ${token}`}
                 });
 
@@ -208,6 +211,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/issues/statuses`, {
+                method: 'GET',
                 headers: {'Authorization': `Bearer ${token}`}
             });
 
