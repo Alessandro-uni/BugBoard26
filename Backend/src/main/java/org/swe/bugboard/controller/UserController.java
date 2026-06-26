@@ -21,9 +21,11 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    private static final String USER_ID_CLAIM = "userId";
+
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
-        Long userId = jwt.getClaim("userId");
+        Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserResponse response = userService.getUserById(userId);
 
         return ResponseEntity.ok(response);
@@ -33,7 +35,7 @@ public class UserController {
     public ResponseEntity<UserResponse> changePassword(@AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody ChangePasswordUserRequest changePasswordUserRequest) {
 
-        Long userId = jwt.getClaim("userId");
+        Long userId = jwt.getClaim(USER_ID_CLAIM);
         UserResponse response = userService.changeUserPassword(userId, changePasswordUserRequest);
 
         return ResponseEntity.ok(response);
