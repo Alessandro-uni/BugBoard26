@@ -54,10 +54,16 @@ public class IssueController {
         try (PrintWriter writer = response.getWriter()) {
             writer.println(getCSVHeader(settings.getDetailLevel()));
 
-            List<IssueDetailsResponse> issueList = issueService.getDetailedIssuesList(settings.getIssuePageRequest());
-            for (IssueDetailsResponse issue : issueList) {
-                writer.println(getCSVRow(issue, settings.getDetailLevel()));
+            try {
+                List<IssueDetailsResponse> issueList = issueService.getDetailedIssuesList(settings.getIssuePageRequest());
+                for (IssueDetailsResponse issue : issueList) {
+                    writer.println(getCSVRow(issue, settings.getDetailLevel()));
+                }
+            } catch (Exception e) {
+                System.err.println("Errore durante l'esportazione issue: ");
+                e.printStackTrace();
             }
+
         }
     }
 
