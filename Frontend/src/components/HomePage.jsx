@@ -42,6 +42,7 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
 
 function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], onNavigation}){
     // Sezione issues
+
     const [allIssues, setAllIssues] = useState([]);
     const [assignedIssues, setAssignedIssues] = useState([]);
     const [reportedIssues, setReportedIssues] = useState([]);
@@ -108,12 +109,10 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
     }, [currentUserId]);
 
     // Sezione notifiche
+
     const [notifications, setNotifications] = useState([]);
     const [showNotifications, setShowNotifications] = useState(false);
-    const removeNotification = (id) => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
-        // todo: chiama rimozione singola notifica
-    };
+    const [selectedNotificationId, setSelectedNotificationId] = useState(null);
 
     // Fetch notifiche
     useEffect(() => {
@@ -146,8 +145,64 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
     }, []);
 
     // Rimozione singola notifica
+    const removeNotification = (id) => {
+        setNotifications(prev => prev.filter(n => n.id !== id));
+    };
+
+    const handleRemoveNotification = async (e) => {
+        e.preventDefault();
+
+        if (!selectedNotificationId) {
+            return;
+        }
+
+        const token = sessionStorage.getItem('token');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/notification/read/${selectedNotificationId}`, {
+                method: 'DELETE',
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.ok) {
+                removeNotification(selectedNotificationId);
+                setSelectedNotificationId(null);
+            } else {
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
+            }
+
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:" , error);
+            alert('Errore: ' + error.message);
+        }
+    }
 
     // Rimozione tutte le notifiche
+
+    const handleRemoveAllNotifications = async (e) => {
+        e.preventDefault();
+
+        const token = sessionStorage.getItem('token');
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/notification/readAll`, {
+                method: 'DELETE',
+                headers: {'Authorization': `Bearer ${token}`}
+            });
+
+            if (response.ok) {
+                setNotifications([]);
+            } else {
+                const errorJson = await response.json();
+                alert("Errore: " + errorJson.message);
+            }
+
+        } catch (error) {
+            console.error("Errore nella chiamata al backend:" , error);
+            alert('Errore: ' + error.message);
+        }
+    }
 
     return (
         <div className="w-full mx-auto">
@@ -181,9 +236,11 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                                 Notifiche
                                             </h3>
                                         </div>
+
+                                        {/* Pulsante di chiusura e rimozione di tutte le notifiche */}
                                         <CustomButton
                                             variant="secondary"
-                                            onClick={() => {/* todo: Chiama rimozione tutte notifiche */}}
+                                            onClick={(e) => {handleRemoveAllNotifications(e)}}
                                         >
                                             segna tutte come lette
                                         </CustomButton>
@@ -203,7 +260,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                                             {notification.message}
                                                         </p>
                                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                                            {new Date(notification.time).toLocaleString()}
+                                                            {new Date(notification.date).toLocaleString()}
                                                         </p>
                                                     </div>
 
@@ -211,7 +268,8 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
-                                                            removeNotification(notification.id);
+                                                            setSelectedNotificationId(notification.id);
+                                                            handleRemoveNotification(e);
                                                         }}
                                                         className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400 hover:cursor-pointer"
                                                     >
