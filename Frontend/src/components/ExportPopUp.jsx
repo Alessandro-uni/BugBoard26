@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import {X, Download, Table, Loader2} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
-import {ReloadingBox} from "./ReloadingBox.jsx";
 
 function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
     const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +66,7 @@ function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
 
             {/* Overlay*/}
             <div
