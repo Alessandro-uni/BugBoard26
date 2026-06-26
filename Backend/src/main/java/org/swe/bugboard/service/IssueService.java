@@ -185,6 +185,7 @@ public class IssueService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<IssueDetailsResponse> getDetailedIssuesList(IssuePageRequest request) {
 
         if (request == null) {
