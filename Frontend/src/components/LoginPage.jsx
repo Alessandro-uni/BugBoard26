@@ -34,7 +34,7 @@ function LoginPage({onLogin}) {
 
             if (response.ok) {
                 const token = await response.json();
-                localStorage.setItem("authentication_token", token);
+                sessionStorage.setItem("authentication_token", token);
 
                 onLogin(token);
             } else {

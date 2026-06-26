@@ -52,7 +52,7 @@ function App() {
                 const permissions = Array.isArray(decoded.permissions) ? decoded.permissions : [];
 
                 // Salvataggio del token nel local storage
-                localStorage.setItem('token', userData.token);
+                sessionStorage.setItem('token', userData.token);
 
                 setUserId(id);
                 setUserName(username);
@@ -72,7 +72,7 @@ function App() {
         setIsMenuOpen(false);
 
         if (page === 'Esci') {
-            localStorage.removeItem('token');
+            sessionStorage.removeItem('token');
 
             setIsLoggedIn(false);
             setUserRole(null);

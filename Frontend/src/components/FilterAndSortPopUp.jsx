@@ -65,7 +65,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     // Fetch statuses
     useEffect(() => {
         const fetchStatuses = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/issues/statuses`, {
@@ -97,7 +97,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     // Fetch types
     useEffect(() => {
         const fetchTypes = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/issues/types`, {
@@ -129,7 +129,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     // Fetch tags
     useEffect(() => {
         const fetchTags = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/tags`, {
@@ -160,7 +160,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     // Fetch utenti che possono reportare issue
     useEffect(() => {
         const fetchReportingUsers = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/users/reporting`, {
@@ -192,7 +192,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     // Fetch utenti che possono ricevere issue
     useEffect(() => {
         const fetchAssignableUsers = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/users/assignable`, {

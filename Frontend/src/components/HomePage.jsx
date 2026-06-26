@@ -52,7 +52,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
     // Fetch issues
     useEffect(() => {
         const fetchIssueGroup = async (bodyParams) => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             const response = await fetch(`${API_BASE_URL}/api/issues/search`, {
                 method: 'POST',
                 headers: {
@@ -118,7 +118,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
     // Fetch notifiche
     useEffect(() => {
         const fetchNotifications = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/notification`, {

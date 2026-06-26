@@ -44,7 +44,7 @@ function ChangePassword({onLogout}) {
         setGenericError("");
         setIsLoading(true);
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/users/me/password`, {

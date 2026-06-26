@@ -10,7 +10,7 @@ function History({issueId, onClose}){
 
     useEffect(() => {
         const fetchHistory = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
             try{
                 const response = await fetch(`${API_BASE_URL}/api/issues/${issueId}/history`,{
                     headers: {'Authorization': `Bearer ${token}`}

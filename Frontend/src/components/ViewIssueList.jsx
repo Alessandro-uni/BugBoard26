@@ -35,7 +35,7 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
     useEffect(() => {
         const fetchIssues = async () => {
             setIsLoading(true);
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             const payload = {
                 pageInformation: {

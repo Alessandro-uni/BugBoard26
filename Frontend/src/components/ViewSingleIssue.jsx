@@ -18,7 +18,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     const fetchIssueDetails = useCallback(async () => {
         setIssueError(null);
         setIsIssueLoading(true);
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         if (!token) {
             setIssueError("Autenticazione assente");
@@ -76,7 +76,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     const fetchAvailableUsers = useCallback(async () => {
         setUsersError(null);
         setIsListUsersLoading(true);
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         if (!token) {
             setUsersError("Autenticazione assente");
@@ -128,7 +128,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     const handleAssignConfirm = async () => {
         if (!selectedUser) return;
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/issues/assign`, {
@@ -170,7 +170,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
             setIsUserLoading(true);
             setUserError(null);
 
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/users/${assignedId}`, {
@@ -204,7 +204,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
     // Fetch degli stati dal backend
     const fetchStatuses = useCallback(async () => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/issues/statuses`, {
@@ -239,7 +239,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     }, [allStatuses, issueData?.status?.name]);
 
     const handleStatusIssue = async () => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/issues/status`, {
@@ -269,7 +269,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     const [isClosedSuccess, setIsClosedSuccess] = useState(false);
 
     const handleCloseIssue = async () => {
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/issues/close`, {

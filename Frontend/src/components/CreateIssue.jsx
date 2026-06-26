@@ -15,7 +15,7 @@ function CreateIssue({onCancel, onIssueCreated}){
     // Fetch types
     useEffect(() => {
         const fetchTypes = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/issues/types`, {
@@ -47,7 +47,7 @@ function CreateIssue({onCancel, onIssueCreated}){
     // Fetch tags
     useEffect(() => {
         const fetchTags = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/tags`, {
@@ -111,7 +111,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             return;
         }
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/tags`, {
@@ -158,7 +158,7 @@ function CreateIssue({onCancel, onIssueCreated}){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         const formData = new FormData();
 

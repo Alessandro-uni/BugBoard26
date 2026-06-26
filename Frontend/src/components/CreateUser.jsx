@@ -15,7 +15,7 @@ function CreateUser({onCreateUser}) {
     // Fetch roles
     useEffect(() => {
         const fetchRoles = async () => {
-            const token = localStorage.getItem('token');
+            const token = sessionStorage.getItem('token');
 
             try {
                 const response = await fetch(`${API_BASE_URL}/api/users/roles`, {
@@ -76,7 +76,7 @@ function CreateUser({onCreateUser}) {
         setGenericError("");
         setIsLoading(true);
 
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/users`, {
