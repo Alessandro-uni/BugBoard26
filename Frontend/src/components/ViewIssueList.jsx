@@ -236,7 +236,12 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
                     setSortType(newSort);
                 }}
             />
-            <ExportPopUp isOpen={isExportPopUpOpen} onClose={() => setIsExportPopUpOpen(false)}/>
+            <ExportPopUp
+                isOpen={isExportPopUpOpen}
+                onClose={() => setIsExportPopUpOpen(false)}
+                curretFilters={bodyParams}
+                sortType={sortType}
+            />
         </div>
     );
 }
