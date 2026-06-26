@@ -91,7 +91,7 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimeto pw corrente */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Password corrente
                         </label>
                         <div className="relative">
@@ -125,7 +125,7 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimento nuova pw*/}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Nuova password
                         </label>
                         <div className="relative">
@@ -159,7 +159,7 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimento ripeti nuova pw*/}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Ripeti nuova password
                         </label>
                         <div className="relative">
