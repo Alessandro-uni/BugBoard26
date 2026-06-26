@@ -45,7 +45,7 @@ public class IssueService {
         IssueImage image = null;
 
         if (file != null && !file.isEmpty()) {
-            String extension = Objects.requireNonNull(file.getContentType()).substring(file.getContentType().lastIndexOf('/') + 1);
+            String extension = Objects.requireNonNull(file.getContentType()).substring(Objects.requireNonNull(file.getContentType()).lastIndexOf('/') + 1);
             String storedName = UUID.randomUUID() + "." + extension;
 
             try{
@@ -110,7 +110,6 @@ public class IssueService {
 
         Issue savedIssue = issueRepository.save(issue);
 
-        //todo: use observer pattern for these next parts
         if(newStatus.equals(IssueStatus.RESOLVED)){
             notificationService.createNotification(issue);
         }
