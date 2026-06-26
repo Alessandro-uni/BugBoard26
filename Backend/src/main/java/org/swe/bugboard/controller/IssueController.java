@@ -44,7 +44,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/export")
+    @PostMapping("/exportCSV")
     public void exportIssues(HttpServletResponse response,
                              @Valid @RequestBody ExportSettings settings) throws IOException {
 

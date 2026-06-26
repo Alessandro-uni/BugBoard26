@@ -5,7 +5,7 @@
 @sortType = "CREATION_DATE_ASCENDING"
 
 ###
-POST http://localhost:8080/api/issues/export
+POST http://localhost:8080/api/issues/exportCSV
 Content-Type: application/json
 
 {
