@@ -68,10 +68,10 @@ function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
 
-            {/* Overlay*/}
-            <div
+            {/* Overlay */}
+            <button
                 className="absolute inset-0 bg-black/50"
-                onClick={!isLoading ? onClose : undefined}
+                onClick={isLoading ? undefined : onClose}
             />
 
             <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md mx-4 p-6 animate-in fade-in zoom-in duration-200 border border-gray-200 dark:border-gray-700">
@@ -95,9 +95,9 @@ function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
                 <div className="space-y-3">
                     {/* Selezione dettaglio di esportazione */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Livello di dettaglio
-                        </label>
+                        </p>
                         <select
                             value={detailLevel}
                             onChange={(e) => setDetailLevel(e.target.value)}
