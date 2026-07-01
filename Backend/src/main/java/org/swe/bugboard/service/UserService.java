@@ -2,9 +2,11 @@ package org.swe.bugboard.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import org.swe.bugboard.dto.user.ChangePasswordUserRequest;
 import org.swe.bugboard.dto.user.SignUpUserRequest;
 import org.swe.bugboard.dto.user.UserResponse;
@@ -57,7 +59,7 @@ public class UserService {
         User oldUser = findUserOrThrow(userId);
 
         if (!passwordEncoder.matches(userPasswords.getCurrentRawPassword(), oldUser.getHashedPassword())) {
-            throw new IllegalArgumentException("La password corrente non è corretta");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La password corrente non è corretta");
         }
 
         oldUser.setHashedPassword(passwordEncoder.encode(userPasswords.getNewRawPassword()));
