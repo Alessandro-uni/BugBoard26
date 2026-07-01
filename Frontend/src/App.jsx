@@ -28,6 +28,7 @@ function App() {
     // Stato issue
     const [selectIssueId, setSelectIssueId] = useState(null);
 
+    // Gestione del tema
     useEffect(() => {
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
@@ -35,6 +36,19 @@ function App() {
             document.documentElement.classList.remove('dark');
         }
     }, [theme]);
+
+    // Chiusura sessione quando: viene ricaricata la pagina, ritorno alla pagina precedente, chiusura tab
+    useEffect(() => {
+        const deleteSessionOnExit = () => {
+            sessionStorage.removeItem('token');
+        };
+
+        window.addEventListener('beforeunload', deleteSessionOnExit);
+
+        return () => {
+            window.removeEventListener('beforeunload', deleteSessionOnExit);
+        }
+    }, []);
 
     // Funzioni per la gestione degli eventi
 
@@ -131,14 +145,14 @@ function App() {
                 return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{isAssignable: true}} key={currentPage} pageName={currentPage}/>;
 
             case 'Aggiungi nuovo utente':
-                return <CreateUser onCreateUser={handleNavigation}/>;
+                return <CreateUser onCreateUser={() => handleNavigation('HomePage')}/>;
 
             case 'Cambia password':
                 return <ChangePassword onLogout={handleNavigation}/>;
 
             case 'Issue selezionata':
                 return <ViewSingleIssue issueId={selectIssueId} userPermissions={userPermissions} userId={userId} onBack={handleBack}/>;
-            // todo: rivedi il default quando viene utilizzato
+
             default:
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userPermissions={userPermissions} onNavigation={handleNavigation}/>;
         }
