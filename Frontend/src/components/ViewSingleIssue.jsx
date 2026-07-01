@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
-import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX, Loader2} from "lucide-react";
+import {Paperclip, Tag, UserPlus, Search, Check, Info, AlertCircle, BookmarkX} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
 import History from "./History.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
@@ -466,9 +466,9 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                         <div className="space-y-6">
                             {/* Titolo */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
+                                <p className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
                                     Titolo
-                                </label>
+                                </p>
                                 <div className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-200 font-medium">
                                     {issueData?.title || "Nessun titolo"}
                                 </div>
@@ -476,10 +476,10 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
                             {/* Descrizione */}
                             <div>
-                                <label className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
+                                <p className="block text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 uppercase tracking-wider">
                                     Descrizione
-                                </label>
-                                <div className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-200 resize-none break-words">
+                                </p>
+                                <div className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg text-gray-700 dark:text-gray-200 resize-none wrap-break-word">
                                      {issueData?.description || "Nessuna descrizione"}
                                 </div>
                             </div>
@@ -522,7 +522,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
             {/* POPUP ASSEGNA ISSUE */}
             {showAssignPopup && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
 
                         {isAssignSuccess ? (

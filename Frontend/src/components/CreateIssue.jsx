@@ -279,9 +279,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                             />
 
                             {/* Allega file */}
-                            <label className="block text-sm pt-3 font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            <p className="block text-sm pt-3 font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Allega immagine
-                            </label>
+                            </p>
                             {attachment.length < 1 && (
                             <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
                                 <input
@@ -325,7 +325,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                         <div className="flex flex-col md:flex-row gap-6">
                             {/* Sezione tag */}
                             <div className="flex-1 bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Tag</label>
+                                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                    Tag
+                                </p>
 
                                 {/* Input per la ricerca/creazione dei tag */}
                                 <div className="mb-4">
@@ -386,9 +388,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                             {/* Priorità */}
                             <div className="w-full md:w-25 h-25 bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    <p className="block text-sm font-medium text-gray-900 dark:text-gray-300">
                                         Priorità
-                                    </label>
+                                    </p>
                                 </div>
 
                                 {/* Switch button todo: rivedere il funzionamento! */}

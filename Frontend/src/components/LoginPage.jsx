@@ -61,7 +61,9 @@ function LoginPage({onLogin}) {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Inserimento username */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Mail</label>
+                        <p className="block text-sm font-medium text-gray-700 mb-2">
+                            Mail
+                        </p>
                         <div className="relative">
                             <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
                                 className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
@@ -73,7 +75,9 @@ function LoginPage({onLogin}) {
 
                     {/* Inserimento pw */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <p className="block text-sm font-medium text-gray-700 mb-2">
+                            Password
+                        </p>
                         <div className="relative">
                             <input type={showPassword ? "text" : "password"}
                                    value={password}
