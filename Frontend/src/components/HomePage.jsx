@@ -250,7 +250,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                             <div className="p-4 text-center text-gray-500 dark:text-gray-400 text-sm">Nessuna notifica</div>
                                         ) : (
                                             notifications.map((notification) => (
-                                                <button
+                                                <div
                                                     key={notification.id}
                                                     onClick={() => onViewIssue(notification.idIssue)}
                                                     className="p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-start justify-between gap-3 hover:cursor-pointer"
@@ -275,7 +275,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                                     >
                                                         <X size={16}/>
                                                     </button>
-                                                </button>
+                                                </div>
                                             ))
                                         )}
                                     </div>
