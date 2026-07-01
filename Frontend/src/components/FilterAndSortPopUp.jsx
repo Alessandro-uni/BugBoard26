@@ -311,7 +311,7 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
 
             <div className="relative flex flex-col gap-8 bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-2xl mx-4 px-6 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200 border border-gray-200 dark:border-gray-700">
                 {/* Header principale */}
