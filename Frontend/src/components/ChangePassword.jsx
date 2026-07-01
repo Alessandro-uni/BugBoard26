@@ -4,22 +4,37 @@ import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
 
 function ChangePassword({onLogout}) {
+    // Stati per i campi modificabili dall'utente
     const [currentRawPassword, setCurrentRawPassword] = useState('');
     const [newRawPassword, setNewRawPassword] = useState('');
     const [repeatNewRawPassword, setRepeatNewRawPassword] = useState('');
 
+    // Stati per condizioni del form
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showRepeatNewPassword, setShowRepeatNewPassword] = useState(false);
     const changeCurrentPasswordVisibility = () => setShowCurrentPassword(!showCurrentPassword);
     const changeNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
     const changeRepeatNewPasswordVisibility = () => setShowRepeatNewPassword(!showRepeatNewPassword);
-    const passwordsMatch = repeatNewRawPassword.length > 0 && newRawPassword === repeatNewRawPassword;
-    const passwordsDontMatch = repeatNewRawPassword.length > 0 && newRawPassword !== repeatNewRawPassword;
 
     // Stati per gestire gli errori
     const [errors, setErrors] = useState({});
     const [genericError, setGenericError] = useState('');
+
+    // Stati per controllo errori
+    const passwordsMatch = repeatNewRawPassword.length > 0 && newRawPassword === repeatNewRawPassword;
+    const passwordsDontMatch = repeatNewRawPassword.length > 0 && newRawPassword !== repeatNewRawPassword;
+    const hasRepeatNewRawPasswordFormError = errors.repeatNewRawPassword || errors.repeatNewPasswordMatch;
+
+    // Classi per input di repeat new raw password
+    const repeatNewRawPasswordBaseClasses = "block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-white";
+    let repeatNewRawPasswordBorderClasses = "border-gray-300 dark:border-gray-600 focus:ring-gray-300 dark:focus:ring-gray-600";
+
+    if (hasRepeatNewRawPasswordFormError || passwordsDontMatch) {
+        repeatNewRawPasswordBorderClasses = "border-red-500 focus:ring-red-500";
+    } else if (passwordsMatch) {
+        repeatNewRawPasswordBorderClasses = "border-green-500 focus:ring-green-500";
+    }
 
     // Funzione che rimuove l'errore in un campo, quando l'utente inizia a scriverci dentro
     const clearError = (fieldName) => {
@@ -91,9 +106,9 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimeto pw corrente */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Password corrente
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type={showCurrentPassword ? "text" : "password"}
                                    value={currentRawPassword}
@@ -119,15 +134,21 @@ function ChangePassword({onLogout}) {
                         </div>
 
                         {/* Mostra errore relativo a password */}
-                        {errors.currentRawPassword && <p className="mt-2 text-sm text-red-500">{errors.currentRawPassword}</p>}
+                        {errors.currentRawPassword && (
+                            <ul className="mt-2 text-sm text-red-500 list-disc list-inside">
+                                {errors.currentRawPassword.map((error) => (
+                                    <li key={error}>{error}</li>
+                                ))}
+                            </ul>
+                        )}
 
                     </div>
 
                     {/* Inserimento nuova pw*/}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Nuova password
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type={showNewPassword ? "text" : "password"}
                                    value={newRawPassword}
@@ -153,15 +174,21 @@ function ChangePassword({onLogout}) {
                         </div>
 
                         {/* Mostra errore relativo a password */}
-                        {errors.newRawPassword && <p className="mt-2 text-sm text-red-500">{errors.newRawPassword}</p>}
+                        {errors.newRawPassword && (
+                            <ul className="mt-2 text-sm text-red-500 list-disc list-inside">
+                                {errors.newRawPassword.map((error) => (
+                                    <li key={error}>{error}</li>
+                                ))}
+                            </ul>
+                        )}
 
                     </div>
 
                     {/* Inserimento ripeti nuova pw*/}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Ripeti nuova password
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type={showRepeatNewPassword ? "text" : "password"}
                                    value={repeatNewRawPassword}
@@ -170,15 +197,7 @@ function ChangePassword({onLogout}) {
                                        clearError('repeatNewRawPassword');
                                        clearError('repeatNewPasswordMatch');
                                    }}
-                                   className={`block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-white ${
-                                       (errors.repeatNewRawPassword || errors.repeatNewPasswordMatch)
-                                           ? 'border-red-500 focus:ring-red-500'
-                                           : repeatNewRawPassword.length > 0
-                                               ? newRawPassword === repeatNewRawPassword
-                                                   ? 'border-green-500 focus:ring-green-500'
-                                                   : 'border-red-500 focus:ring-red-500'
-                                               : 'border-gray-300 dark:border-gray-600 focus:ring-gray-300 dark:focus:ring-gray-500'
-                                   }`}
+                                   className={`${repeatNewRawPasswordBaseClasses} ${repeatNewRawPasswordBorderClasses}`}
                                    placeholder="Conferma la nuova password"
                                    required
                             />
