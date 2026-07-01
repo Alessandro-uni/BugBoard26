@@ -42,16 +42,30 @@ function CreateUser({onCreateUser}) {
         fetchRoles();
     }, []);
 
+    // Stati per condizioni del form
     const [showPassword, setShowPassword] = useState(false);
     const [showRepeatPassword, setShowRepeatPassword] = useState(false);
     const changePasswordVisibility = () => setShowPassword(!showPassword);
     const changeRepeatPasswordVisibility = () => setShowRepeatPassword(!showRepeatPassword);
-    const passwordsMatch = repeatRawPassword.length > 0 && rawPassword === repeatRawPassword;
-    const passwordsDontMatch = repeatRawPassword.length > 0 && rawPassword !== repeatRawPassword;
 
     // Stati per gestire gli errori
     const [errors, setErrors] = useState({});
     const [genericError, setGenericError] = useState('');
+
+    // Stati per controllo errori
+    const passwordsMatch = repeatRawPassword.length > 0 && rawPassword === repeatRawPassword;
+    const passwordsDontMatch = repeatRawPassword.length > 0 && rawPassword !== repeatRawPassword;
+    const hasRepeatRawPasswordFormError = errors.repeatRawPassword || errors.repeatNewPasswordMatch;
+
+    // Classi per input di repeat raw password
+    const repeatRawPasswordBaseClasses = "block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 bg-white dark:bg-gray-900 text-gray-900 dark:text-white";
+    let repeatRawPasswordBorderClasses = "border-gray-300 dark:border-gray-600 focus:ring-gray-300 dark:focus:ring-gray-600";
+
+    if (hasRepeatRawPasswordFormError || passwordsDontMatch) {
+        repeatRawPasswordBorderClasses = "border-red-500 focus:ring-red-500";
+    } else if (passwordsMatch) {
+        repeatRawPasswordBorderClasses = "border-green-500 focus:ring-green-500";
+    }
 
     // Funzione che rimuove l'errore in un campo, quando l'utente inizia a scriverci dentro
     const clearError = (fieldName) => {
@@ -124,9 +138,9 @@ function CreateUser({onCreateUser}) {
 
                     {/* Username */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Username
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type="text"
                                    value={username}
@@ -149,9 +163,9 @@ function CreateUser({onCreateUser}) {
 
                     {/* Mail */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Mail
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type="email"
                                    value={mail}
@@ -174,9 +188,9 @@ function CreateUser({onCreateUser}) {
 
                     {/* Password */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Password
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type={showPassword ? "text" : "password"}
                                    value={rawPassword}
@@ -202,22 +216,20 @@ function CreateUser({onCreateUser}) {
                         </div>
 
                         {/* Mostra errore relativo a password */}
-                        {errors.rawPassword && errors.rawPassword.length > 0 && (
-                            <div className="mt-2">
-                                {errors.rawPassword.map((errorMessage, index) => (
-                                    <p key={index} className="text-sm text-red-500">
-                                        {errorMessage}
-                                    </p>
+                        {errors.rawPassword && (
+                            <ul className="mt-2 text-sm text-red-500 list-disc list-inside">
+                                {errors.rawPassword.map((error) => (
+                                    <li key={error}>{error}</li>
                                 ))}
-                            </div>
+                            </ul>
                         )}
                     </div>
 
                     {/* Ripeti password */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ripeti password
-                        </label>
+                        </p>
                         <div className="relative">
                             <input type={showRepeatPassword ? "text" : "password"}
                                    value={repeatRawPassword}
@@ -226,15 +238,7 @@ function CreateUser({onCreateUser}) {
                                        clearError('repeatRawPassword');
                                        clearError('repeatPasswordMatch');
                                    }}
-                                   className={`block w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent transition-colors duration-200 ${
-                                       (errors.repeatRawPassword || errors.repeatPasswordMatch)
-                                           ? 'border-red-500 focus:ring-red-500'
-                                           : repeatRawPassword.length > 0
-                                               ? rawPassword === repeatRawPassword
-                                                   ? 'border-green-500 focus:ring-green-500'
-                                                   : 'border-red-500 focus:ring-red-500'
-                                               : 'border-gray-300 focus:ring-gray-300'
-                                   }`}
+                                   className={`${repeatRawPasswordBaseClasses} ${repeatRawPasswordBorderClasses}`}
                                    placeholder="Conferma la password"
                                    required
                             />
@@ -250,26 +254,24 @@ function CreateUser({onCreateUser}) {
                         </div>
 
                         {/* Feedback testuale */}
-                        <>
-                            {passwordsDontMatch && (
-                                <p className="mt-2 text-sm text-red-500 font-medium">
-                                    Le password non coincidono
-                                </p>
-                            )}
-                            {passwordsMatch && (
-                                <p className="mt-2 text-sm text-green-500 font-medium">
-                                    Le password coincidono
-                                </p>
-                            )}
-                        </>
+                        {passwordsDontMatch && (
+                            <p className="mt-2 text-sm text-red-500 font-medium">
+                                Le password non coincidono
+                            </p>
+                        )}
+                        {passwordsMatch && (
+                            <p className="mt-2 text-sm text-green-500 font-medium">
+                                Le password coincidono
+                            </p>
+                        )}
 
                     </div>
 
                     {/* Ruolo */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ruolo
-                        </label>
+                        </p>
                         <div className="relative">
                             <select
                                 id="type"
