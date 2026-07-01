@@ -30,7 +30,6 @@ function History({issueId, onClose}){
         fetchHistory();
     }, [issueId]);
 
-
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-lg mx-4 max-h-[80vh] flex flex-col border border-gray-200 dark:border-gray-700">
@@ -42,11 +41,13 @@ function History({issueId, onClose}){
                 <div className="overflow-y-auto flex-1 space-y-3 pr-2"
                     style={{minHeight: '200px',maxHeight: '400px',scrollbarWidth: 'thin'}}
                 >
-                    {isLoading ? (
+                    {isLoading && (
                         <ReloadingBox description='Caricamento history in corso...'></ReloadingBox>
-                    ) : history.length > 0 ? (
-                        history.map((event, index) => (
-                            <div key={index} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600 text-sm hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
+                    )}
+
+                    {!isLoading && history.length > 0 ? (
+                        history.map((event) => (
+                            <div key={event.date} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-100 dark:border-gray-600 text-sm hover:border-blue-400 dark:hover:border-blue-500 transition-colors">
 
                                 <p className="text-gray-600 dark:text-gray-300">
                                     <span className="font-medium text-gray-900 dark:text-white">{event.mainActorUsername}</span>
