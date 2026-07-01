@@ -6,6 +6,7 @@
 
 ###
 POST http://localhost:8080/api/issues/exportCSV
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {

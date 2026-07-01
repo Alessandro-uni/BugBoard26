@@ -14,7 +14,6 @@ run issueCreation.http
 run issueFiltering.http
 
 ### Check if I have login
-@admin_auth_token = variable value
 GET http://localhost:8080/api/users/me
 Authorization: Bearer {{admin_auth_token}}
 
@@ -34,6 +33,7 @@ Content-Type: application/json
 
 ### View all issues
 GET http://localhost:8080/api/issues
+Authorization: Bearer {{admin_auth_token}}
 
 ### Close "duplicated" issue
 PUT http://localhost:8080/api/issues/close
@@ -61,3 +61,4 @@ Content-Type: application/json
 ### View issue history
 @issueId = 1
 GET http://localhost:8080/api/issues/{{issueId}}/history
+Authorization: Bearer {{admin_auth_token}}

@@ -5,6 +5,7 @@
 ### Get specific Issue in its entirety
 @id = 1
 GET http://localhost:8080/api/issues/{{id}}
+Authorization: Bearer {{admin_auth_token}}
 
 ###
 #Useful variables for filters
@@ -14,6 +15,7 @@ GET http://localhost:8080/api/issues/{{id}}
 
 ### F1: Filter by type
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -31,6 +33,7 @@ Content-Type: application/json
 
 ### F2: Filter by status
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -41,6 +44,7 @@ Content-Type: application/json
 
 ### F3: Filter by priority
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -51,6 +55,7 @@ Content-Type: application/json
 
 ### F3: Filter by reporting user
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -62,6 +67,7 @@ Content-Type: application/json
 ### F4: Filter by assigned status (i.e. is the issue assigned to a user or not)
 # This filter is incompatible with F5
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -73,6 +79,7 @@ Content-Type: application/json
 ### F5: Filter by specific assigned user
 # This filter is incompatible with F4
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -83,6 +90,7 @@ Content-Type: application/json
 
 ### F6: Filter by presence of an image
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -94,6 +102,7 @@ Content-Type: application/json
 ### F7: Filter by presence of tags
 # This filter is not compatible with F8
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -105,6 +114,7 @@ Content-Type: application/json
 ### F8: Filter by set of tags
 # This filter is not compatible with F7
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -117,6 +127,7 @@ Content-Type: application/json
 #Use with F10 to create a creation date range: end date should be after start date
 #Use T00:00:00 for the start date to include entire day
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -129,6 +140,7 @@ Content-Type: application/json
 #Use with F9 to create a creation date range: end date should be after start date
 #Use T23:59:59 for the end date to include entire day
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -141,6 +153,7 @@ Content-Type: application/json
 #Use with F12 to create a last modified date range: end date should be after start date
 #Use T00:00:00 for the start date to include entire day
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -153,6 +166,7 @@ Content-Type: application/json
 #Use with F11 to create a last modified date range: end date should be after start date
 #Use T23:59:59 for the end date to include entire day
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -163,6 +177,7 @@ Content-Type: application/json
 
 ### F13: No filters applied
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
@@ -170,6 +185,7 @@ Content-Type: application/json
 
 ### F14: (Almost) All filters applied
 POST http://localhost:8080/api/issues/search
+Authorization: Bearer {{admin_auth_token}}
 Content-Type: application/json
 
 {
