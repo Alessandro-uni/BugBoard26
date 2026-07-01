@@ -90,7 +90,7 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER', us
                             </CustomButton>
 
                             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Menu</h1>
-                            <p className="text-xs text-blue-900 mt-1 dark:text-blue-300 mt-1">{userRole}</p>
+                            <p className="text-xs text-blue-900 mt-1 dark:text-blue-300">{userRole}</p>
                         </div>
 
                         {/* Navigazione */}
