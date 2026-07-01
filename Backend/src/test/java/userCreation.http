@@ -1,4 +1,4 @@
-### Admin creation
+### Admin creation (should fail since it already exists)
 POST http://localhost:8080/api/users
 Content-Type: application/json
 
