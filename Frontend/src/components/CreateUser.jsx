@@ -138,21 +138,23 @@ function CreateUser({onCreateUser}) {
 
                     {/* Username */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Username
-                        </p>
+                        </label>
                         <div className="relative">
-                            <input type="text"
-                                   value={username}
-                                   onChange={(e) => {
-                                       setUsername(e.target.value);
-                                       clearError('username');
-                                   }}
-                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                                       errors.username ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-                                   }`}
-                                   placeholder="Inserisci l'username"
-                                   required
+                            <input
+                                id="username"
+                                type="text"
+                                value={username}
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                    clearError('username');
+                                }}
+                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                    errors.username ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                                }`}
+                                placeholder="Inserisci l'username"
+                                required
                             />
                         </div>
 
@@ -163,21 +165,23 @@ function CreateUser({onCreateUser}) {
 
                     {/* Mail */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor="mail" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Mail
-                        </p>
+                        </label>
                         <div className="relative">
-                            <input type="email"
-                                   value={mail}
-                                   onChange={(e) => {
-                                       setMail((e.target.value).trim());
-                                       clearError('mail');
-                                   }}
-                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                                       errors.mail ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-                                   }`}
-                                   placeholder="Inserisci la mail"
-                                   required
+                            <input
+                                id="mail"
+                                type="email"
+                                value={mail}
+                                onChange={(e) => {
+                                    setMail((e.target.value).trim());
+                                    clearError('mail');
+                                }}
+                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                    errors.mail ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                                }`}
+                                placeholder="Inserisci la mail"
+                                required
                             />
                         </div>
 
@@ -188,21 +192,23 @@ function CreateUser({onCreateUser}) {
 
                     {/* Password */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor="rawPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Password
-                        </p>
+                        </label>
                         <div className="relative">
-                            <input type={showPassword ? "text" : "password"}
-                                   value={rawPassword}
-                                   onChange={(e) => {
-                                       setRawPassword(e.target.value);
-                                       clearError('rawPassword');
-                                   }}
-                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
-                                       errors.rawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-                                   }`}
-                                   placeholder="Inserisci la password"
-                                   required
+                            <input
+                                id="rawPassword"
+                                type={showPassword ? "text" : "password"}
+                                value={rawPassword}
+                                onChange={(e) => {
+                                    setRawPassword(e.target.value);
+                                    clearError('rawPassword');
+                                }}
+                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors ${
+                                    errors.rawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
+                                }`}
+                                placeholder="Inserisci la password"
+                                required
                             />
 
                             {/* Pulsante occhio */}
@@ -227,20 +233,22 @@ function CreateUser({onCreateUser}) {
 
                     {/* Ripeti password */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor={repeatRawPassword} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ripeti password
-                        </p>
+                        </label>
                         <div className="relative">
-                            <input type={showRepeatPassword ? "text" : "password"}
-                                   value={repeatRawPassword}
-                                   onChange={(e) => {
-                                       setRepeatRawPassword(e.target.value);
-                                       clearError('repeatRawPassword');
-                                       clearError('repeatPasswordMatch');
-                                   }}
-                                   className={`${repeatRawPasswordBaseClasses} ${repeatRawPasswordBorderClasses}`}
-                                   placeholder="Conferma la password"
-                                   required
+                            <input
+                                id="repeatRawPassword"
+                                type={showRepeatPassword ? "text" : "password"}
+                                value={repeatRawPassword}
+                                onChange={(e) => {
+                                    setRepeatRawPassword(e.target.value);
+                                    clearError('repeatRawPassword');
+                                    clearError('repeatPasswordMatch');
+                                }}
+                                className={`${repeatRawPasswordBaseClasses} ${repeatRawPasswordBorderClasses}`}
+                                placeholder="Conferma la password"
+                                required
                             />
 
                             {/* Pulsante occhio */}
@@ -269,12 +277,12 @@ function CreateUser({onCreateUser}) {
 
                     {/* Ruolo */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor="role" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Ruolo
-                        </p>
+                        </label>
                         <div className="relative">
                             <select
-                                id="type"
+                                id="role"
                                 value={role}
                                 onChange={(e) => {
                                     setRole(e.target.value);
