@@ -138,9 +138,12 @@ const FilterAssignableUsers = ({availableAssignableUsers, selectedFilters, setSe
 
                 {/* Checkbox (utente non assegnato) */}
                 <div className="flex items-center gap-2 mb-2">
+                    <label htmlFor="noAssignedUser" className="text-sm text-gray-600 select-none dark:text-gray-300">
+                        Senza utente
+                    </label>
                     <input
-                        type="checkbox"
                         id="noAssignedUser"
+                        type="checkbox"
                         disabled={isAssignmentLocked}
                         checked={isAssigned === false || isAssignable === true}
                         onChange={(e) => {
@@ -153,9 +156,6 @@ const FilterAssignableUsers = ({availableAssignableUsers, selectedFilters, setSe
                         }}
                         className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                     />
-                    <label htmlFor="noAssignedUser" className="text-sm text-gray-600 select-none dark:text-gray-300">
-                        Senza utente
-                    </label>
                 </div>
             </div>
 
@@ -191,15 +191,18 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
     return (
         <div>
             <div className="flex items-center justify-between">
-                <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                     Tag
-                </label>
+                </p>
 
                 {/* Checkbox (nessun tag assegnato) */}
                 <div className="flex items-center gap-2 mb-2">
+                    <label htmlFor="noTags" className="text-sm text-gray-600 cursor-pointer select-none dark:text-gray-300">
+                        Senza tag
+                    </label>
                     <input
-                        type="checkbox"
                         id="noTags"
+                        type="checkbox"
                         checked={isTagged === false}
                         onChange={(e) => {
                             const isChecked = e.target.checked;
@@ -211,9 +214,6 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
                         }}
                         className="cursor-pointer text-blue-600 focus:ring-blue-500 rounded"
                     />
-                    <label htmlFor="noTags" className="text-sm text-gray-600 cursor-pointer select-none dark:text-gray-300">
-                        Senza tag
-                    </label>
                 </div>
             </div>
 
@@ -236,7 +236,7 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
                             >
                                 <input
                                     type="checkbox"
-                                    id="tags"
+                                    name="tags"
                                     value={tag}
                                     checked={isSelected}
                                     onChange={handleChange}
@@ -247,7 +247,6 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
                         );
                     })}
                 </div>
-
             )}
         </div>
     );
@@ -284,9 +283,9 @@ const FilterDates = ({title, startId, endId, selectedStartValue, selectedEndValu
                     Da:
                 </label>
                 <input
+                    id={startId}
                     type="date"
                     max={selectedEndValue ? selectedEndValue.split('T')[0] : undefined}
-                    id={startId}
                     value={selectedStartValue ? selectedStartValue.split('T')[0] : ""}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark "
@@ -297,9 +296,9 @@ const FilterDates = ({title, startId, endId, selectedStartValue, selectedEndValu
                     A:
                 </label>
                 <input
+                    id={endId}
                     type="date"
                     min={selectedStartValue ? selectedStartValue.split('T')[0] : undefined}
-                    id={endId}
                     value={selectedEndValue ? selectedEndValue.split('T')[0] : ""}
                     onChange={handleChange}
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white scheme-light dark:scheme-dark"
@@ -590,11 +589,11 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
                                 </div>
 
                                 <div>
-                                    <label htmlFor="sortOrder" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    <label htmlFor="order" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                         Ordine
                                     </label>
                                     <select
-                                        id="sortOrder"
+                                        id="order"
                                         value={order}
                                         onChange={(e) => setOrder(e.target.value)}
                                         className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
