@@ -106,21 +106,23 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimeto pw corrente */}
                     <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Password corrente
                         </label>
                         <div className="relative">
-                            <input type={showCurrentPassword ? "text" : "password"}
-                                   value={currentRawPassword}
-                                   onChange={(e) => {
-                                       setCurrentRawPassword(e.target.value);
-                                       clearError('currentRawPassword')
-                                   }}
-                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-gray-900 text-gray-900 dark:text-white ${
-                                       errors.currentRawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                                   }`}
-                                   placeholder="Inserisci la tua password corrente"
-                                   required
+                            <input
+                                id="currentPassword"
+                                type={showCurrentPassword ? "text" : "password"}
+                                value={currentRawPassword}
+                                onChange={(e) => {
+                                    setCurrentRawPassword(e.target.value);
+                                    clearError('currentRawPassword')
+                                }}
+                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-gray-900 text-gray-900 dark:text-white ${
+                                    errors.currentRawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                                }`}
+                                placeholder="Inserisci la tua password corrente"
+                                required
                             />
 
                             {/* Pulsante occhio */}
@@ -150,17 +152,19 @@ function ChangePassword({onLogout}) {
                             Nuova password
                         </label>
                         <div className="relative">
-                            <input type={showNewPassword ? "text" : "password"}
-                                   value={newRawPassword}
-                                   onChange={(e) => {
-                                       setNewRawPassword(e.target.value);
-                                       clearError('newRawPassword');
-                                   }}
-                                   className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-gray-900 text-gray-900 dark:text-white ${
-                                       errors.newRawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
-                                   }`}
-                                   placeholder="Inserisci la nuova password"
-                                   required
+                            <input
+                                id="newPassword"
+                                type={showNewPassword ? "text" : "password"}
+                                value={newRawPassword}
+                                onChange={(e) => {
+                                    setNewRawPassword(e.target.value);
+                                    clearError('newRawPassword');
+                                }}
+                                className={`block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-gray-900 text-gray-900 dark:text-white ${
+                                    errors.newRawPassword ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
+                                }`}
+                                placeholder="Inserisci la nuova password"
+                                required
                             />
 
                             {/* Pulsante occhio */}
@@ -190,16 +194,18 @@ function ChangePassword({onLogout}) {
                             Ripeti nuova password
                         </label>
                         <div className="relative">
-                            <input type={showRepeatNewPassword ? "text" : "password"}
-                                   value={repeatNewRawPassword}
-                                   onChange={(e) => {
-                                       setRepeatNewRawPassword(e.target.value);
-                                       clearError('repeatNewRawPassword');
-                                       clearError('repeatNewPasswordMatch');
-                                   }}
-                                   className={`${repeatNewRawPasswordBaseClasses} ${repeatNewRawPasswordBorderClasses}`}
-                                   placeholder="Conferma la nuova password"
-                                   required
+                            <input
+                                id="repeatNewPassword"
+                                type={showRepeatNewPassword ? "text" : "password"}
+                                value={repeatNewRawPassword}
+                                onChange={(e) => {
+                                    setRepeatNewRawPassword(e.target.value);
+                                    clearError('repeatNewRawPassword');
+                                    clearError('repeatNewPasswordMatch');
+                                }}
+                                className={`${repeatNewRawPasswordBaseClasses} ${repeatNewRawPasswordBorderClasses}`}
+                                placeholder="Conferma la nuova password"
+                                required
                             />
 
                             {/* Pulsante occhio */}
