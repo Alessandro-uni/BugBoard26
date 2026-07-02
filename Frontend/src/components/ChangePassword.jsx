@@ -106,12 +106,12 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimeto pw corrente */}
                     <div>
-                        <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="currentRawPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Password corrente
                         </label>
                         <div className="relative">
                             <input
-                                id="currentPassword"
+                                id="currentRawPassword"
                                 type={showCurrentPassword ? "text" : "password"}
                                 value={currentRawPassword}
                                 onChange={(e) => {
@@ -148,12 +148,12 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimento nuova pw*/}
                     <div>
-                        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="newRawPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Nuova password
                         </label>
                         <div className="relative">
                             <input
-                                id="newPassword"
+                                id="newRawPassword"
                                 type={showNewPassword ? "text" : "password"}
                                 value={newRawPassword}
                                 onChange={(e) => {
@@ -190,12 +190,12 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimento ripeti nuova pw*/}
                     <div>
-                        <label htmlFor="repeatNewPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="repeatNewRawPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Ripeti nuova password
                         </label>
                         <div className="relative">
                             <input
-                                id="repeatNewPassword"
+                                id="repeatNewRawPassword"
                                 type={showRepeatNewPassword ? "text" : "password"}
                                 value={repeatNewRawPassword}
                                 onChange={(e) => {
