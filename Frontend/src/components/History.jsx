@@ -27,7 +27,7 @@ function History({issueId, onClose}){
             }
         }
 
-        fetchHistory();
+        void fetchHistory();
     }, [issueId]);
 
     return (

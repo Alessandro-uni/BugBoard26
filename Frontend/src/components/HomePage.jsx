@@ -104,7 +104,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
         };
 
         if (currentUserId) {
-            fetchAllData();
+            void fetchAllData();
         }
     }, [currentUserId]);
 
