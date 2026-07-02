@@ -39,7 +39,7 @@ function CreateUser({onCreateUser}) {
             }
         };
 
-        fetchRoles();
+        void fetchRoles();
     }, []);
 
     // Stati per condizioni del form
