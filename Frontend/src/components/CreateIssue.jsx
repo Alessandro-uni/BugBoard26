@@ -284,18 +284,18 @@ function CreateIssue({onCancel, onIssueCreated}){
                             </p>
                             {attachment.length < 1 && (
                             <div className="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
-                                <input
-                                    type="file"
-                                    id="file-upload"
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={handleFileUpload}
-                                />
-                                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
+                                <label htmlFor="file" className="cursor-pointer flex flex-col items-center">
                                     <Paperclip className="size-6 text-gray-400 dark:text-gray-500 mb-2"/>
                                     <span className="text-sm font-medium text-gray-700 dark:text-gray-500">Clicca per caricare un'immagine</span>
                                     <span className="text-xs text-gray-500 mt-1">JPG, PNG, GIF, WebP</span>
                                 </label>
+                                <input
+                                    id="file"
+                                    type="file"
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleFileUpload}
+                                />
                             </div>
                             )}
 
@@ -322,13 +322,14 @@ function CreateIssue({onCancel, onIssueCreated}){
                         <div className="flex flex-col md:flex-row gap-6">
                             {/* Sezione tag */}
                             <div className="flex-1 bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                                <label htmlFor="tag-search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                <label htmlFor="tag" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                     Tag
                                 </label>
 
                                 {/* Input per la ricerca/creazione dei tag */}
                                 <div className="mb-4">
                                     <input
+                                        id="tag"
                                         type="text"
                                         value={inputTagValue}
                                         onChange={(e) => setInputTagValue(e.target.value)}
