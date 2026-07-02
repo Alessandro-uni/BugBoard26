@@ -39,7 +39,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             }
         };
 
-        fetchTypes();
+        void fetchTypes();
     }, []);
 
     const [availableTags, setAvailableTags] = useState([]);
@@ -70,7 +70,7 @@ function CreateIssue({onCancel, onIssueCreated}){
             }
         };
 
-        fetchTags();
+        void fetchTags();
     }, []);
 
     const [inputTagValue, setInputTagValue] = useState('');
@@ -250,7 +250,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     id="type"
                                     value={type}
                                     onChange={(e) => setType(e.target.value)}
-                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm"
+                                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm hover:cursor-pointer"
                                     required
                                 >
                                     <option value="" disabled hidden>Seleziona tipo</option>
@@ -278,7 +278,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                 required
                             />
 
-                            {/* Allega file */}
+                            {/* Allega file (immagine) */}
                             <p className="block text-sm pt-3 font-medium text-gray-700 dark:text-gray-300 mb-2">
                                 Allega immagine
                             </p>
@@ -291,11 +291,8 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     accept="image/*"
                                     onChange={handleFileUpload}
                                 />
-                                <label
-                                    htmlFor="file-upload"
-                                    className="cursor-pointer flex flex-col items-center"
-                                >
-                                    <Paperclip className="size-6 text-gray-400 dark:text-gray-500 mb-2" />
+                                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
+                                    <Paperclip className="size-6 text-gray-400 dark:text-gray-500 mb-2"/>
                                     <span className="text-sm font-medium text-gray-700 dark:text-gray-500">Clicca per caricare un'immagine</span>
                                     <span className="text-xs text-gray-500 mt-1">JPG, PNG, GIF, WebP</span>
                                 </label>
@@ -325,9 +322,9 @@ function CreateIssue({onCancel, onIssueCreated}){
                         <div className="flex flex-col md:flex-row gap-6">
                             {/* Sezione tag */}
                             <div className="flex-1 bg-white dark:bg-gray-900 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                <label htmlFor="tag-search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
                                     Tag
-                                </p>
+                                </label>
 
                                 {/* Input per la ricerca/creazione dei tag */}
                                 <div className="mb-4">
@@ -339,7 +336,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
                                                 if (inputTagValue.trim() && !existTag) {
-                                                    handleAddTag();
+                                                    void handleAddTag();
                                                 }
                                             }
                                         }}
@@ -369,7 +366,7 @@ function CreateIssue({onCancel, onIssueCreated}){
                                                 key={tag}
                                                 type="button"
                                                 onClick={() => handleTagToggle(tag)}
-                                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:cursor-pointer ${
                                                     selectedTags.includes(tag)
                                                         ? 'bg-blue-600 text-white'
                                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -393,25 +390,22 @@ function CreateIssue({onCancel, onIssueCreated}){
                                     </p>
                                 </div>
 
-                                {/* Switch button todo: rivedere il funzionamento! */}
-                                <label className="relative inline-flex items-center cursor-pointer">
-                                    {/* Checkbox */}
-                                    <input
-                                        type="checkbox"
-                                        className="sr-only peer"
-                                        checked={priority}
-                                        onChange={(e) => setPriority(e.target.checked)}
-                                    />
-                                    {/* Switch sovrapposto */}
-                                    <div className="w-11 h-6 bg-gray-200 rounded-full peer
-                                        peer-focus:outline-none
-                                        peer-checked:bg-yellow-300
-                                        peer-checked:after:translate-x-full peer-checked:after:border-white
-                                        after:content-[''] after:absolute after:top-0.5 after:left-0.5
-                                        after:bg-white after:border-gray-300 after:border after:rounded-full
-                                        after:h-5 after:w-5 after:transition-all">
-                                    </div>
-                                </label>
+                                {/* Switch button*/}
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    aria-checked={priority}
+                                    onClick={() => setPriority(!priority)}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full ring-1 ring-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400 hover:cursor-pointer ${
+                                        priority ? 'bg-yellow-300' : 'bg-gray-200'
+                                    }`}
+                                >
+                                   <span
+                                       className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                                           priority ? 'translate-x-6' : 'translate-x-0'
+                                       }`}
+                                   />
+                                </button>
                             </div>
                         </div>
 
