@@ -95,10 +95,11 @@ function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
                 <div className="space-y-3">
                     {/* Selezione dettaglio di esportazione */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        <label htmlFor="detailLevel" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Livello di dettaglio
-                        </p>
+                        </label>
                         <select
+                            id="detailLevel"
                             value={detailLevel}
                             onChange={(e) => setDetailLevel(e.target.value)}
                             disabled={isLoading}
