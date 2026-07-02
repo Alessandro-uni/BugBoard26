@@ -61,30 +61,36 @@ function LoginPage({onLogin}) {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Inserimento username */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
                             Mail
-                        </p>
+                        </label>
                         <div className="relative">
-                            <input type="text" value={username} onChange={(e) => setUsername(e.target.value)}
+                            <input
+                                id="username"
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
                                 className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci la tua mail"
-                                   required
+                                placeholder="Inserisci la tua mail"
+                                required
                             />
                         </div>
                     </div>
 
                     {/* Inserimento pw */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 mb-2">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                             Password
-                        </p>
+                        </label>
                         <div className="relative">
-                            <input type={showPassword ? "text" : "password"}
-                                   value={password}
-                                   onChange={(e) => setPassword(e.target.value)}
-                                   className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
-                                   placeholder="Inserisci la tua password"
-                                   required
+                            <input
+                                id="password"
+                                type={showPassword ? "text" : "password"}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="block w-full px-4 py-3 border border-gray-300 rounded-lg"
+                                placeholder="Inserisci la tua password"
+                                required
                             />
 
                             {/* Pulsante occhio */}
