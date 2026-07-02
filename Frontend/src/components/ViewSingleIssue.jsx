@@ -6,6 +6,24 @@ import {ReloadingBox} from "./ReloadingBox.jsx";
 import {Badge} from "./Badge.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
 
+// Funzioni di supporto
+
+const AssignedUserBadge = ({isLoading, error, user}) => {
+    const getBadgeText = () => {
+        if (isLoading) return "Caricamento utente...";
+        if (error) return `Errore: ${error}`;
+        if (user) return `Assegnata a: ${user.username}`;
+
+        return "Utente non disponibile";
+    };
+
+    return (
+        <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
+                {getBadgeText()}
+            </span>
+    );
+};
+
 function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // DOMINIO ISSUE
 
@@ -59,7 +77,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // Caricamento iniziale dettagli della issue
     useEffect(() => {
         if (issueId) {
-            fetchIssueDetails();
+            void fetchIssueDetails();
         }
     }, [issueId, fetchIssueDetails]);
 
@@ -117,7 +135,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // Caricamento utenti disponibili quando richiesti
     useEffect(() => {
         if (showAssignPopup) {
-            fetchAvailableUsers();
+            void fetchAvailableUsers();
         }
     }, [showAssignPopup, fetchAvailableUsers]);
 
@@ -194,7 +212,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
             }
         };
 
-        fetchAssignedUser();
+        void fetchAssignedUser();
     }, [issueData?.assignedUserId]);
 
     // DOMINIO STATO ISSUE
@@ -226,7 +244,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
     useEffect(() => {
         if (showStatusPopup) {
-            fetchStatuses();
+            void fetchStatuses();
         }
     }, [showStatusPopup, fetchStatuses]);
 
@@ -297,8 +315,6 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     };
 
     // FUNZIONI AUSILIARIE
-
-
 
     // Rotella di caricamento
     if (isIssueLoading) {
@@ -374,17 +390,11 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 
                             {/* Utente assegnato */}
                             {issueData?.assignedUserId && (
-                                <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 border border-green-200">
-                                    {isUserLoading ? (
-                                        "Caricamento utente..."
-                                    ) : userError ? (
-                                        `Errore: ${userError}`
-                                    ) : assignedUser ? (
-                                        `Assegnata a: ${assignedUser.username}`
-                                    ) : (
-                                        "Utente non disponibile"
-                                    )}
-                                </span>
+                                <AssignedUserBadge
+                                    isLoading={isUserLoading}
+                                    error={userError}
+                                    user={assignedUser}
+                                />
                             )}
 
                             {/* Nessun utente assegnato */}
@@ -401,7 +411,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                 <Tag size={16}/>
                                 <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto w-full pr-2">
                                     {issueData.tags.map(tag => (
-                                        <span key={tag} className="text-sm bg-gray-50 dark:bg-gray-700 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300">
+                                        <span key={String(tag)} className="text-sm bg-gray-50 dark:bg-gray-700 px-2 py-0.5 rounded border border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300">
                                     #{tag}
                                 </span>
                                     ))}
@@ -490,7 +500,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     {issueData?.image?.rawImage ? (
                                         <div className="flex flex-col gap-2">
                                             <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
-                                                <Paperclip size={16} />
+                                                <Paperclip size={16}/>
                                                 <span>Immagine allegata:</span>
                                             </div>
                                             <div className="border rounded-lg overflow-hidden max-w-md mt-2">
@@ -503,7 +513,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                         </div>
                                     ) : (
                                         <div className="flex items-center gap-2 text-sm font-medium text-gray-5 00">
-                                            <Paperclip size={16} />
+                                            <Paperclip size={16}/>
                                             <span>Nessun allegato</span>
                                         </div>
                                     )}
@@ -534,7 +544,9 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue assegnata</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">La issue è stata assegnata con successo all'utente</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    La issue è stata assegnata con successo all'utente
+                                </p>
                                 <div className="flex gap-3 pt-1">
                                     <button
                                         onClick={() => {
@@ -542,7 +554,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                             setIsAssignSuccess(false);
                                             setSelectedUser(null);
                                             setSearchQuery("");
-                                            fetchIssueDetails();
+                                            void fetchIssueDetails();
                                         }}
                                         className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
@@ -582,13 +594,16 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     ) : (
                                         <div>
                                             {filteredUsers.length === 0 ? (
-                                                <p className="text-sm text-gray-400 text-center py-6">Nessun utente trovato</p>
+                                                <p className="text-sm text-gray-400 text-center py-6">
+                                                    Nessun utente trovato
+                                                </p>
                                             ) : (
                                                 filteredUsers.map(user => (
-                                                    <div
+                                                    <button
                                                         key={user.id}
+                                                        type="button"
                                                         onClick={() => setSelectedUser(selectedUser?.id === user.id ? null : user)}
-                                                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors ${
+                                                        className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition-colors w-full text-left ${
                                                             selectedUser?.id === user.id
                                                                 ? 'bg-blue-50 dark:bg-blue-900/30'
                                                                 : 'hover:bg-gray-50 dark:hover:bg-gray-700'
@@ -598,18 +613,21 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                                             {user.username?.slice(0, 2).toUpperCase()}
                                                         </div>
                                                         <div className="flex-1 min-w-0">
-                                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">{user.username}</p>
-                                                            <p className="text-xs text-gray-400">{user.role}</p>
+                                                            <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                                                                {user.username}
+                                                            </p>
+                                                            <p className="text-xs text-gray-400">
+                                                                {user.role}
+                                                            </p>
                                                         </div>
                                                         {selectedUser?.id === user.id && (
                                                             <Check size={16} className="text-blue-600 dark:text-blue-400 shrink-0" />
                                                         )}
-                                                    </div>
+                                                    </button>
                                                 ))
                                             )}
                                         </div>
                                     )}
-
 
                                 </div>
 
@@ -646,6 +664,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
             {/* POPUP CAMBIA STATO ISSUE */}
             {showStatusPopup && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+
                     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
                         {isStatusSuccess ? (
                             <>
@@ -656,13 +675,15 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Stato issue modificato</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Lo stato della issue è stato modificato con successo</p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Lo stato della issue è stato modificato con successo
+                                </p>
                                 <div className="flex gap-3 pt-1">
                                     <button
                                         onClick={() => {
                                             setShowStatusPopup(false);
                                             setIsStatusSuccess(false);
-                                            fetchIssueDetails();
+                                            void fetchIssueDetails();
                                         }}
                                         className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
@@ -679,7 +700,9 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Cambia stato Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Seleziona lo stato in cui cambiare la issue: </p>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Seleziona lo stato in cui cambiare la issue:
+                                </p>
 
                                 <div className="mt-3 mb-1">
                                     <select
@@ -731,7 +754,9 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                                         <Check size={18} className="text-green-600 dark:text-green-400"/>
                                     </div>
-                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">Issue chiusa</h2>
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                                        Issue chiusa
+                                    </h2>
                                 </div>
 
                                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -744,7 +769,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                         onClick={() => {
                                             setShowClosePopup(false);
                                             setIsClosedSuccess(false);
-                                            fetchIssueDetails();
+                                            void fetchIssueDetails();
                                         }}
                                         className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
                                     >
@@ -761,7 +786,11 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                                     </div>
                                     <h2 className="text-lg font-bold text-gray-900 dark:text-white">Chiudi Issue</h2>
                                 </div>
-                                <p className="text-sm text-gray-600 dark:text-gray-400">Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "<strong>CLOSED</strong>"</p>
+
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Sei sicuro di voler chiudere questa issue? Lo stato cambierà in "<strong>CLOSED</strong>"
+                                </p>
+
                                 <div className="flex justify-end gap-3 pt-1">
                                     <CustomButton
                                         variant="secondary"

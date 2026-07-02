@@ -22,7 +22,9 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
             </div>
 
             {issues.length === 0 ? (
-                <p className="text-gray-500 dark:text-gray-400 text-sm">Nessuna issue in questa sezione</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    Nessuna issue in questa sezione
+                </p>
             ) : (
                 <div className="flex flex-row gap-5 overflow-x-auto">
                     {issues.map((issue) => (
@@ -141,7 +143,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
             }
         };
 
-        fetchNotifications();
+        void fetchNotifications();
     }, []);
 
     // Rimozione singola notifica
@@ -212,7 +214,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                         Home
                     </h2>
 
-                    {/* 1. Notifiche */}
+                    {/* Notifiche */}
                     <div className="flex items-center gap-3">
                         <div className="relative">
                             <CustomButton
@@ -240,7 +242,7 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                         {/* Pulsante di chiusura e rimozione di tutte le notifiche */}
                                         <CustomButton
                                             variant="secondary"
-                                            onClick={(e) => {handleRemoveAllNotifications(e)}}
+                                            onClick={(e) => {void handleRemoveAllNotifications(e)}}
                                         >
                                             segna tutte come lette
                                         </CustomButton>
@@ -252,26 +254,29 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                                             notifications.map((notification) => (
                                                 <div
                                                     key={notification.id}
-                                                    onClick={() => onViewIssue(notification.idIssue)}
-                                                    className="p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-start justify-between gap-3 hover:cursor-pointer"
+                                                    className="relative p-4 border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-start justify-between gap-3 group"
                                                 >
-                                                    <div className="flex-1">
+                                                    {/* Pulsante per andare alla issue */}
+                                                    <button
+                                                        onClick={() => onViewIssue(notification.idIssue)}
+                                                        className="flex-1 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 after:absolute after:inset-0 rounded hover:cursor-pointer"
+                                                    >
                                                         <p className="text-sm text-gray-800 dark:text-gray-200">
                                                             {notification.message}
                                                         </p>
                                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                                             {new Date(notification.date).toLocaleString()}
                                                         </p>
-                                                    </div>
+                                                    </button>
 
                                                     {/* Pulsante di chiusura e rimozione notifica */}
                                                     <button
                                                         onClick={(e) => {
-                                                            e.stopPropagation();
+                                                            e.stopPropagation()
                                                             setSelectedNotificationId(notification.id);
-                                                            handleRemoveNotification(e);
+                                                            void handleRemoveNotification(e);
                                                         }}
-                                                        className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400 hover:cursor-pointer"
+                                                        className="relative z-10 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-500 dark:text-gray-400 hover:cursor-pointer"
                                                     >
                                                         <X size={16}/>
                                                     </button>
