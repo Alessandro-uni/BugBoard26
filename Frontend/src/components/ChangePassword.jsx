@@ -106,9 +106,9 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimeto pw corrente */}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Password corrente
-                        </p>
+                        </label>
                         <div className="relative">
                             <input type={showCurrentPassword ? "text" : "password"}
                                    value={currentRawPassword}
@@ -146,9 +146,9 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimento nuova pw*/}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Nuova password
-                        </p>
+                        </label>
                         <div className="relative">
                             <input type={showNewPassword ? "text" : "password"}
                                    value={newRawPassword}
@@ -186,9 +186,9 @@ function ChangePassword({onLogout}) {
 
                     {/* Inserimento ripeti nuova pw*/}
                     <div>
-                        <p className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
+                        <label htmlFor="repeatNewPassword" className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-300">
                             Ripeti nuova password
-                        </p>
+                        </label>
                         <div className="relative">
                             <input type={showRepeatNewPassword ? "text" : "password"}
                                    value={repeatNewRawPassword}
