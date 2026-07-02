@@ -33,7 +33,7 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
     }, [JSON.stringify(bodyParams), sortType]);
 
     useEffect(() => {
-        const fetchIssues = async () => {
+        const fetchIssues = async (bodyParams) => {
             setIsLoading(true);
             const token = sessionStorage.getItem('token');
 
@@ -76,7 +76,7 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
             }
         };
 
-        fetchIssues(bodyParams);
+        void fetchIssues(bodyParams);
     }, [JSON.stringify(bodyParams), sortType, currentPage]);
 
     // Funzioni di supporto
