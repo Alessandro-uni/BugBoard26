@@ -385,13 +385,14 @@ function CreateIssue({onCancel, onIssueCreated}){
                             {/* Priorità */}
                             <div className="w-full md:w-25 h-25 bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col gap-4">
                                 <div>
-                                    <p className="block text-sm font-medium text-gray-900 dark:text-gray-300">
+                                    <label htmlFor="priority" className="block text-sm font-medium text-gray-900 dark:text-gray-300">
                                         Priorità
-                                    </p>
+                                    </label>
                                 </div>
 
                                 {/* Switch button*/}
                                 <button
+                                    id="priority"
                                     type="button"
                                     role="switch"
                                     aria-checked={priority}
