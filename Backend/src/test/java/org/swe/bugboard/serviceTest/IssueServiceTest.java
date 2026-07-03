@@ -1,7 +1,11 @@
 package org.swe.bugboard.serviceTest;
 
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@RunWith(Enclosed.class)
 @ExtendWith(MockitoExtension.class)
 public class IssueServiceTest {
 
@@ -44,53 +49,161 @@ public class IssueServiceTest {
     @Mock
     private NotificationService notificationService;
 
-    @Test
-    public void testCreateIssueWithExistingUser() throws IOException {
 
-        //Test objects setup
-        String dummyIssueTitle = "Dummy Title";
+    @Nested
+    class createIssueTest{
 
-        ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
-                .title(dummyIssueTitle)
-                .description("Dummy description")
-                .type(IssueType.BUG.name())
-                .priority(false)
-                .build();
+        @Test
+        public void testCreateIssueWithExistingUser() throws IOException {
 
-        Long dummyCurrentUserId = 1L;
-        User dummyCurrentUser = User.builder()
-                .id(dummyCurrentUserId)
-                .build();
+            //Test objects setup
+            String dummyIssueTitle = "Dummy title";
 
-        byte[] dummyBytes = new byte[]{0, 0, 0};
-        MultipartFile dummyFile = mock(MultipartFile.class);
+            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
+                    .title(dummyIssueTitle)
+                    .description("Dummy description")
+                    .type(IssueType.BUG.name())
+                    .priority(false)
+                    .build();
 
-        //Mock setup
-        when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+            Long dummyCurrentUserId = 1L;
+            User dummyCurrentUser = User.builder()
+                    .id(dummyCurrentUserId)
+                    .build();
 
-        when(tagRepository.findByNameIn(any())).thenReturn(null);
+            byte[] dummyBytes = new byte[]{0, 0, 0};
+            MultipartFile dummyFile = mock(MultipartFile.class);
 
-        when(dummyFile.isEmpty()).thenReturn(false);
-        when(dummyFile.getContentType()).thenReturn("png");
-        when(dummyFile.getBytes()).thenReturn(dummyBytes);
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
 
-        when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(tagRepository.findByNameIn(any())).thenReturn(null);
 
-        doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
+            when(dummyFile.isEmpty()).thenReturn(false);
+            when(dummyFile.getContentType()).thenReturn("png");
+            when(dummyFile.getBytes()).thenReturn(dummyBytes);
 
-        //Call to test
-        IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile);
+            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
 
-        //Verification
-        assertNotNull(result, "Result does not exist");
-        assertEquals(dummyIssueTitle, result.getTitle(), result.getTitle());
+            doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
-        verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            //Call to test
+            IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile);
 
-        assertNotNull(result.getImage(), "Result does not have Image");
-        assertEquals(dummyBytes, result.getImage().getRawImage(), "Result image does not match dummy image");
+            //Verification
+            assertNotNull(result, "Result does not exist");
+            assertEquals(dummyIssueTitle, result.getTitle(), result.getTitle());
 
+            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+
+            assertNotNull(result.getImage(), "Result does not have Image");
+            assertEquals(dummyBytes, result.getImage().getRawImage(), "Result image does not match dummy image");
+
+        }
+
+        @Test
+        public void testCreateIssueWithNonExistentUser(){
+
+            //Test objects setup
+            String dummyIssueTitle = "Dummy title";
+
+            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
+                    .title(dummyIssueTitle)
+                    .description("Dummy description")
+                    .type(IssueType.BUG.name())
+                    .priority(false)
+                    .build();
+
+            Long dummyCurrentUserId = Long.MAX_VALUE;
+
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
+
+            //Call to test
+            assertThrows(EntityNotFoundException.class,
+                    () -> issueService.createIssue(dummyRequest, dummyCurrentUserId, null),
+                    "Did not throw EntityNotFoundException");
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+        }
+
+        @Test
+        public void testCreateIssueWithNoFile(){
+
+            //Test objects setup
+            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
+                    .title("Dummy title")
+                    .description("Dummy description")
+                    .type(IssueType.BUG.name())
+                    .priority(false)
+                    .build();
+            Long dummyCurrentUserId = 1L;
+            User dummyCurrentUser = User.builder()
+                    .id(dummyCurrentUserId)
+                    .build();
+
+            MultipartFile dummyFile = mock(MultipartFile.class);
+
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+
+            when(tagRepository.findByNameIn(any())).thenReturn(null);
+
+            when(dummyFile.isEmpty()).thenReturn(true);
+
+            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+
+            doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
+
+            //Call to test
+            IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile);
+
+            //Verification
+            assertNotNull(result, "Result does not exist");
+
+            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+
+            assertNull(result.getImage(), "Result does not have Image");
+        }
+
+        @Test
+        public void testCreateIssueWithEmptyFile(){
+
+            //Test objects setup
+            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
+                    .title("Dummy title")
+                    .description("Dummy description")
+                    .type(IssueType.BUG.name())
+                    .priority(false)
+                    .build();
+            Long dummyCurrentUserId = 1L;
+            User dummyCurrentUser = User.builder()
+                    .id(dummyCurrentUserId)
+                    .build();
+
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+
+            when(tagRepository.findByNameIn(any())).thenReturn(null);
+
+            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+
+            doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
+
+            //Call to test
+            IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, null);
+
+            //Verification
+            assertNotNull(result, "Result does not exist");
+
+            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+
+            assertNull(result.getImage(), "Result does not have Image");
+        }
     }
+
+
 
 
     @Test
