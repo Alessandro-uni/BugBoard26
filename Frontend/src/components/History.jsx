@@ -2,6 +2,7 @@ import React, {useState, useEffect} from "react";
 import {X} from "lucide-react";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from "prop-types";
 
 function History({issueId, onClose}){
 
@@ -88,3 +89,8 @@ function History({issueId, onClose}){
 
 }
 export default History;
+
+History.propTypes = {
+    issueId: PropTypes.number.isRequired,
+    onClose: PropTypes.func.isRequired
+}

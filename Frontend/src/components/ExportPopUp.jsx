@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import {X, Download, Table, Loader2} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from "prop-types";
 
-function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
+function ExportPopUp({isOpen, onClose, currentFilters, sortType}) {
     const [isLoading, setIsLoading] = useState(false);
     const [detailLevel, setDetailLevel] = useState("MEDIUM");
 
@@ -22,7 +23,7 @@ function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
                 },
                 sortType: sortType,
                 filters: {
-                    ...curretFilters
+                    ...currentFilters
                 }
             }
         };
@@ -158,3 +159,10 @@ function ExportPopUp({isOpen, onClose, curretFilters, sortType}){
 }
 
 export default ExportPopUp;
+
+ExportPopUp.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    currentFilters: PropTypes.object.isRequired,
+    sortType: PropTypes.string
+}

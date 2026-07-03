@@ -5,6 +5,7 @@ import History from "./History.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 import {Badge} from "./Badge.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from "prop-types";
 
 // Funzioni di supporto
 
@@ -23,6 +24,12 @@ const AssignedUserBadge = ({isLoading, error, user}) => {
             </span>
     );
 };
+
+AssignedUserBadge.propTypes = {
+    isLoading: PropTypes.bool.isRequired,
+    error: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired
+}
 
 function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
     // DOMINIO ISSUE
@@ -199,7 +206,7 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
                 });
 
                 if (!response.ok) {
-                    throw new Error("Errore recupero utente");
+                    setUserError("Impossibile prelevare utente");
                 }
 
                 const data = await response.json();
@@ -815,3 +822,10 @@ function ViewSingleIssue({issueId, userPermissions = [], userId, onBack}) {
 }
 
 export default ViewSingleIssue;
+
+ViewSingleIssue.propTypes = {
+    issueId: PropTypes.number.isRequired,
+    userPermissions: PropTypes.arrayOf(PropTypes.string),
+    userId: PropTypes.number.isRequired,
+    onBack: PropTypes.func.isRequired
+}

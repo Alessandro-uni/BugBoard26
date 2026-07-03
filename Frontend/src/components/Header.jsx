@@ -1,9 +1,10 @@
 import React from "react";
 import {Home, Menu, Sun, Moon} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
+import PropTypes from "prop-types";
 
 
-function Header ({theme, setTheme,onToggleMenu, onHomeClick, isHomeOpen}){
+function Header ({theme, setTheme, onToggleMenu, onHomeClick, isHomeOpen}){
 
     const toggleTheme = () => {
         setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -46,3 +47,11 @@ function Header ({theme, setTheme,onToggleMenu, onHomeClick, isHomeOpen}){
 
 }
 export default Header;
+
+Header.propTypes = {
+    theme: PropTypes.string.isRequired,
+    setTheme: PropTypes.func.isRequired,
+    onToggleMenu: PropTypes.func.isRequired,
+    onHomeClick: PropTypes.func.isRequired,
+    isHomeOpen: PropTypes.bool.isRequired
+}

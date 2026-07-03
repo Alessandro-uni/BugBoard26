@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 export function Badge({children, variant = 'default', className = ''}) {
     const baseClasses = "inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-md border";
 
@@ -18,4 +20,10 @@ export function Badge({children, variant = 'default', className = ''}) {
             {children}
         </span>
     );
+}
+
+Badge.propTypes = {
+    children: PropTypes.node.isRequired,
+    variant: PropTypes.oneOf('default', 'NEUTRAL', 'INFO', 'SUCCESS', 'DANGER', 'priority', 'type'),
+    className: PropTypes.string
 }

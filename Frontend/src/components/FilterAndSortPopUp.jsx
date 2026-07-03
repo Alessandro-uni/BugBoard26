@@ -3,6 +3,7 @@ import {X, Filter, ArrowUpDown} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
 import {ReloadingBox} from "./ReloadingBox.jsx";
+import PropTypes from "prop-types";
 
 // Funzioni di supporto
 
@@ -80,6 +81,13 @@ const FilterStatuses = ({availableStatuses, selectedValue, handleChange, formatL
     </div>
 );
 
+FilterStatuses.propTypes = {
+    availableStatuses: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedValue: PropTypes.string.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    formatLabel: PropTypes.func.isRequired
+}
+
 // Componente lista tipi
 const FilterTypes = ({availableTypes, selectedValue, handleChange, formatLabel}) => (
     <div>
@@ -93,14 +101,21 @@ const FilterTypes = ({availableTypes, selectedValue, handleChange, formatLabel})
             className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
             <option value="">Nessun tipo selezionato</option>
-            {availableTypes.map((type) => (
-                <option key={type} value={type}>
+            {availableTypes.map((type, index) => (
+                <option key={`${type}-${index}`} value={String(type || "")}>
                     {formatLabel(type)}
                 </option>
             ))}
         </select>
     </div>
 );
+
+FilterTypes.propTypes = {
+    availableTypes: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedValue: PropTypes.string.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    formatLabel: PropTypes.func.isRequired
+}
 
 // Componente lista utenti segnalatori
 const FilterReportingUsers = ({availableReportingUsers, selectedValue, isReporterLocked, handleChange, formatLabel}) => (
@@ -124,6 +139,14 @@ const FilterReportingUsers = ({availableReportingUsers, selectedValue, isReporte
         </select>
     </div>
 );
+
+FilterReportingUsers.propTypes = {
+    availableReportingUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedValue: PropTypes.string.isRequired,
+    isReporterLocked: PropTypes.bool.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    formatLabel: PropTypes.func.isRequired
+}
 
 // Componente lista utenti assegnabili
 const FilterAssignableUsers = ({availableAssignableUsers, selectedFilters, setSelectedFilters, isAssignmentLocked, isAssignable, handleChange, formatLabel}) => {
@@ -184,6 +207,16 @@ const FilterAssignableUsers = ({availableAssignableUsers, selectedFilters, setSe
     )
 };
 
+FilterAssignableUsers.propTypes = {
+    availableAssignableUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedFilters: PropTypes.object.isRequired,
+    setSelectedFilters: PropTypes.func.isRequired,
+    isAssignmentLocked: PropTypes.bool.isRequired,
+    isAssignable: PropTypes.bool.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    formatLabel: PropTypes.func.isRequired
+}
+
 // Componente lista tag
 const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleChange, formatLabel}) => {
     const {isTagged, tags} = selectedFilters;
@@ -224,11 +257,11 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
                 </div>
             ) : (
                 <div className="w-full border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700 max-h-48 overflow-y-auto">
-                    {availableTags.map((tag) => {
+                    {availableTags.map((tag, index) => {
                         const isSelected = tags.includes(tag);
                         return (
                             <label
-                                key={tag}
+                                key={`${tag}-${index}`}
                                 className={`flex items-center gap-3 px-4 py-2 cursor-pointer text-sm transition-colors ${isSelected
                                     ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
                                     : "text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -237,7 +270,7 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
                                 <input
                                     type="checkbox"
                                     name="tags"
-                                    value={tag}
+                                    value={String(tag || "")}
                                     checked={isSelected}
                                     onChange={handleChange}
                                     className="accent-blue-500 w-4 h-4 cursor-pointer"
@@ -251,6 +284,14 @@ const FilterTags = ({availableTags, selectedFilters, setSelectedFilters, handleC
         </div>
     );
 };
+
+FilterTags.propTypes = {
+    availableTags: PropTypes.arrayOf(PropTypes.object).isRequired,
+    selectedFilters: PropTypes.object.isRequired,
+    setSelectedFilters: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired,
+    formatLabel: PropTypes.func.isRequired
+}
 
 // Componente lista priorità
 const FilterPriorities = ({selectedValue, handleChange}) => (
@@ -272,6 +313,11 @@ const FilterPriorities = ({selectedValue, handleChange}) => (
         </select>
     </div>
 );
+
+FilterPriorities.propTypes = {
+    selectedValue: PropTypes.string,
+    handleChange: PropTypes.func.isRequired
+}
 
 // Componente lista date
 const FilterDates = ({title, startId, endId, selectedStartValue, selectedEndValue, handleChange}) => (
@@ -307,6 +353,15 @@ const FilterDates = ({title, startId, endId, selectedStartValue, selectedEndValu
         </div>
     </div>
 );
+
+FilterDates.propTypes = {
+    title: PropTypes.string.isRequired,
+    startId: PropTypes.PropTypes.string.isRequired,
+    endId: PropTypes.PropTypes.string.isRequired,
+    selectedStartValue: PropTypes.string,
+    selectedEndValue: PropTypes.string,
+    handleChange: PropTypes.func.isRequired
+}
 
 // Funzione principale
 function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {}, lockedFilters = {}}){
@@ -633,3 +688,11 @@ function FilterAndSortPopUp({isOpen, onClose, onApplyFilters, currentFilters = {
 }
 
 export default FilterAndSortPopUp;
+
+FilterAndSortPopUp.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onApplyFilters: PropTypes.func.isRequired,
+    currentFilters: PropTypes.object,
+    lockedFilters: PropTypes.object
+}

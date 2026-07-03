@@ -1,5 +1,6 @@
 import {Loader2} from "lucide-react";
 import React from "react";
+import PropTypes from "prop-types";
 
 export function ReloadingBox({description = ''}) {
     return (
@@ -8,4 +9,8 @@ export function ReloadingBox({description = ''}) {
             <p className="text-gray-500 dark:text-gray-400 font-medium animate-pulse">{description}</p>
         </div>
     );
+}
+
+ReloadingBox.propTypes = {
+    description: PropTypes.string
 }

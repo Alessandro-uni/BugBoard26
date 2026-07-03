@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Paperclip, X, Tag, Plus, Check} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from "prop-types";
 
 function CreateIssue({onCancel, onIssueCreated}){
     const [selectedTags, setSelectedTags] = useState([]);
@@ -474,3 +475,8 @@ function CreateIssue({onCancel, onIssueCreated}){
 }
 
 export default CreateIssue;
+
+CreateIssue.propTypes = {
+    onCancel: PropTypes.func.isRequired,
+    onIssueCreated: PropTypes.func.isRequired
+}

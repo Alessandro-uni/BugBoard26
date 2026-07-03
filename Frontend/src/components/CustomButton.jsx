@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 export function CustomButton({
     children,
     className = "",
-    variant = "simple",
+    variant = "secondary",
     size = "md",
     icon: Icon,
     iconPosition = "left",
@@ -54,4 +55,14 @@ export function CustomButton({
             )}
         </button>
     );
+}
+
+CustomButton.propTypes = {
+    children: PropTypes.node.isRequired,
+    variant: PropTypes.oneOf(['primary', 'secondary', 'success', 'danger']),
+    className: PropTypes.string,
+    size: PropTypes.oneOf(['sm', 'md', 'lg']),
+    icon: PropTypes.elementType,
+    iconPosition: PropTypes.oneOf(['left', 'right']),
+    disabled: PropTypes.bool
 }

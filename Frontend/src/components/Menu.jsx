@@ -2,6 +2,7 @@ import React from "react";
 import {List, PlusCircle, UserPlus, ClipboardList, KeyRound, LogOut, X, ListTodo, ListCollapse} from 'lucide-react';
 import {motion, AnimatePresence} from 'framer-motion';
 import {CustomButton} from "./CustomButton.jsx";
+import PropTypes from "prop-types";
 
 function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER', userPermissions = []}) {
 
@@ -136,3 +137,12 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER', us
 }
 
 export default Menu;
+
+Menu.propTypes = {
+    currentPage: PropTypes.string.isRequired,
+    onNavigate: PropTypes.func.isRequired,
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    userRole: PropTypes.string,
+    userPermissions: PropTypes.arrayOf(PropTypes.string)
+}

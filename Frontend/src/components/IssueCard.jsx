@@ -1,5 +1,6 @@
 import React from 'react';
 import {Badge} from "./Badge.jsx";
+import PropTypes from "prop-types";
 
 export function IssueCard({issue, onClick, className = "", disabled, ...props}) {
     if (!issue) return null;
@@ -50,4 +51,11 @@ export function IssueCard({issue, onClick, className = "", disabled, ...props}) 
             </div>
         </button>
     );
+}
+
+IssueCard.propTypes = {
+    issue: PropTypes.object.isRequired,
+    onClick: PropTypes.func.isRequired,
+    className: PropTypes.string,
+    disabled: PropTypes.bool.isRequired
 }

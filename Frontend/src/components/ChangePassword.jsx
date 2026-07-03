@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Eye, EyeClosed} from "lucide-react";
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from 'prop-types'
 
 function ChangePassword({onLogout}) {
     // Stati per i campi modificabili dall'utente
@@ -259,3 +260,7 @@ function ChangePassword({onLogout}) {
 }
 
 export default ChangePassword;
+
+ChangePassword.propTypes = {
+    onLogout: PropTypes.func.isRequired
+}

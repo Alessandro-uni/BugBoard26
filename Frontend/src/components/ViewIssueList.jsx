@@ -7,6 +7,7 @@ import {IssueCard} from "./IssueCard.jsx";
 import {CustomButton} from "./CustomButton.jsx";
 import {ReloadingBox} from "./ReloadingBox.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from "prop-types";
 
 function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
     // Variabili per la ricerca/visualizzazione di issue
@@ -145,6 +146,7 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
                                         issue={issue}
                                         onClick={() => onViewIssue(issue.id)}
                                         className="min-h-35"
+                                        disabled={false}
                                     >
                                     </IssueCard>
                                 ))}
@@ -239,7 +241,7 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
             <ExportPopUp
                 isOpen={isExportPopUpOpen}
                 onClose={() => setIsExportPopUpOpen(false)}
-                curretFilters={bodyParams}
+                currentFilters={bodyParams}
                 sortType={sortType}
             />
         </div>
@@ -247,3 +249,9 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
 }
 
 export default ViewIssueList;
+
+ViewIssueList.propTypes = {
+    onViewIssue: PropTypes.func.isRequired,
+    initialBodyParams: PropTypes.object.isRequired,
+    pageName: PropTypes.string.isRequired
+}

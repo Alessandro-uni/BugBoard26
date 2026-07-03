@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Eye, EyeOff} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
+import PropTypes from "prop-types";
 
 function CreateUser({onCreateUser}) {
     const [mail,setMail] = useState('');
@@ -332,3 +333,7 @@ function CreateUser({onCreateUser}) {
 }
 
 export default CreateUser;
+
+CreateUser.propTypes = {
+    onCreateUser: PropTypes.func.isRequired
+}

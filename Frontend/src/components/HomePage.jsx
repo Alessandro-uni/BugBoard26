@@ -4,6 +4,7 @@ import {ReloadingBox} from "./ReloadingBox.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
 import {CustomButton} from "./CustomButton.jsx";
 import {Bell, X} from "lucide-react";
+import PropTypes from "prop-types";
 
 function IssueSection({title, issues, onViewIssue, onViewAll}) {
     return (
@@ -33,6 +34,7 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
                             issue={issue}
                             onClick={() => onViewIssue(issue.id)}
                             className="shrink-0 w-21.25 sm:w-110 my-2"
+                            disabled={false}
                         >
                         </IssueCard>
                     ))}
@@ -40,6 +42,13 @@ function IssueSection({title, issues, onViewIssue, onViewAll}) {
             )}
         </div>
     );
+}
+
+IssueSection.propTypes = {
+    title: PropTypes.string.isRequired,
+    issues: PropTypes.arrayOf(PropTypes.object).isRequired,
+    onViewIssue: PropTypes.func.isRequired,
+    onViewAll: PropTypes.func.isRequired
 }
 
 function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], onNavigation}){
@@ -333,3 +342,11 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
 }
 
 export default HomePage;
+
+HomePage.propTypes = {
+    onViewIssue: PropTypes.func.isRequired,
+    currentUserId: PropTypes.number.isRequired,
+    userName: PropTypes.string.isRequired,
+    userPermissions: PropTypes.arrayOf(PropTypes.string),
+    onNavigation: PropTypes.func.isRequired
+}
