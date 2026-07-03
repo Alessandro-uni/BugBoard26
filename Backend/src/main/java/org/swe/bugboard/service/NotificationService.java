@@ -20,7 +20,7 @@ public class NotificationService {
 
     @Transactional
     public List<NotificationResponse> getUserNotifications(Long userId) {
-        List<Notification> notifications = notificationRepository.getNotificationByUser_Id(userId);
+        List<Notification> notifications = notificationRepository.getNotificationByUser_IdOrderByIdDesc(userId);
 
         return notifications.stream().map(this::convertModelToResponse).toList();
     }
