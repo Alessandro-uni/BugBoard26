@@ -25,6 +25,7 @@ import org.swe.bugboard.service.IssueService;
 import org.swe.bugboard.service.NotificationService;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,26 +54,25 @@ public class IssueServiceTest {
     @Nested
     class createIssueTest{
 
-        @Test
-        public void testExistingUserSavesAndCreatesHistory() throws IOException {
-
-            //Test objects setup
-            String dummyIssueTitle = "Dummy title";
-
-            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
-                    .title(dummyIssueTitle)
+        String dummyIssueTitle = "Dummy Title";
+        ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
+                .title(dummyIssueTitle)
                     .description("Dummy description")
                     .type(IssueType.BUG.name())
-                    .priority(false)
+                .priority(false)
                     .build();
 
-            Long dummyCurrentUserId = 1L;
-            User dummyCurrentUser = User.builder()
-                    .id(dummyCurrentUserId)
-                    .build();
+        Long dummyCurrentUserId = 1L;
+        User dummyCurrentUser = User.builder()
+                .id(dummyCurrentUserId)
+                .build();
 
-            byte[] dummyBytes = new byte[]{0, 0, 0};
-            MultipartFile dummyFile = mock(MultipartFile.class);
+        @Mock
+        private MultipartFile dummyFile;
+        byte[] dummyBytes = new byte[]{0, 0, 0};
+
+        @Test
+        public void testExistingUserSavesAndCreatesHistory() throws IOException {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -104,18 +104,6 @@ public class IssueServiceTest {
         @Test
         public void testNonExistentUserThrowsAndDoesntSave(){
 
-            //Test objects setup
-            String dummyIssueTitle = "Dummy title";
-
-            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
-                    .title(dummyIssueTitle)
-                    .description("Dummy description")
-                    .type(IssueType.BUG.name())
-                    .priority(false)
-                    .build();
-
-            Long dummyCurrentUserId = Long.MAX_VALUE;
-
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
 
@@ -129,21 +117,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testNoFileSaves(){
-
-            //Test objects setup
-            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
-                    .title("Dummy title")
-                    .description("Dummy description")
-                    .type(IssueType.BUG.name())
-                    .priority(false)
-                    .build();
-            Long dummyCurrentUserId = 1L;
-            User dummyCurrentUser = User.builder()
-                    .id(dummyCurrentUserId)
-                    .build();
-
-            MultipartFile dummyFile = mock(MultipartFile.class);
+        public void testMissingFileSaves(){
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -164,23 +138,11 @@ public class IssueServiceTest {
 
             verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
 
-            assertNull(result.getImage(), "Result does not have Image");
+            assertNull(result.getImage(), "Result has Image");
         }
 
         @Test
         public void testEmptyFileSaves(){
-
-            //Test objects setup
-            ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
-                    .title("Dummy title")
-                    .description("Dummy description")
-                    .type(IssueType.BUG.name())
-                    .priority(false)
-                    .build();
-            Long dummyCurrentUserId = 1L;
-            User dummyCurrentUser = User.builder()
-                    .id(dummyCurrentUserId)
-                    .build();
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -199,12 +161,30 @@ public class IssueServiceTest {
 
             verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
 
-            assertNull(result.getImage(), "Result does not have Image");
+            assertNull(result.getImage(), "Result has Image");
+        }
+
+        @Test
+        public void testFailedFileReadThrowsExceptionAndDoesntSave() throws IOException {
+
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+
+            when(tagRepository.findByNameIn(any())).thenReturn(null);
+
+            when(dummyFile.isEmpty()).thenReturn(false);
+            when(dummyFile.getContentType()).thenReturn("png");
+            when(dummyFile.getBytes()).thenThrow(IOException.class);
+
+            //Call to test
+            assertThrows(UncheckedIOException.class,
+                    () -> issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile),
+                    "Did not throw UncheckIOException");
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
         }
     }
-
-
-
 
     @Test
     public void testGetIssueById(){
