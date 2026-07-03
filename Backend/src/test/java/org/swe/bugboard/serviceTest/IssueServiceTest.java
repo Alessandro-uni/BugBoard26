@@ -54,7 +54,7 @@ public class IssueServiceTest {
     class createIssueTest{
 
         @Test
-        public void testCreateIssueWithExistingUser() throws IOException {
+        public void testExistingUserSavesAndCreatesHistory() throws IOException {
 
             //Test objects setup
             String dummyIssueTitle = "Dummy title";
@@ -102,7 +102,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testCreateIssueWithNonExistentUser(){
+        public void testNonExistentUserThrowsAndDoesntSave(){
 
             //Test objects setup
             String dummyIssueTitle = "Dummy title";
@@ -129,7 +129,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testCreateIssueWithNoFile(){
+        public void testNoFileSaves(){
 
             //Test objects setup
             ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
@@ -168,7 +168,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testCreateIssueWithEmptyFile(){
+        public void testEmptyFileSaves(){
 
             //Test objects setup
             ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
