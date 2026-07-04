@@ -27,6 +27,8 @@ public class NotificationService {
 
     @Transactional
     public void createNotification(Issue issue){
+
+
         String typeMessage = messageFromStatus(issue.getStatus());
 
         Notification newNotification = Notification.builder().

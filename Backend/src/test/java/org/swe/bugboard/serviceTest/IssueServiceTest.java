@@ -47,9 +47,6 @@ public class IssueServiceTest {
     private TagRepository tagRepository;
     @Mock
     private HistoryService historyService;
-    @Mock
-    private NotificationService notificationService;
-
 
     @Nested
     class createIssueTest{
@@ -72,7 +69,7 @@ public class IssueServiceTest {
         byte[] dummyBytes = new byte[]{0, 0, 0};
 
         @Test
-        public void testExistingUserSavesAndCreatesHistory() throws IOException {
+        public void testSavesAndCreatesHistory() throws IOException {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -186,6 +183,79 @@ public class IssueServiceTest {
         }
     }
 
+    @Nested
+    class updateIssueStatusTest{
+
+        @Mock
+        private NotificationService notificationService;
+
+        @Test
+        public void testNonExistentUserDoesntUpdate(){}
+
+        @Test
+        public void testNonExistentIssueThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNoAssignedUserThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonMatchingCurrentAndAssignedUsersThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonExistentStatusThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNewStatusEqualToOldDoesNothing(){}
+
+        @Test
+        public void testNonModifiableStatusThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonSettableStatusThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testAnyCorrectStatusUpdatesAndAddsToHistory(){}
+
+        @Test
+        public void testResolvedStatusNotifiesAssignedUser(){}
+    }
+
+    @Nested
+    class closeIssueTest{
+
+        @Test
+        public void testNonExistentIssueDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyClosed(){}
+
+        @Test
+        public void testClosableStatusUpdatesAndAddsToHistory(){}
+    }
+
+    @Nested
+    class assignUserToIssueTest{
+
+        @Test
+        public void testNullUserDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyAssignedToOtherUserThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonExistentUserThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testAssigningUserSavesAndUpdatesHistory(){}
+
+    }
+
     @Test
     public void testGetIssueById(){
 
@@ -210,5 +280,6 @@ public class IssueServiceTest {
         assertEquals(dummyIssueId, result.getId(), "IDs do not match");
     }
 
-
+    @Test
+    public void testBuildPageRequest(){}
 }

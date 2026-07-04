@@ -25,7 +25,7 @@ public class TagService {
     }
 
     @Transactional(readOnly = true)
-    public List<TagResponse> getAllTag() {
+    public List<TagResponse> getAllTags() {
         List<Tag> tags = tagRepository.findAll();
 
         return tags.stream().map(this::convertModelToResponse).toList();
