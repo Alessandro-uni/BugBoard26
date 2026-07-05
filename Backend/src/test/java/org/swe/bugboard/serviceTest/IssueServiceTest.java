@@ -80,7 +80,7 @@ public class IssueServiceTest {
             when(dummyFile.getContentType()).thenReturn("png");
             when(dummyFile.getBytes()).thenReturn(dummyBytes);
 
-            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
@@ -91,7 +91,8 @@ public class IssueServiceTest {
             assertNotNull(result, "Result does not exist");
             assertEquals(dummyIssueTitle, result.getTitle(), result.getTitle());
 
-            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
             assertNotNull(result.getImage(), "Result does not have Image");
             assertEquals(dummyBytes, result.getImage().getRawImage(), "Result image does not match dummy image");
@@ -123,7 +124,7 @@ public class IssueServiceTest {
 
             when(dummyFile.isEmpty()).thenReturn(true);
 
-            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
@@ -133,7 +134,8 @@ public class IssueServiceTest {
             //Verification
             assertNotNull(result, "Result does not exist");
 
-            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
             assertNull(result.getImage(), "Result has Image");
         }
@@ -146,7 +148,7 @@ public class IssueServiceTest {
 
             when(tagRepository.findByNameIn(any())).thenReturn(null);
 
-            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
@@ -156,7 +158,8 @@ public class IssueServiceTest {
             //Verification
             assertNotNull(result, "Result does not exist");
 
-            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
             assertNull(result.getImage(), "Result has Image");
         }
@@ -278,6 +281,8 @@ public class IssueServiceTest {
         //Verification
         assertNotNull(result, "Result does not exist");
         assertEquals(dummyIssueId, result.getId(), "IDs do not match");
+
+        verify(issueRepository).findById(dummyIssueId);
     }
 
     @Test
