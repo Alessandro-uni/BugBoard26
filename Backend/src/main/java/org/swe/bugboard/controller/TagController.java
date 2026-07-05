@@ -18,6 +18,7 @@ import java.util.List;
 public class TagController {
     private final TagService tagService;
 
+    @SuppressWarnings("NullableProblems")
     @PostMapping
     @PreAuthorize("hasAuthority('REPORT_ISSUE')")
     public ResponseEntity<TagResponse> createTag(@Valid @RequestBody CreateTagRequest createTagRequest) {
@@ -26,9 +27,10 @@ public class TagController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping
     public ResponseEntity<List<TagResponse>> viewAllTags() {
-        List<TagResponse> response = tagService.getAllTag();
+        List<TagResponse> response = tagService.getAllTags();
 
         return ResponseEntity.ok(response);
     }

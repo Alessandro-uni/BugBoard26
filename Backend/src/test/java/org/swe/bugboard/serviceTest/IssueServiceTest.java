@@ -29,7 +29,6 @@ import java.io.UncheckedIOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(Enclosed.class)
@@ -47,9 +46,6 @@ public class IssueServiceTest {
     private TagRepository tagRepository;
     @Mock
     private HistoryService historyService;
-    @Mock
-    private NotificationService notificationService;
-
 
     @Nested
     class createIssueTest{
@@ -72,7 +68,7 @@ public class IssueServiceTest {
         byte[] dummyBytes = new byte[]{0, 0, 0};
 
         @Test
-        public void testExistingUserSavesAndCreatesHistory() throws IOException {
+        public void testSavesAndCreatesHistory() throws IOException {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -83,7 +79,7 @@ public class IssueServiceTest {
             when(dummyFile.getContentType()).thenReturn("png");
             when(dummyFile.getBytes()).thenReturn(dummyBytes);
 
-            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
@@ -94,7 +90,8 @@ public class IssueServiceTest {
             assertNotNull(result, "Result does not exist");
             assertEquals(dummyIssueTitle, result.getTitle(), result.getTitle());
 
-            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
             assertNotNull(result.getImage(), "Result does not have Image");
             assertEquals(dummyBytes, result.getImage().getRawImage(), "Result image does not match dummy image");
@@ -126,7 +123,7 @@ public class IssueServiceTest {
 
             when(dummyFile.isEmpty()).thenReturn(true);
 
-            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
@@ -136,7 +133,8 @@ public class IssueServiceTest {
             //Verification
             assertNotNull(result, "Result does not exist");
 
-            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
             assertNull(result.getImage(), "Result has Image");
         }
@@ -149,7 +147,7 @@ public class IssueServiceTest {
 
             when(tagRepository.findByNameIn(any())).thenReturn(null);
 
-            when(issueRepository.save(any())).then(i -> i.getArguments()[0]);
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
@@ -159,7 +157,8 @@ public class IssueServiceTest {
             //Verification
             assertNotNull(result, "Result does not exist");
 
-            verify(historyService).createHistory(any(), eq(dummyCurrentUserId));
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
             assertNull(result.getImage(), "Result has Image");
         }
@@ -186,6 +185,79 @@ public class IssueServiceTest {
         }
     }
 
+    @Nested
+    class updateIssueStatusTest{
+
+        @Mock
+        private NotificationService notificationService;
+
+        @Test
+        public void testNonExistentUserDoesntUpdate(){}
+
+        @Test
+        public void testNonExistentIssueThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNoAssignedUserThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonMatchingCurrentAndAssignedUsersThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonExistentStatusThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNewStatusEqualToOldDoesNothing(){}
+
+        @Test
+        public void testNonModifiableStatusThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonSettableStatusThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testAnyCorrectStatusUpdatesAndAddsToHistory(){}
+
+        @Test
+        public void testResolvedStatusNotifiesAssignedUser(){}
+    }
+
+    @Nested
+    class closeIssueTest{
+
+        @Test
+        public void testNonExistentIssueDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyClosed(){}
+
+        @Test
+        public void testClosableStatusUpdatesAndAddsToHistory(){}
+    }
+
+    @Nested
+    class assignUserToIssueTest{
+
+        @Test
+        public void testNullUserDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyAssignedToOtherUserThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testNonExistentUserThrowsAndDoesntUpdate(){}
+
+        @Test
+        public void testAssigningUserSavesAndUpdatesHistory(){}
+
+    }
+
     @Test
     public void testGetIssueById(){
 
@@ -208,7 +280,10 @@ public class IssueServiceTest {
         //Verification
         assertNotNull(result, "Result does not exist");
         assertEquals(dummyIssueId, result.getId(), "IDs do not match");
+
+        verify(issueRepository).findById(dummyIssueId);
     }
 
-
+    @Test
+    public void testBuildPageRequest(){}
 }

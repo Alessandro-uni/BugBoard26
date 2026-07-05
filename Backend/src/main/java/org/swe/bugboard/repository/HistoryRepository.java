@@ -6,6 +6,7 @@ import org.swe.bugboard.model.History;
 
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Repository
 public interface HistoryRepository extends JpaRepository<History, Long> {
     List<History> findByIssue_IdOrderByDateDesc(Long issueId);

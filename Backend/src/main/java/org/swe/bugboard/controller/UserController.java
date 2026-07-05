@@ -23,6 +23,7 @@ public class UserController {
 
     private static final String USER_ID_CLAIM = "userId";
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(@AuthenticationPrincipal Jwt jwt) {
         Long userId = jwt.getClaim(USER_ID_CLAIM);
@@ -31,6 +32,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @PutMapping("/me/password")
     public ResponseEntity<UserResponse> changePassword(@AuthenticationPrincipal Jwt jwt,
             @Valid @RequestBody ChangePasswordUserRequest changePasswordUserRequest) {
@@ -41,6 +43,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @PostMapping
     @PreAuthorize("hasAuthority('CREATE_USERS')")
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
@@ -49,6 +52,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> findUserById(@PathVariable Long userId) {
         UserResponse response = userService.getUserById(userId);
@@ -56,6 +60,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/reporting")
     public ResponseEntity<List<UserResponse>> viewReportingUsers() {
         List<UserResponse> response = userService.getReportingUsers();
@@ -63,6 +68,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/assignable")
     public ResponseEntity<List<UserResponse>> viewAssignableUsers() {
         List<UserResponse> response = userService.getAssignableUsers();
@@ -70,6 +76,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/available")
     @PreAuthorize("hasAuthority('ASSIGN_ISSUE')")
     public ResponseEntity<List<UserResponse>> viewAvailableUsers() {
@@ -78,6 +85,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/roles")
     @PreAuthorize("hasAuthority('CREATE_USERS')")
     public ResponseEntity<List<UserRole>> getAllUserRoles() {

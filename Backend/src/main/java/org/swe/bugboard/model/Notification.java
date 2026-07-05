@@ -32,10 +32,14 @@ public class Notification {
     private LocalDateTime date;
 
     @OneToOne
-    @JoinColumn(name = "issue_id")
+    @JoinColumn(name = "issue_id",
+            nullable = false,
+            updatable = false)
     private Issue issue;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",
+            nullable = false,
+            updatable = false)
     private User user;
 }

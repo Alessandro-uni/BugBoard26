@@ -11,6 +11,7 @@ import org.swe.bugboard.model.UserRole;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("NullableProblems")
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMail(String mail);

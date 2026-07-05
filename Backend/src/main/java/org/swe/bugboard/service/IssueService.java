@@ -174,6 +174,7 @@ public class IssueService {
         return convertModelToIssueDetails(findIssueOrThrow(issueId));
     }
 
+    @SuppressWarnings("NullableProblems")
     @Transactional(readOnly = true)
     public Page<IssuePreviewResponse> getIssuePage(IssuePageRequest request) {
 
@@ -185,6 +186,7 @@ public class IssueService {
 
     }
 
+    @SuppressWarnings("NullableProblems")
     @Transactional(readOnly = true)
     public List<IssueDetailsResponse> getDetailedIssuesList(IssuePageRequest request) {
 
@@ -221,6 +223,7 @@ public class IssueService {
         return PageRequest.of(pageNumber, pageSize, sortingPolicy);
     }
 
+    @SuppressWarnings("NullableProblems")
     private Specification<Issue> buildSpecification(IssueFilters filter) {
 
         Specification<Issue> specification = Specification.unrestricted(); //Makes it possible to fetch all issues with an empty filter request
