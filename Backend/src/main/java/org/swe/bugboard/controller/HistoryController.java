@@ -16,6 +16,7 @@ public class HistoryController {
 
     private final HistoryService historyService;
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/history")
     public ResponseEntity<List<HistoryResponse>> getIssueHistory(@PathVariable Long issueId) {
         List<HistoryResponse> response = historyService.getHistory(issueId);

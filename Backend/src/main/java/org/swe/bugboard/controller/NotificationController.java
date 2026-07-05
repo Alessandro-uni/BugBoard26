@@ -19,6 +19,7 @@ public class NotificationController {
 
     private static final String USER_ID_CLAIM = "userId";
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping
     public ResponseEntity<List<NotificationResponse>> getUserNotification(@AuthenticationPrincipal Jwt jwt) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
@@ -26,6 +27,7 @@ public class NotificationController {
         return ResponseEntity.ok(notificationService.getUserNotifications(currentUserId));
     }
 
+    @SuppressWarnings("NullableProblems")
     @DeleteMapping("/readAll")
     public ResponseEntity<Boolean> readAll(@AuthenticationPrincipal Jwt jwt) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
@@ -35,6 +37,7 @@ public class NotificationController {
         return ResponseEntity.ok(Boolean.TRUE);
     }
 
+    @SuppressWarnings("NullableProblems")
     @DeleteMapping("/read/{notificationId}")
     public ResponseEntity<Boolean> read(@AuthenticationPrincipal Jwt jwt, @PathVariable Long notificationId) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);

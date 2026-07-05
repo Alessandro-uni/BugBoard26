@@ -6,6 +6,7 @@ import org.swe.bugboard.model.Notification;
 
 import java.util.List;
 
+@SuppressWarnings("NullableProblems")
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     void deleteAllByUser_Id(Long userId);

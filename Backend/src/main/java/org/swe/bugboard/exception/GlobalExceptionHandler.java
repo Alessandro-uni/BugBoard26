@@ -18,21 +18,25 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Map<String, Object>> handleBadCredentials() {
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Credenziali non valide", "Mail o password errati");
     }
 
+    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException e) {
         return buildErrorResponse(HttpStatus.FORBIDDEN, "Accesso negato", e.getMessage());
     }
 
+    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleEntityNotFound(EntityNotFoundException e) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, "Risorsa non trovata", e.getMessage());
     }
 
+    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationError(MethodArgumentNotValidException e) {
         Map<String, List<String>> errors = new HashMap<>();
@@ -46,16 +50,19 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Errore di validazione", errors);
     }
 
+    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException e) {
         return buildErrorResponse(HttpStatus.CONFLICT, "Stato non valido", e.getMessage());
     }
 
+    @SuppressWarnings("NullableProblems")
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleAllOtherException(Exception e) {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Errore interno", e.getMessage());
     }
 
+    @SuppressWarnings("NullableProblems")
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus httpStatus, String error, Object message) {
         Map<String, Object> bodyResponse = new HashMap<>();
         bodyResponse.put("timestamp", LocalDateTime.now());

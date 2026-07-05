@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 //todo: capisci come usare JPA static metamodel generator per rimuovere le stringhe
+@SuppressWarnings("NullableProblems")
 public class IssueSpecification {
 
     public static Specification<Issue> hasReportingUser(Long id) {

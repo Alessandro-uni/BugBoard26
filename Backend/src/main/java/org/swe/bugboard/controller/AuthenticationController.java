@@ -15,6 +15,7 @@ import org.swe.bugboard.dto.user.AuthenticationResponse;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
+    @SuppressWarnings("NullableProblems")
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         AuthenticationResponse response =  authenticationService.authenticate(authenticationRequest);

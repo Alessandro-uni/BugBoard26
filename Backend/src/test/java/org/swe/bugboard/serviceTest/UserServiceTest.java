@@ -1,6 +1,5 @@
 package org.swe.bugboard.serviceTest;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,11 +10,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
-import org.swe.bugboard.dto.issue.ReportIssueRequest;
 import org.swe.bugboard.dto.user.ChangePasswordUserRequest;
 import org.swe.bugboard.dto.user.SignUpUserRequest;
 import org.swe.bugboard.dto.user.UserResponse;
-import org.swe.bugboard.model.IssueType;
 import org.swe.bugboard.model.User;
 import org.swe.bugboard.model.UserRole;
 import org.swe.bugboard.repository.UserRepository;
@@ -24,7 +21,6 @@ import org.swe.bugboard.service.UserService;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(Enclosed.class)

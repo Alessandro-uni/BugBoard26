@@ -31,6 +31,7 @@ public class IssueController {
 
     private static final String USER_ID_CLAIM = "userId";
 
+    @SuppressWarnings("NullableProblems")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAuthority('REPORT_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> reportIssue(@AuthenticationPrincipal Jwt jwt,
@@ -131,6 +132,7 @@ public class IssueController {
         columns.add(wrapCSV(issue.getId()));
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/{issueId}")
     public ResponseEntity<IssueDetailsResponse> findIssueById(@PathVariable Long issueId) {
         IssueDetailsResponse response = issueService.getIssueById(issueId);
@@ -138,6 +140,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @PutMapping("/status")
     @PreAuthorize("hasAuthority('BE_ASSIGNED_TO_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> updateIssueStatus(@AuthenticationPrincipal Jwt jwt,
@@ -149,6 +152,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @PutMapping("/close")
     @PreAuthorize("hasAuthority('CLOSE_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> closeIssue(@AuthenticationPrincipal Jwt jwt,
@@ -160,6 +164,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @PutMapping("/assign")
     @PreAuthorize("hasAuthority('ASSIGN_ISSUE')")
     public ResponseEntity<IssueDetailsResponse> assignIssue(@AuthenticationPrincipal Jwt jwt,
@@ -171,12 +176,14 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @PostMapping("/search")
     public PagedModel<IssuePreviewResponse> filterAndSortIssues(@Valid @RequestBody IssuePageRequest pageRequest) {
 
         return new PagedModel<>(issueService.getIssuePage(pageRequest));
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/types")
     public ResponseEntity<List<String>> getAllIssueTypes() {
         List<String> response = Arrays.stream(IssueType.values())
@@ -186,6 +193,7 @@ public class IssueController {
         return ResponseEntity.ok(response);
     }
 
+    @SuppressWarnings("NullableProblems")
     @GetMapping("/statuses")
     public ResponseEntity<List<IssueStatus>> getAllIssueStatus() {
         List<IssueStatus> response = Arrays.asList(IssueStatus.values());
@@ -194,6 +202,7 @@ public class IssueController {
     }
 
     //Debugging
+    @SuppressWarnings("NullableProblems")
     @GetMapping
     public ResponseEntity<List<IssueDetailsResponse>> viewAllIssues() {
         List<IssueDetailsResponse> response = issueService.getAllIssue();

@@ -7,6 +7,7 @@ import org.swe.bugboard.model.Tag;
 import java.util.Optional;
 import java.util.Set;
 
+@SuppressWarnings("NullableProblems")
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
     Set<Tag> findByNameIn(Set<String> names);
