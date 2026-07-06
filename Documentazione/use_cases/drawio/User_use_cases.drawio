@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6" pages="5">
-  <diagram name="User use cases" id="fNsBaUrGLbt2oG_kSiji">
-    <mxGraphModel dx="733" dy="451" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram name="User_use_cases" id="fNsBaUrGLbt2oG_kSiji">
+    <mxGraphModel dx="767" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -47,8 +47,8 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="bAer-HRlFXKBQbkh7mRJ" name="report issue">
-    <mxGraphModel dx="1062" dy="654" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram id="bAer-HRlFXKBQbkh7mRJ" name="report_issue">
+    <mxGraphModel dx="767" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -83,8 +83,8 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="r1hWkiW3iCICkXn4NlGx" name="create tag">
-    <mxGraphModel dx="2200" dy="1354" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram id="r1hWkiW3iCICkXn4NlGx" name="create_tag">
+    <mxGraphModel dx="767" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -122,8 +122,8 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="SSf-iVYefc3lSQJFwLQa" name="modify issue status">
-    <mxGraphModel dx="1540" dy="948" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram id="SSf-iVYefc3lSQJFwLQa" name="modify_issue_status">
+    <mxGraphModel dx="767" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -147,8 +147,8 @@
       </root>
     </mxGraphModel>
   </diagram>
-  <diagram id="rE9tlqhmSkDnMFBL1GDn" name="view notifications">
-    <mxGraphModel dx="1540" dy="948" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+  <diagram id="rE9tlqhmSkDnMFBL1GDn" name="view_notifications">
+    <mxGraphModel dx="767" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
