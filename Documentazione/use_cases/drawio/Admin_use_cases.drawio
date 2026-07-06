@@ -1,0 +1,157 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6" pages="4">
+  <diagram name="Admin use cases" id="pZ6-C0QsFoMAeXl_mTH1">
+    <mxGraphModel dx="628" dy="783" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-6" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Lurker" vertex="1">
+          <mxGeometry height="80" width="40" x="360" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-10" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="User" vertex="1">
+          <mxGeometry height="80" width="40" x="360" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-11" edge="1" parent="1" source="-Td4jeGR6lb8RRyZI33Q-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;fontSize=11;endArrow=none;endFill=0;labelBackgroundColor=default;" target="-Td4jeGR6lb8RRyZI33Q-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-12" edge="1" parent="1" source="-Td4jeGR6lb8RRyZI33Q-13" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;curved=0;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-13" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Admin" vertex="1">
+          <mxGeometry height="80" width="40" x="360" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-14" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Crea utente" vertex="1">
+          <mxGeometry height="40" width="100" x="140" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-36" edge="1" parent="1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0;entryDx=0;entryDy=0;fontStyle=0;fontSize=11;endArrow=none;endFill=0;labelBackgroundColor=default;" target="-Td4jeGR6lb8RRyZI33Q-37">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="720" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-37" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Chiudi issue" vertex="1">
+          <mxGeometry height="40" width="100" x="520" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-38" edge="1" parent="1" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=1;entryDx=0;entryDy=0;fontStyle=0;fontSize=11;endArrow=none;endFill=0;labelBackgroundColor=default;" target="-Td4jeGR6lb8RRyZI33Q-39">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="720" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-39" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Assegna issue&lt;br&gt;a User" vertex="1">
+          <mxGeometry height="40" width="100" x="520" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="-Td4jeGR6lb8RRyZI33Q-42" edge="1" parent="1" source="-Td4jeGR6lb8RRyZI33Q-10" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;curved=0;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="410" y="480" as="sourcePoint" />
+            <mxPoint x="380" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="I_4rO23sTMwmSEpiaJkt" name="assign issue">
+    <mxGraphModel dx="733" dy="451" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Lurker" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-2" edge="1" parent="1" source="jsNkCgQW-_bFnZHwyPCW-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;fontSize=11;endArrow=none;endFill=0;labelBackgroundColor=default;" target="jsNkCgQW-_bFnZHwyPCW-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="299.6000061035156" y="727" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-3" edge="1" parent="1" source="jsNkCgQW-_bFnZHwyPCW-4" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-4" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="User" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Assegna issue&lt;div&gt;&amp;nbsp;a User&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="100" x="400" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-6" edge="1" parent="1" source="jsNkCgQW-_bFnZHwyPCW-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="jsNkCgQW-_bFnZHwyPCW-7" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Admin" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="680" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="Lzk_8kYhYW3N_CFq5ntg" name="close issue">
+    <mxGraphModel dx="1540" dy="948" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Lurker" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-2" edge="1" parent="1" source="9zkZKsLSxfYm2oEooDn0-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;fontSize=11;endArrow=none;endFill=0;labelBackgroundColor=default;" target="9zkZKsLSxfYm2oEooDn0-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="526.4000244140625" y="849" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-3" edge="1" parent="1" source="9zkZKsLSxfYm2oEooDn0-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;curved=0;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-4" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="User" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Chiudi&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;issue&lt;/span&gt;" vertex="1">
+          <mxGeometry height="40" width="100" x="400" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-6" edge="1" parent="1" source="9zkZKsLSxfYm2oEooDn0-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="9zkZKsLSxfYm2oEooDn0-7" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Admin" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="680" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ufQ2FMgCvqaHSOEURX0F" name="create user">
+    <mxGraphModel dx="2800" dy="1724" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Lurker" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-2" edge="1" parent="1" source="J0ux5G40Rb_lgg4vAiFq-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontStyle=0;fontSize=11;endArrow=none;endFill=0;labelBackgroundColor=default;" target="J0ux5G40Rb_lgg4vAiFq-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="418.4000244140625" y="851" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-3" edge="1" parent="1" source="J0ux5G40Rb_lgg4vAiFq-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;curved=0;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="460" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-4" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="User" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-5" parent="1" style="ellipse;whiteSpace=wrap;html=1;align=center;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Crea utente" vertex="1">
+          <mxGeometry height="40" width="100" x="400" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-6" edge="1" parent="1" source="J0ux5G40Rb_lgg4vAiFq-7" style="rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;endArrow=block;endFill=0;labelBackgroundColor=default;endSize=12;fontStyle=0;fontSize=11;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="J0ux5G40Rb_lgg4vAiFq-7" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=0;fontSize=11;labelBackgroundColor=none;fillColor=none;" value="Admin" vertex="1">
+          <mxGeometry height="80" width="40" x="280" y="680" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
