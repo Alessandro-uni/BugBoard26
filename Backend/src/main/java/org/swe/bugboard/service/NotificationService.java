@@ -10,6 +10,7 @@ import org.swe.bugboard.model.Notification;
 import org.swe.bugboard.repository.NotificationRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class NotificationService {
 
         Notification newNotification = Notification.builder().
                 message("La issue '" + issue.getTitle() + "' è " + typeMessage).
-                date(LocalDateTime.now()).
+                date(LocalDateTime.now(ZoneId.systemDefault())).
                 issue(issue).
                 user(issue.getReportingUser()).
                 build();

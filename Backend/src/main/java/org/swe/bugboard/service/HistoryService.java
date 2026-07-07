@@ -14,6 +14,7 @@ import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class HistoryService {
                 .issue(issue)
                 .mainActor(user)
                 .action(historyRequest.getAction())
-                .date(LocalDateTime.now()).build();
+                .date(LocalDateTime.now(ZoneId.systemDefault())).build();
 
         historyRepository.save(newHistory);
     }

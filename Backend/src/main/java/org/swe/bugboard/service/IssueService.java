@@ -21,6 +21,7 @@ import org.swe.bugboard.repository.UserRepository;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,8 +66,8 @@ public class IssueService {
                 .priority(reportIssueRequest.getPriority())
                 .tags(tags)
                 .image(image)
-                .creationDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .creationDate(LocalDateTime.now(ZoneId.systemDefault()))
+                .lastModifiedDate(LocalDateTime.now(ZoneId.systemDefault()))
                 .reportingUser(reportingUser)
                 .assignedUser(null).build();
 

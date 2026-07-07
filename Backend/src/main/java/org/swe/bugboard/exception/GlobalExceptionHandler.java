@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +66,7 @@ public class GlobalExceptionHandler {
     @SuppressWarnings("NullableProblems")
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus httpStatus, String error, Object message) {
         Map<String, Object> bodyResponse = new HashMap<>();
-        bodyResponse.put("timestamp", LocalDateTime.now());
+        bodyResponse.put("timestamp", LocalDateTime.now(ZoneId.systemDefault()));
         bodyResponse.put("status", httpStatus.value());
         bodyResponse.put("error", error);
         bodyResponse.put("message", message);
