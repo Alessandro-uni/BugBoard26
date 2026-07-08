@@ -41,6 +41,10 @@ public class IssueService {
     public IssueDetailsResponse createIssue(ReportIssueRequest reportIssueRequest, Long currentUserId, MultipartFile file) {
         User reportingUser = findUserOrThrow(currentUserId);
 
+        if(!reportingUser.getRole().hasPermission(RolePermission.REPORT_ISSUE)){
+            throw new AccessDeniedException("L'utente è abilitato a segnalare issue");
+        }
+
         Set<Tag> tags = tagRepository.findByNameIn(reportIssueRequest.getTags());
 
         IssueImage image = null;
@@ -159,6 +163,10 @@ public class IssueService {
             throw new IllegalStateException("Impossibile assegnare questa issue, si trova già nello stato: " + issue.getStatus().name());
         }
 
+        User currentUser = findUserOrThrow(currentUserId);
+        if(!currentUser.getRole().hasPermission(RolePermission.ASSIGN_ISSUE)){
+            throw new AccessDeniedException("L'utente non è abilitato ad assegnare issue");
+        }
         User assignedUser = findUserOrThrow(userId);
         issue.setAssignedUser(assignedUser);
 
