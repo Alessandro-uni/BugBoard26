@@ -9,20 +9,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 import org.swe.bugboard.dto.history.HistoryRequest;
 import org.swe.bugboard.dto.issue.IssueDetailsResponse;
 import org.swe.bugboard.dto.issue.ReportIssueRequest;
-import org.swe.bugboard.model.Issue;
-import org.swe.bugboard.model.IssueStatus;
-import org.swe.bugboard.model.IssueType;
-import org.swe.bugboard.model.User;
+import org.swe.bugboard.model.*;
 import org.swe.bugboard.repository.IssueRepository;
 import org.swe.bugboard.repository.TagRepository;
 import org.swe.bugboard.repository.UserRepository;
 import org.swe.bugboard.service.HistoryService;
 import org.swe.bugboard.service.IssueService;
-import org.swe.bugboard.service.NotificationService;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -61,11 +58,28 @@ public class IssueServiceTest {
         Long dummyCurrentUserId = 1L;
         User dummyCurrentUser = User.builder()
                 .id(dummyCurrentUserId)
+                .role(UserRole.USER)
                 .build();
 
         @Mock
         private MultipartFile dummyFile;
         byte[] dummyBytes = new byte[]{0, 0, 0};
+
+        @Test
+        public void testNeedPermissionToCreateIssue(){
+            dummyCurrentUser.setRole(UserRole.LURKER);
+
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+            //Call to test
+            assertThrows(AccessDeniedException.class,
+                    () -> issueService.createIssue(dummyRequest, dummyCurrentUserId, null),
+                    "Did not throw AccessDeniedException");
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
 
         @Test
         public void testSavesAndCreatesHistory() throws IOException {
@@ -111,6 +125,7 @@ public class IssueServiceTest {
 
             //Verification
             verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
         }
 
         @Test
@@ -182,6 +197,7 @@ public class IssueServiceTest {
 
             //Verification
             verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
         }
     }
 

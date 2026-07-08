@@ -1,5 +1,6 @@
 package org.swe.bugboard.serviceTest;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -73,9 +74,24 @@ public class UserServiceTest {
                 .build();
 
         @Test
+        public void testNonExistentUserThrowsAndDoesntSave(){
+
+            //Mock setup
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
+
+            //Call to method
+            assertThrows(EntityNotFoundException.class,
+                    () -> userService.changeUserPassword(dummyCurrentUserId, dummyRequest),
+                    "Did not throw EntityNotFoundException");
+
+            //Verification
+            verify(userRepository, times(0)).save(any());
+        }
+
+        @Test
         public void testWrongOldPasswordThrowsAndDoesntSave(){
 
-            //MockSetup
+            //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
 
             when(passwordEncoder.matches(eq(dummyOldPassword), any())).thenReturn(false);
@@ -93,7 +109,7 @@ public class UserServiceTest {
         @Test
         public void testShouldSaveAndHaveDifferentPasswords() {
 
-            //MockSetup
+            //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
 
             when(passwordEncoder.matches(eq(dummyOldPassword), any())).thenReturn(true);
@@ -113,17 +129,4 @@ public class UserServiceTest {
             //we will have to use intellij's coverage metrics to see that setHashedPassword has been called
         }
     }
-
-    @Test
-    public void testGetUserById(){}
-
-    @Test
-    public void testGetAssignableUsers(){}
-
-    @Test
-    public void testGetReportingUsers(){}
-
-    @Test
-    public void testGetUserByAvailability(){}
-
 }
