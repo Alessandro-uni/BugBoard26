@@ -186,56 +186,6 @@ public class IssueServiceTest {
     }
 
     @Nested
-    class updateIssueStatusTest{
-
-        @Mock
-        private NotificationService notificationService;
-
-        @Test
-        public void testNonExistentUserDoesntUpdate(){}
-
-        @Test
-        public void testNonExistentIssueThrowsAndDoesntUpdate(){}
-
-        @Test
-        public void testNoAssignedUserThrowsAndDoesntUpdate(){}
-
-        @Test
-        public void testNonMatchingCurrentAndAssignedUsersThrowsAndDoesntUpdate(){}
-
-        @Test
-        public void testNonExistentStatusThrowsAndDoesntUpdate(){}
-
-        @Test
-        public void testNewStatusEqualToOldDoesNothing(){}
-
-        @Test
-        public void testNonModifiableStatusThrowsAndDoesntUpdate(){}
-
-        @Test
-        public void testNonSettableStatusThrowsAndDoesntUpdate(){}
-
-        @Test
-        public void testAnyCorrectStatusUpdatesAndAddsToHistory(){}
-
-        @Test
-        public void testResolvedStatusNotifiesAssignedUser(){}
-    }
-
-    @Nested
-    class closeIssueTest{
-
-        @Test
-        public void testNonExistentIssueDoesntUpdate(){}
-
-        @Test
-        public void testIssueIsAlreadyClosed(){}
-
-        @Test
-        public void testClosableStatusUpdatesAndAddsToHistory(){}
-    }
-
-    @Nested
     class assignUserToIssueTest{
 
         @Test
@@ -283,7 +233,4 @@ public class IssueServiceTest {
 
         verify(issueRepository).findById(dummyIssueId);
     }
-
-    @Test
-    public void testBuildPageRequest(){}
 }
