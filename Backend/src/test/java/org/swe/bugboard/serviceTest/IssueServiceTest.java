@@ -2,6 +2,7 @@ package org.swe.bugboard.serviceTest;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.experimental.runners.Enclosed;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,23 +48,37 @@ public class IssueServiceTest {
     @Nested
     class createIssueTest{
 
-        String dummyIssueTitle = "Dummy Title";
-        ReportIssueRequest dummyRequest = ReportIssueRequest.builder()
-                .title(dummyIssueTitle)
-                    .description("Dummy description")
-                    .type(IssueType.BUG.name())
-                .priority(false)
-                    .build();
+        String dummyIssueTitle;
+        ReportIssueRequest dummyRequest;
 
-        Long dummyCurrentUserId = 1L;
-        User dummyCurrentUser = User.builder()
-                .id(dummyCurrentUserId)
-                .role(UserRole.USER)
-                .build();
+        Long dummyCurrentUserId;
+        User dummyCurrentUser;
 
         @Mock
         private MultipartFile dummyFile;
-        byte[] dummyBytes = new byte[]{0, 0, 0};
+        byte[] dummyBytes;
+
+        @BeforeEach
+        public void setUpObjects(){
+
+            dummyCurrentUserId = 1L;
+
+            dummyIssueTitle = "Dummy Title";
+
+            dummyRequest = ReportIssueRequest.builder()
+                    .title(dummyIssueTitle)
+                    .description("Dummy description")
+                    .type(IssueType.BUG.name())
+                    .priority(false)
+                    .build();
+
+            dummyCurrentUser = User.builder()
+                    .id(dummyCurrentUserId)
+                    .role(UserRole.USER)
+                    .build();
+
+            dummyBytes = new byte[]{0, 0, 0};
+        }
 
         @Test
         public void testNeedPermissionToCreateIssue(){
@@ -71,7 +86,8 @@ public class IssueServiceTest {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
-            //Call to test
+
+            //Call to method
             assertThrows(AccessDeniedException.class,
                     () -> issueService.createIssue(dummyRequest, dummyCurrentUserId, null),
                     "Did not throw AccessDeniedException");
@@ -97,7 +113,7 @@ public class IssueServiceTest {
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
-            //Call to test
+            //Call to method
             IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile);
 
             //Verification
@@ -118,7 +134,7 @@ public class IssueServiceTest {
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
 
-            //Call to test
+            //Call to method to test
             assertThrows(EntityNotFoundException.class,
                     () -> issueService.createIssue(dummyRequest, dummyCurrentUserId, null),
                     "Did not throw EntityNotFoundException");
@@ -142,7 +158,7 @@ public class IssueServiceTest {
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
-            //Call to test
+            //Call to method to test
             IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile);
 
             //Verification
@@ -166,7 +182,7 @@ public class IssueServiceTest {
 
             doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
 
-            //Call to test
+            //Call to method to test
             IssueDetailsResponse result = issueService.createIssue(dummyRequest, dummyCurrentUserId, null);
 
             //Verification
@@ -190,7 +206,7 @@ public class IssueServiceTest {
             when(dummyFile.getContentType()).thenReturn("png");
             when(dummyFile.getBytes()).thenThrow(IOException.class);
 
-            //Call to test
+            //Call to method to test
             assertThrows(UncheckedIOException.class,
                     () -> issueService.createIssue(dummyRequest, dummyCurrentUserId, dummyFile),
                     "Did not throw UncheckIOException");
@@ -204,14 +220,94 @@ public class IssueServiceTest {
     @Nested
     class assignUserToIssueTest{
 
-        @Test
-        public void testNullUserDoesntUpdate(){}
+        Long dummyIssueId;
+        Long dummyUserId;
+        Long dummyCurrentUserId;
+
+        User dummyUser;
+
+        User dummyCurrentUser;
+
+        Issue dummyIssue;
+
+        @BeforeEach
+        public void setUpObject(){
+
+            dummyIssueId = 1L;
+            dummyUserId = 22L;
+            dummyCurrentUserId = 333L;
+
+            dummyUser = User.builder()
+                    .id(dummyUserId)
+                    .role(UserRole.USER)
+                    .build();
+
+            dummyCurrentUser = User.builder()
+                    .id(dummyCurrentUserId)
+                    .role(UserRole.ADMIN)
+                    .build();
+
+            dummyIssue = Issue.builder()
+                    .type(IssueType.BUG)
+                    .reportingUser(User.builder().id(0L).build())
+                    .assignedUser(dummyUser)
+                    .build();
+        }
+
+        //Users not existing have already been tested in the createIssueTest class
+        //(Check coverage of FindUserOrThrow)
 
         @Test
-        public void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){}
+        public void testNonExistentIssueThrowsAndDoesntSave(){
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.empty());
+
+            //Call to method to test
+            assertThrows(EntityNotFoundException.class,
+                    () -> issueService.assignUserToIssue(dummyIssueId, null, null));
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
 
         @Test
-        public void testIssueIsAlreadyAssignedToOtherUserThrowsAndDoesntUpdate(){}
+        public void testIssueIsAlreadyAssignedToOtherUserThrowsAndDoesntUpdate() {
+
+            dummyUser.setId(dummyUserId + 10); //make sure that it is different from dummyUserId
+            dummyIssue.setAssignedUser(dummyUser);
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
+
+            //Call to method to test
+            assertThrows(IllegalStateException.class,
+                    () -> issueService.assignUserToIssue(dummyIssueId, dummyUserId, null));
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
+
+        @Test
+        public void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){
+
+            dummyUser.setId(dummyUserId);
+            dummyIssue.setAssignedUser(dummyUser);
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
+
+            //Call to method
+            IssueDetailsResponse result = issueService.assignUserToIssue(dummyIssueId, dummyUserId, null);
+
+            //Verification
+            assertNotNull(result, "Result doesn't exist");
+
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
 
         @Test
         public void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){}
@@ -240,7 +336,7 @@ public class IssueServiceTest {
         //Mock setup
         when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
 
-        //Call to Test
+        //Call to method to test
         IssueDetailsResponse result = issueService.getIssueById(dummyIssueId);
 
         //Verification

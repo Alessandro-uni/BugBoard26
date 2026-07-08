@@ -2,6 +2,7 @@ package org.swe.bugboard.serviceTest;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.experimental.runners.Enclosed;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +50,7 @@ public class UserServiceTest {
         when(passwordEncoder.encode(any())).then(i -> i.getArguments()[0]);
         when(userRepository.save(any(User.class))).then(i -> i.getArguments()[0]);
 
-        //Call to method
+        //Call to method to test
         UserResponse result = userService.createUser(dummySignUpRequest);
 
         //Verification
@@ -60,18 +61,28 @@ public class UserServiceTest {
     @Nested
     class ChangeUserPasswordTest{
 
-        Long dummyCurrentUserId = 1L;
-        User dummyCurrentUser = User.builder()
-                .id(dummyCurrentUserId)
-                .role(UserRole.USER)
-                .build();
+        Long dummyCurrentUserId;
+        User dummyCurrentUser;
 
-        String dummyOldPassword = "abc";
-        String dummyNewPassword = "xyz";
-        ChangePasswordUserRequest dummyRequest = ChangePasswordUserRequest.builder()
-                .currentRawPassword(dummyOldPassword)
-                .newRawPassword(dummyNewPassword)
-                .build();
+        String dummyOldPassword;
+        String dummyNewPassword;
+        ChangePasswordUserRequest dummyRequest;
+
+        @BeforeEach
+        public void setUpObjects(){
+            dummyCurrentUserId = 1L;
+            dummyCurrentUser = User.builder()
+                    .id(dummyCurrentUserId)
+                    .role(UserRole.USER)
+                    .build();
+
+            dummyOldPassword = "abc";
+            dummyNewPassword = "xyz";
+            dummyRequest = ChangePasswordUserRequest.builder()
+                    .currentRawPassword(dummyOldPassword)
+                    .newRawPassword(dummyNewPassword)
+                    .build();
+        }
 
         @Test
         public void testNonExistentUserThrowsAndDoesntSave(){
@@ -79,7 +90,7 @@ public class UserServiceTest {
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
 
-            //Call to method
+            //Call to method to test
             assertThrows(EntityNotFoundException.class,
                     () -> userService.changeUserPassword(dummyCurrentUserId, dummyRequest),
                     "Did not throw EntityNotFoundException");
@@ -96,7 +107,7 @@ public class UserServiceTest {
 
             when(passwordEncoder.matches(eq(dummyOldPassword), any())).thenReturn(false);
 
-            //Call to method
+            //Call to method to test
             assertThrows(ResponseStatusException.class,
                     () -> userService.changeUserPassword(dummyCurrentUserId, dummyRequest),
                     "Did not throw ResponseStatusException");
@@ -118,7 +129,7 @@ public class UserServiceTest {
 
             when(userRepository.save(dummyCurrentUser)).then(i -> i.getArguments()[0]);
 
-            //Call to method
+            //Call to method to test
             UserResponse result = userService.changeUserPassword(dummyCurrentUserId, dummyRequest);
 
             //Verification
