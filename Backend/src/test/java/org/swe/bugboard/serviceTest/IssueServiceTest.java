@@ -243,14 +243,13 @@ public class IssueServiceTest {
                     .build();
 
             dummyCurrentUser = User.builder()
-                    .id(dummyCurrentUserId)
                     .role(UserRole.ADMIN)
                     .build();
 
             dummyIssue = Issue.builder()
                     .type(IssueType.BUG)
+                    .status(IssueStatus.TODO)
                     .reportingUser(User.builder().id(0L).build())
-                    .assignedUser(dummyUser)
                     .build();
         }
 
@@ -293,30 +292,102 @@ public class IssueServiceTest {
         @Test
         public void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){
 
-            dummyUser.setId(dummyUserId);
             dummyIssue.setAssignedUser(dummyUser);
 
             //Mock setup
             when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
 
-            //Call to method
+            //Call to method to test
             IssueDetailsResponse result = issueService.assignUserToIssue(dummyIssueId, dummyUserId, null);
 
             //Verification
             assertNotNull(result, "Result doesn't exist");
+            assertEquals(result.getAssignedUserId(), dummyUserId, "Ids do not match");
 
             verify(issueRepository, times(0)).save(any());
             verify(historyService, times(0)).createHistory(any(), any());
         }
 
         @Test
-        public void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){}
+        public void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){
+
+            dummyIssue.setStatus(IssueStatus.INPROGRESS);
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
+
+            //Call to method to test
+            assertThrows(IllegalStateException.class,
+                    () -> issueService.assignUserToIssue(dummyIssueId, dummyUserId, null));
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
 
         @Test
-        public void testNonExistentUserThrowsAndDoesntUpdate(){}
+        public void testCurrentUserCantAssignIssueThrowsAndDoesntUpdate(){
+
+            dummyCurrentUser.setRole(UserRole.USER);
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
+
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+
+            //Call to method to test
+            assertThrows(AccessDeniedException.class,
+                    () -> issueService.assignUserToIssue(dummyIssueId, dummyUserId, dummyCurrentUserId));
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
 
         @Test
-        public void testAssigningUserSavesAndUpdatesHistory(){}
+        public void testUserCantBeAssignedIssueThrowsAndDoesntUpdate(){
+
+            dummyUser.setRole(UserRole.LURKER);
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
+
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+            when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
+
+            //Call to method to test
+            assertThrows(AccessDeniedException.class,
+                    () -> issueService.assignUserToIssue(dummyIssueId, dummyUserId, dummyCurrentUserId));
+
+            //Verification
+            verify(issueRepository, times(0)).save(any());
+            verify(historyService, times(0)).createHistory(any(), any());
+        }
+
+        @Test
+        public void testAssigningUserSavesAndUpdatesHistory(){
+
+            //Mock setup
+            when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
+
+            when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
+            when(userRepository.findById(dummyUserId)).thenReturn(Optional.of(dummyUser));
+
+            doNothing().when(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
+
+            when(issueRepository.save(any(Issue.class))).then(i -> i.getArguments()[0]);
+
+            //Call to method to test
+            IssueDetailsResponse result = issueService.assignUserToIssue(dummyIssueId, dummyUserId, dummyCurrentUserId);
+
+            //Verification
+            assertNotNull(result, "Result doesn't exist");
+            assertEquals(result.getAssignedUserId(), dummyUserId, "Ids do not match");
+
+            verify(issueRepository).save(any(Issue.class));
+            verify(historyService).createHistory(any(HistoryRequest.class), eq(dummyCurrentUserId));
+
+        }
 
     }
 
