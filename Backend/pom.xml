@@ -84,10 +84,18 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>6.5.2.Final</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -138,6 +146,11 @@
                                 <path>
                                     <groupId>org.projectlombok</groupId>
                                     <artifactId>lombok</artifactId>
+                                </path>
+                                <path>
+                                    <groupId>org.hibernate</groupId>
+                                    <artifactId>hibernate-jpamodelgen</artifactId>
+                                    <version>6.5.2.Final</version>
                                 </path>
                             </annotationProcessorPaths>
                         </configuration>

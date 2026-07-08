@@ -2,16 +2,15 @@ package org.swe.bugboard.specification;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
-import org.swe.bugboard.model.Issue;
-import org.swe.bugboard.model.IssueStatus;
-import org.swe.bugboard.model.Tag;
+import org.swe.bugboard.model.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-//todo: capisci come usare JPA static metamodel generator per rimuovere le stringhe
+@UtilityClass
 @SuppressWarnings("NullableProblems")
 public class IssueSpecification {
 
@@ -20,7 +19,7 @@ public class IssueSpecification {
             if (id == null)
                 return null;
 
-            return criteriaBuilder.equal(root.get("reportingUser").get("id"), id);
+            return criteriaBuilder.equal(root.get(Issue_.REPORTING_USER).get(User_.ID), id);
         };
     }
 
@@ -31,9 +30,9 @@ public class IssueSpecification {
                 return null;
 
             if (isAssigned)
-                return criteriaBuilder.isNotNull(root.get("assignedUser"));
+                return criteriaBuilder.isNotNull(root.get(Issue_.ASSIGNED_USER));
 
-            return criteriaBuilder.isNull(root.get("assignedUser"));
+            return criteriaBuilder.isNull(root.get(Issue_.ASSIGNED_USER));
         });
     }
 
@@ -43,11 +42,11 @@ public class IssueSpecification {
             if (isAssignable == null)
                 return null;
 
-            Predicate unassignedIssue = criteriaBuilder.isNull(root.get("assignedUser"));
+            Predicate unassignedIssue = criteriaBuilder.isNull(root.get(Issue_.ASSIGNED_USER));
 
             List<IssueStatus> assignableStatuses = IssueStatus.getAssignableStatuses();
 
-            Predicate assignableStatus = root.get("status").in(assignableStatuses);
+            Predicate assignableStatus = root.get(Issue_.STATUS).in(assignableStatuses);
 
             if (isAssignable) {
                 return criteriaBuilder.and(unassignedIssue, assignableStatus);
@@ -62,7 +61,7 @@ public class IssueSpecification {
             if (id == null)
                 return null;
 
-            return criteriaBuilder.equal(root.get("assignedUser").get("id"), id);
+            return criteriaBuilder.equal(root.get(Issue_.ASSIGNED_USER).get(User_.ID), id);
         };
     }
 
@@ -71,7 +70,7 @@ public class IssueSpecification {
             if (priority == null)
                 return null;
 
-            return criteriaBuilder.equal(root.get("priority"), priority);
+            return criteriaBuilder.equal(root.get(Issue_.PRIORITY), priority);
         };
     }
 
@@ -80,7 +79,7 @@ public class IssueSpecification {
             if (status == null)
                 return null;
 
-            return criteriaBuilder.like(root.get("status"), status);
+            return criteriaBuilder.like(root.get(Issue_.STATUS), status);
         };
     }
 
@@ -89,7 +88,7 @@ public class IssueSpecification {
             if (type == null)
                 return null;
 
-            return criteriaBuilder.like(root.get("type"), type);
+            return criteriaBuilder.like(root.get(Issue_.TYPE), type);
         };
     }
 
@@ -98,7 +97,7 @@ public class IssueSpecification {
             if (start == null)
                 return null;
 
-            return criteriaBuilder.greaterThanOrEqualTo(root.get("creationDate"), start);
+            return criteriaBuilder.greaterThanOrEqualTo(root.get(Issue_.CREATION_DATE), start);
         };
     }
 
@@ -107,7 +106,7 @@ public class IssueSpecification {
             if (end == null)
                 return null;
 
-            return criteriaBuilder.lessThanOrEqualTo(root.get("creationDate"), end);
+            return criteriaBuilder.lessThanOrEqualTo(root.get(Issue_.CREATION_DATE), end);
         };
     }
 
@@ -116,7 +115,7 @@ public class IssueSpecification {
             if (start == null)
                 return null;
 
-            return criteriaBuilder.greaterThanOrEqualTo(root.get("lastModifiedDate"), start);
+            return criteriaBuilder.greaterThanOrEqualTo(root.get(Issue_.LAST_MODIFIED_DATE), start);
         };
     }
 
@@ -125,7 +124,7 @@ public class IssueSpecification {
             if (end == null)
                 return null;
 
-            return criteriaBuilder.lessThanOrEqualTo(root.get("lastModifiedDate"), end);
+            return criteriaBuilder.lessThanOrEqualTo(root.get(Issue_.LAST_MODIFIED_DATE), end);
         };
     }
 
@@ -134,9 +133,9 @@ public class IssueSpecification {
             if (tagNames == null)
                 return null;
 
-            Join<Issue, Tag> tags = root.join("tags");
-            query.groupBy(root.get("id"));
-            query.where(root.get("tags").get("name").in(tagNames));
+            Join<Issue, Tag> tags = root.join(Issue_.TAGS);
+            query.groupBy(root.get(Issue_.ID));
+            query.where(root.get(Issue_.TAGS).get(Tag_.NAME).in(tagNames));
             query.having(criteriaBuilder.equal(criteriaBuilder.count(tags), tagNames.size()));
 
             return query.getRestriction();
@@ -150,9 +149,9 @@ public class IssueSpecification {
                 return null;
 
             if (isTagged)
-                return criteriaBuilder.isNotEmpty(root.get("tags"));
+                return criteriaBuilder.isNotEmpty(root.get(Issue_.TAGS));
 
-            return criteriaBuilder.isEmpty(root.get("tags"));
+            return criteriaBuilder.isEmpty(root.get(Issue_.TAGS));
         };
 
     }
@@ -163,10 +162,10 @@ public class IssueSpecification {
                 return null;
 
             if (hasImage) {
-                return criteriaBuilder.isNotNull(root.get("image"));
+                return criteriaBuilder.isNotNull(root.get(Issue_.IMAGE));
             }
 
-            return criteriaBuilder.isNull(root.get("image"));
+            return criteriaBuilder.isNull(root.get(Issue_.IMAGE));
         };
     }
 
