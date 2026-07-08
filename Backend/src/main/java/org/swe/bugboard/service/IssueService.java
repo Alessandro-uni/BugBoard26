@@ -167,7 +167,12 @@ public class IssueService {
         if(!currentUser.getRole().hasPermission(RolePermission.ASSIGN_ISSUE)){
             throw new AccessDeniedException("L'utente non è abilitato ad assegnare issue");
         }
+
         User assignedUser = findUserOrThrow(userId);
+        if(!assignedUser.getRole().hasPermission(RolePermission.BE_ASSIGNED_TO_ISSUE)){
+            throw new AccessDeniedException("L'utente non può essere assegnato ad una issue");
+        }
+
         issue.setAssignedUser(assignedUser);
 
         Issue savedIssue = issueRepository.save(issue);
