@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(Enclosed.class)
 @ExtendWith(MockitoExtension.class)
-public class IssueServiceTest {
+class IssueServiceTest {
 
     @InjectMocks
     private IssueService issueService;
@@ -59,7 +59,7 @@ public class IssueServiceTest {
         byte[] dummyBytes;
 
         @BeforeEach
-        public void setUpObjects(){
+        void setUpObjects(){
 
             dummyCurrentUserId = 1L;
 
@@ -81,7 +81,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testNeedPermissionToCreateIssue(){
+        void testNeedPermissionToCreateIssue(){
             dummyCurrentUser.setRole(UserRole.LURKER);
 
             //Mock setup
@@ -98,7 +98,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testSavesAndCreatesHistory() throws IOException {
+        void testSavesAndCreatesHistory() throws IOException {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -129,7 +129,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testNonExistentUserThrowsAndDoesntSave(){
+        void testNonExistentUserThrowsAndDoesntSave(){
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
@@ -145,7 +145,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testMissingFileSaves(){
+        void testMissingFileSaves(){
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -171,7 +171,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testEmptyFileSaves(){
+        void testEmptyFileSaves(){
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -195,7 +195,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testFailedFileReadThrowsExceptionAndDoesntSave() throws IOException {
+        void testFailedFileReadThrowsExceptionAndDoesntSave() throws IOException {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -231,7 +231,7 @@ public class IssueServiceTest {
         Issue dummyIssue;
 
         @BeforeEach
-        public void setUpObject(){
+        void setUpObject(){
 
             dummyIssueId = 1L;
             dummyUserId = 22L;
@@ -257,7 +257,7 @@ public class IssueServiceTest {
         //(Check coverage of FindUserOrThrow)
 
         @Test
-        public void testNonExistentIssueThrowsAndDoesntSave(){
+        void testNonExistentIssueThrowsAndDoesntSave(){
 
             //Mock setup
             when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.empty());
@@ -272,7 +272,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testIssueIsAlreadyAssignedToOtherUserThrowsAndDoesntUpdate() {
+        void testIssueIsAlreadyAssignedToOtherUserThrowsAndDoesntUpdate() {
 
             dummyUser.setId(dummyUserId + 10); //make sure that it is different from dummyUserId
             dummyIssue.setAssignedUser(dummyUser);
@@ -290,7 +290,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){
+        void testIssueIsAlreadyAssignedToSameUserReturnsAndDoesntUpdate(){
 
             dummyIssue.setAssignedUser(dummyUser);
 
@@ -309,7 +309,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){
+        void testIssueIsAlreadyProgressedThrowsAndDoesntUpdate(){
 
             dummyIssue.setStatus(IssueStatus.INPROGRESS);
 
@@ -326,7 +326,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testCurrentUserCantAssignIssueThrowsAndDoesntUpdate(){
+        void testCurrentUserCantAssignIssueThrowsAndDoesntUpdate(){
 
             dummyCurrentUser.setRole(UserRole.USER);
 
@@ -345,7 +345,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testUserCantBeAssignedIssueThrowsAndDoesntUpdate(){
+        void testUserCantBeAssignedIssueThrowsAndDoesntUpdate(){
 
             dummyUser.setRole(UserRole.LURKER);
 
@@ -365,7 +365,7 @@ public class IssueServiceTest {
         }
 
         @Test
-        public void testAssigningUserSavesAndUpdatesHistory(){
+        void testAssigningUserSavesAndUpdatesHistory(){
 
             //Mock setup
             when(issueRepository.findById(dummyIssueId)).thenReturn(Optional.of(dummyIssue));
@@ -392,7 +392,7 @@ public class IssueServiceTest {
     }
 
     @Test
-    public void testGetIssueById(){
+    void testGetIssueById(){
 
         //Test objects setup
         Long dummyIssueId = 1L;

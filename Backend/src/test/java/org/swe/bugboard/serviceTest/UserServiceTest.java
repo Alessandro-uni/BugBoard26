@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 
 @RunWith(Enclosed.class)
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
     @InjectMocks
     private UserService userService;
@@ -38,7 +38,7 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    public void testCreateUserShouldSave(){
+    void testCreateUserShouldSave(){
 
         String dummyUserMail = "dummy@mail.it";
         SignUpUserRequest dummySignUpRequest = SignUpUserRequest.builder()
@@ -69,7 +69,7 @@ public class UserServiceTest {
         ChangePasswordUserRequest dummyRequest;
 
         @BeforeEach
-        public void setUpObjects(){
+        void setUpObjects(){
             dummyCurrentUserId = 1L;
             dummyCurrentUser = User.builder()
                     .id(dummyCurrentUserId)
@@ -85,7 +85,7 @@ public class UserServiceTest {
         }
 
         @Test
-        public void testNonExistentUserThrowsAndDoesntSave(){
+        void testNonExistentUserThrowsAndDoesntSave(){
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.empty());
@@ -100,7 +100,7 @@ public class UserServiceTest {
         }
 
         @Test
-        public void testWrongOldPasswordThrowsAndDoesntSave(){
+        void testWrongOldPasswordThrowsAndDoesntSave(){
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
@@ -118,7 +118,7 @@ public class UserServiceTest {
         }
 
         @Test
-        public void testShouldSaveAndHaveDifferentPasswords() {
+        void testShouldSaveAndHaveDifferentPasswords() {
 
             //Mock setup
             when(userRepository.findById(dummyCurrentUserId)).thenReturn(Optional.of(dummyCurrentUser));
