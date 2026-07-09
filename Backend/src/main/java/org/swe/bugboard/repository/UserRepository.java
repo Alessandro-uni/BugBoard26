@@ -16,7 +16,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMail(String mail);
     Optional<User> findByUsername(String username);
-    Optional<List<User>> findByRole(UserRole role);
     List<User> findByRoleInOrderByUsernameAsc(List<UserRole> roles);
 
     @Query("SELECT u FROM User u LEFT JOIN u.assignedIssues i " +
