@@ -18,7 +18,6 @@ import org.swe.bugboard.service.IssueService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +27,6 @@ import java.util.List;
 @CrossOrigin(origins = "${app.frontend.url}")
 public class IssueController {
     private final IssueService issueService;
-
     private static final String USER_ID_CLAIM = "userId";
 
     @SuppressWarnings("NullableProblems")
@@ -39,7 +37,6 @@ public class IssueController {
                                                             @RequestPart(value = "file", required = false) MultipartFile file) {
         Long currentUserId = jwt.getClaim(USER_ID_CLAIM);
 
-
         IssueDetailsResponse response = issueService.createIssue(reportIssueRequest, currentUserId, file);
 
         return ResponseEntity.ok(response);
@@ -48,88 +45,19 @@ public class IssueController {
     @PostMapping("/exportCSV")
     public void exportIssues(HttpServletResponse response,
                              @Valid @RequestBody ExportSettings settings) throws IOException {
+        CsvFormatter csvFormatter = new CsvFormatter(settings.getDetailLevel());
 
         response.setContentType("text/csv; charset=UTF-8");
         response.setHeader("Content-Disposition", "attachment; filename=\"issues.csv\"");
 
         try (PrintWriter writer = response.getWriter()) {
-            writer.println(getCSVHeader(settings.getDetailLevel()));
+            writer.println(csvFormatter.getHeader());
 
             List<IssueDetailsResponse> issueList = issueService.getDetailedIssuesList(settings.getIssuePageRequest());
             for (IssueDetailsResponse issue : issueList) {
-                writer.println(getCSVRow(issue, settings.getDetailLevel()));
+                writer.println(csvFormatter.makeCsvRow(issue, settings.getDetailLevel()));
             }
         }
-    }
-
-    private String getCSVHeader(ExportSettings.DetailLevel detailLevel) {
-        String header = "";
-
-        if (detailLevel.getLevel() >= ExportSettings.DetailLevel.LOW.getLevel()) {
-            header += "Titolo;Utente segnalatore;Data creazione;Utente assegnato";
-
-            if (detailLevel.getLevel() >= ExportSettings.DetailLevel.MEDIUM.getLevel()) {
-                header += ";Data ultima modifica;Status;Priorità;Tipo";
-
-                if (detailLevel.getLevel() >= ExportSettings.DetailLevel.HIGH.getLevel()) {
-                    header += ";Descrizione;Etichette;Id";
-                }
-            }
-        }
-
-        return header;
-    }
-
-    private String getCSVRow(IssueDetailsResponse issue, ExportSettings.DetailLevel detailLevel) {
-        List<String> columns = new ArrayList<>();
-        int levelDetail = detailLevel.getLevel();
-
-        if (levelDetail >= ExportSettings.DetailLevel.LOW.getLevel()) {
-            addLowDetails(issue, columns);
-        }
-
-        if (levelDetail >= ExportSettings.DetailLevel.MEDIUM.getLevel()) {
-            addMediumDetails(issue, columns);
-        }
-
-        if (levelDetail >= ExportSettings.DetailLevel.HIGH.getLevel()) {
-            addHighDetails(issue, columns);
-        }
-
-        return String.join(";", columns);
-    }
-
-    private String wrapCSV(Object input) {
-        if (input == null) {
-            return "";
-        }
-
-        String s = String.valueOf(input);
-
-        return "\"" + s.replace("\"", "\"\"") + "\"";
-    }
-
-    private void addLowDetails(IssueDetailsResponse issue, List<String> columns) {
-        columns.add(wrapCSV(issue.getTitle()));
-        columns.add(wrapCSV(issue.getReportingUserUsername()));
-        columns.add(wrapCSV(issue.getCreationDate().toLocalDate()));
-        columns.add(wrapCSV(issue.getAssignedUserUsername() == null ? "Non assegnata" :issue.getAssignedUserUsername()));
-    }
-
-    private void addMediumDetails(IssueDetailsResponse issue, List<String> columns) {
-        columns.add(wrapCSV(issue.getLastModifiedDate().toLocalDate()));
-        columns.add(wrapCSV(issue.getStatus()));
-        columns.add(wrapCSV(issue.getPriority().equals(true) ? "Prioritario" : "Ordinario"));
-        columns.add(wrapCSV(issue.getType()));
-    }
-
-    private void addHighDetails(IssueDetailsResponse issue, List<String> columns) {
-        columns.add(wrapCSV(issue.getDescription()));
-
-        String tagField = String.join(", ", issue.getTags());
-
-        columns.add(wrapCSV(tagField));
-        columns.add(wrapCSV(issue.getId()));
     }
 
     @SuppressWarnings("NullableProblems")
