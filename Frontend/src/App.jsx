@@ -43,11 +43,25 @@ function App() {
             sessionStorage.removeItem('token');
         };
 
+        const handleBrowserArrows = (event) => {
+            if (event.type === 'pageshow' && event.persisted) {
+                globalThis.location.reload();
+            }
+
+            if (event.type === 'popstate') {
+                globalThis.location.reload();
+            }
+        }
+
         window.addEventListener('beforeunload', deleteSessionOnExit);
+        window.addEventListener('pageshow', handleBrowserArrows);
+        globalThis.addEventListener('popstate', handleBrowserArrows);
 
         return () => {
             window.removeEventListener('beforeunload', deleteSessionOnExit);
-        }
+            window.removeEventListener('pageshow', handleBrowserArrows);
+            globalThis.removeEventListener('popstate', handleBrowserArrows);
+        };
     }, []);
 
     // Funzioni per la gestione degli eventi
