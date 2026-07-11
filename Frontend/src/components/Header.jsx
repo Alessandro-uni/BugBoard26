@@ -4,7 +4,7 @@ import {CustomButton} from "./CustomButton.jsx";
 import PropTypes from "prop-types";
 
 
-function Header ({theme, setTheme, onToggleMenu, onHomeClick, isHomeOpen}){
+function Header ({theme, setTheme, onToggleMenu, onHomeClick}){
 
     const toggleTheme = () => {
         setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
@@ -13,35 +13,34 @@ function Header ({theme, setTheme, onToggleMenu, onHomeClick, isHomeOpen}){
     return (
         <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 transition-colors" >
 
-            {/* Hamburger menu */}
-            <CustomButton
-                variant="secondary"
-                onClick={onToggleMenu}
-            >
-                <Menu size={24} className="text-gray-900 dark:text-white"/>
-            </CustomButton>
-
             <div className="flex items-center gap-3">
-                {/* Toggle Tema */}
+                {/* Hamburger menu */}
                 <CustomButton
                     variant="secondary"
-                    onClick={toggleTheme}
+                    onClick={onToggleMenu}
                 >
-                    {theme === 'light'
-                        ? <Moon size={24} className="text-gray-900"/>
-                        : <Sun size={24} className="text-yellow-500"/>
-                    }
+                    <Menu size={24} className="text-gray-900 dark:text-white"/>
                 </CustomButton>
 
                 {/* Home */}
                 <CustomButton
                     variant="secondary"
                     onClick={onHomeClick}
-                    disabled={isHomeOpen}
                 >
                     <Home size={24} className="text-gray-900 dark:text-white"/>
                 </CustomButton>
             </div>
+
+            {/* Toggle Tema */}
+            <CustomButton
+                variant="secondary"
+                onClick={toggleTheme}
+            >
+                {theme === 'light'
+                    ? <Moon size={24} className="text-gray-900"/>
+                    : <Sun size={24} className="text-yellow-500"/>
+                }
+            </CustomButton>
         </header>
     );
 
@@ -53,5 +52,4 @@ Header.propTypes = {
     setTheme: PropTypes.func.isRequired,
     onToggleMenu: PropTypes.func.isRequired,
     onHomeClick: PropTypes.func.isRequired,
-    isHomeOpen: PropTypes.bool.isRequired
 }
