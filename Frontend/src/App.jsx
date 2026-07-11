@@ -191,7 +191,6 @@ function App() {
                     setTheme={setTheme}
                     onToggleMenu={() => setIsMenuOpen(!isMenuOpen)}
                     onHomeClick={() => setCurrentPage('HomePage')}
-                    isHomeOpen={currentPage === 'HomePage'}
                 />
 
                 <main className="flex-1 py-4 md:py-4 overflow-y-auto [scrollbar-gutter:stable]">
