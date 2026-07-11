@@ -159,7 +159,7 @@ function App() {
                 return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{isAssignable: true}} key={currentPage} pageName={currentPage}/>;
 
             case 'Aggiungi nuovo utente':
-                return <CreateUser onCreateUser={() => handleNavigation('HomePage')}/>;
+                return <CreateUser/>;
 
             case 'Cambia password':
                 return <ChangePassword onLogout={handleNavigation}/>;

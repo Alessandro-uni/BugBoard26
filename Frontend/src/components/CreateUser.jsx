@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Eye, EyeOff} from 'lucide-react';
+import {Check, Eye, EyeOff} from 'lucide-react';
 import {CustomButton} from "./CustomButton.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
-import PropTypes from "prop-types";
 
-function CreateUser({onCreateUser}) {
+function CreateUser() {
     const [mail,setMail] = useState('');
     const [username,setUsername] = useState('');
     const [rawPassword, setRawPassword] = useState('');
@@ -78,6 +77,9 @@ function CreateUser({onCreateUser}) {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    // Stato schermata di successo creazione
+    const [showSuccessPopUp, setShowSuccessPopUp] = useState(false);
+
     // Gestione invio modulo
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -104,9 +106,11 @@ function CreateUser({onCreateUser}) {
             });
 
             if (response.ok) {
-                const userData = await response.json();
-                onCreateUser(userData);
-                alert("Utente creato con successo");
+                setShowSuccessPopUp(true);
+                setMail('');
+                setRawPassword('');
+                setRepeatRawPassword('');
+                setRole('');
             } else {
                 const errorJson = await response.json();
 
@@ -328,12 +332,44 @@ function CreateUser({onCreateUser}) {
 
                 </form>
             </div>
+
+            {/* POPUP CREAZIONE CON SUCCESSO */}
+            {showSuccessPopUp && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 border border-gray-200 dark:border-gray-700">
+                        <div>
+                            {/* Schermata di successo */}
+                            <div className="flex items-center gap-3">
+                                <div className="w-9 h-9 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                                    <Check size={18} className="text-green-600 dark:text-green-400"/>
+                                </div>
+                                <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                                    Utente creato
+                                </h2>
+                            </div>
+
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                                L'utente "{username}" è stato creato con successo
+                            </p>
+
+                            <div className="flex justify-end gap-3 pt-1">
+                                <CustomButton
+                                    variant="secondary"
+                                    onClick={() => {
+                                        setShowSuccessPopUp(false);
+                                        setUsername('');
+                                    }}
+                                    className="flex-1 py-2.5 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold rounded-lg transition-colors"
+                                >
+                                    Ok
+                                </CustomButton>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
 
 export default CreateUser;
-
-CreateUser.propTypes = {
-    onCreateUser: PropTypes.func.isRequired
-}
