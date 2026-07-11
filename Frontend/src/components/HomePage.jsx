@@ -310,10 +310,10 @@ function HomePage({onViewIssue, currentUserId, userName, userPermissions = [], o
                 <div>
                     <div className="space-y-6 mx-auto">
                         <IssueSection
-                            title="Tutte le issue"
+                            title="Tutte le Issue"
                             issues={allIssues}
                             onViewIssue={onViewIssue}
-                            onViewAll={() => onNavigation('Tutte le issue')}
+                            onViewAll={() => onNavigation('Tutte le Issue')}
                         />
 
                         {userPermissions.includes('BE_ASSIGNED_TO_ISSUE') && (

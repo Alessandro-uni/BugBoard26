@@ -12,7 +12,7 @@ function Menu({currentPage, onNavigate, isOpen, onClose, userRole = 'LURKER', us
             title: 'Principale',
             requiredPermission: null,
             items: [
-                { icon: List, label: 'Tutte le issue', requiredPermission: null },
+                { icon: List, label: 'Tutte le Issue', requiredPermission: null },
                 { icon: ListTodo, label: 'Issue assegnate', requiredPermission: 'BE_ASSIGNED_TO_ISSUE' },
                 { icon: ListCollapse, label: 'Issue segnalate', requiredPermission: 'REPORT_ISSUE' },
                 { icon: PlusCircle, label: 'Segnala Issue', requiredPermission: 'REPORT_ISSUE' },
