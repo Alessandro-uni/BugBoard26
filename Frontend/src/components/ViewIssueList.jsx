@@ -9,7 +9,7 @@ import {ReloadingBox} from "./ReloadingBox.jsx";
 import {API_BASE_URL} from "../apiConfig.js";
 import PropTypes from "prop-types";
 
-function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
+function ViewIssueList({onViewIssue, initialBodyParams, pageName, message}) {
     // Variabili per la ricerca/visualizzazione di issue
     const MAX_VIEW_ISSUES = "15";
     const DEFAULT_SORT_TYPE = "CREATION_DATE_DESCENDING";
@@ -95,7 +95,8 @@ function ViewIssueList({onViewIssue, initialBodyParams, pageName}) {
             {/* Intestazione */}
             <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{pageName}</h2>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">Filtra e ordina le Issue</p>
+                <p className="text-lg text-gray-800 dark:text-gray-100 mt-2 mb-2">{message}</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-2">Filtra e ordina le Issue</p>
             </div>
 
             {/* Barra degli strumenti (Buttons : Filtri/Ordina/Esporta) */}
@@ -253,5 +254,6 @@ export default ViewIssueList;
 ViewIssueList.propTypes = {
     onViewIssue: PropTypes.func.isRequired,
     initialBodyParams: PropTypes.object.isRequired,
-    pageName: PropTypes.string.isRequired
+    pageName: PropTypes.string.isRequired,
+    message: PropTypes.string
 }

@@ -143,14 +143,14 @@ function App() {
             case 'HomePage':
                 return <HomePage onViewIssue={handleViewIssue} currentUserId={userId} userName={userName} userPermissions={userPermissions} onNavigation={handleNavigation}/>;
 
-            case 'Tutte le issue':
+            case 'Tutte le Issue':
                 return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{}} key={currentPage} pageName={currentPage}/>;
 
             case 'Issue assegnate':
-                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{assignedUserId: userId}} key={currentPage} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{assignedUserId: userId}} key={currentPage} pageName={currentPage} message={'Questo è l\'elenco delle Issue che ti sono state assegnate.'}/>;
 
             case 'Issue segnalate':
-                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{reportingUserId: userId}} key={currentPage} pageName={currentPage}/>;
+                return <ViewIssueList onViewIssue={handleViewIssue} initialBodyParams={{reportingUserId: userId}} key={currentPage} pageName={currentPage} message={'Questo è l\'elenco delle Issue che hai segnalato.'}/>;
 
             case 'Segnala Issue':
                 return <CreateIssue onCancel={() => handleNavigation('HomePage')} onIssueCreated={handleViewIssue}/>;
