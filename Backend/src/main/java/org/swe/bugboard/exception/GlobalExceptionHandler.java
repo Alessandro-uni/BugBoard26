@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
     @SuppressWarnings("NullableProblems")
     private ResponseEntity<Map<String, Object>> buildErrorResponse(HttpStatus httpStatus, String error, Object message) {
         Map<String, Object> bodyResponse = new HashMap<>();
-        bodyResponse.put("timestamp", LocalDateTime.now(ZoneId.systemDefault()));
+        bodyResponse.put("timestamp", LocalDateTime.now(ZoneId.of("UTC+2")));
         bodyResponse.put("status", httpStatus.value());
         bodyResponse.put("error", error);
         bodyResponse.put("message", message);

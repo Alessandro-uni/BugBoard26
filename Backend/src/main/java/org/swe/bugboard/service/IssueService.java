@@ -70,8 +70,8 @@ public class IssueService {
                 .priority(reportIssueRequest.getPriority())
                 .tags(tags)
                 .image(image)
-                .creationDate(LocalDateTime.now(ZoneId.systemDefault()))
-                .lastModifiedDate(LocalDateTime.now(ZoneId.systemDefault()))
+                .creationDate(LocalDateTime.now(ZoneId.of("UTC+2")))
+                .lastModifiedDate(LocalDateTime.now(ZoneId.of("UTC+2")))
                 .reportingUser(reportingUser)
                 .assignedUser(null).build();
 

@@ -34,7 +34,7 @@ public class HistoryService {
                 .issue(issue)
                 .mainActor(user)
                 .action(historyRequest.getAction())
-                .date(LocalDateTime.now(ZoneId.systemDefault())).build();
+                .date(LocalDateTime.now(ZoneId.of("UTC+2"))).build();
 
         historyRepository.save(newHistory);
     }

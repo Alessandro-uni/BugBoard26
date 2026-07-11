@@ -34,7 +34,7 @@ public class NotificationService {
 
         Notification newNotification = Notification.builder().
                 message("La issue '" + issue.getTitle() + "' è " + typeMessage).
-                date(LocalDateTime.now(ZoneId.systemDefault())).
+                date(LocalDateTime.now(ZoneId.of("UTC+2"))).
                 issue(issue).
                 user(issue.getReportingUser()).
                 build();
